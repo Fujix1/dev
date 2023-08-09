@@ -66,4 +66,4 @@ const rfExecuteMAME = async(event, ...args) => {
 };
 
 
-module.exports = {rfExecuteMAME};
+module.exports = {rfExecuteMAME, rfProfiles};

@@ -1,8 +1,13 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
 const { exec } = require('child_process');
+const { rfExecuteMAME, rfProfiles } = require('./rfConfig');
 
-const { rfExecuteMAME } = require('./rfConfig');
+
+const fs = require("node:fs");
+const readline = require("node:readline");
+
+let record = {}
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -13,22 +18,47 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
     }
   });
 
   win.loadFile('index.html');
-
 }
 
-app.whenReady().then(() => {
-  createWindow()
+/**
+ * resource.json を読み込む
+ * @returns {boolean} - 読み込み完了
+ */
+const loadResource = () => {
+  if ( fs.existsSync('./resource.json')) {
+    try {
+      record = JSON.parse(fs.readFileSync('./resource.json', 'utf8'));
+      return true;
+    } catch(err) {
+      console.log(err);
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+app.whenReady().then(async () => {
+
+  var tick = Date.now();
+  loadResource();
+  console.log(Date.now() - tick);  
+
+  createWindow();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
     }
-  })
+  });
+
 })
 
 app.on('window-all-closed', () => {
@@ -36,6 +66,7 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
 
 
 ipcMain.handle('channel_ichiri', async(event, ...args) => {
