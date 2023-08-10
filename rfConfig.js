@@ -1,4 +1,3 @@
-const child_process = require('child_process');
 
 /**
  * Retrofire Configs
@@ -32,6 +31,7 @@ const rfProfiles = [
  * @param {{ zipName: string, softName: string }}
  * @return { string }
  */
+const child_process = require('child_process');
 const rfExecuteMAME = async(event, ...args) => {
   
   // プロファイル未選択時

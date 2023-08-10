@@ -1,22 +1,55 @@
+
+//-------------------------------------------------------------------
+// モジュール
+//-------------------------------------------------------------------
 const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
 const { exec } = require('child_process');
 const { rfExecuteMAME, rfProfiles } = require('./rfConfig');
-
-
-const fs = require("node:fs");
 const readline = require("node:readline");
+const Store = require('electron-store');
+const store = new Store();
 
+
+//-------------------------------------------------------------------
+// 定数
+//-------------------------------------------------------------------
+// ウィンドウデフォルト設定
+const MAIN_FORM_DEFAULT = {
+  x: 50,
+  y: 50,
+  width: 1024,
+  height: 768,
+}
+
+
+//-------------------------------------------------------------------
+// グローバル変数
+//-------------------------------------------------------------------
+// ウインドウ管理
+let mainWindow;
+
+// ゲーム情報管理
 let record = {}
 
+/**
+ * ウインドウ生成
+ */
 const createWindow = () => {
-  const win = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
-    x: 100,
-    y: 100,
-    width: 800,
-    height: 600,
+
+  // 保存値レストア
+  const pos = store.get('mainWindow.pos') || [MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y];
+  const size = store.get('mainWindow.size') || [MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height];
+
+  // ウインドウ生成
+  mainWindow = new BrowserWindow({
+    show: false,
+    minWidth: 640,
+    minHeight: 480,
+    x: pos[0],
+    y: pos[1],
+    width: size[0],
+    height: size[1],
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -24,13 +57,26 @@ const createWindow = () => {
     }
   });
 
-  win.loadFile('index.html');
+  // ウィンドウ内に指定HTMLを表示
+  mainWindow.loadFile('index.html');
+
+  // 準備が整ったら表示
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  });
+
+  // ウィンドウが閉じられる直前に実行
+  mainWindow.on('close', ()=>{
+    store.set('mainWindow.pos', mainWindow.getPosition());  // ウィンドウの座標を記録
+    store.set('mainWindow.size', mainWindow.getSize());     // ウィンドウのサイズを記録
+  })
 }
 
 /**
  * resource.json を読み込む
  * @returns {boolean} - 読み込み完了
  */
+const fs = require("node:fs");
 const loadResource = () => {
   if ( fs.existsSync('./resource.json')) {
     try {
@@ -45,6 +91,12 @@ const loadResource = () => {
   }
 }
 
+
+//------------------------------------
+// [app] イベント処理
+//------------------------------------
+
+// 初期化が完了
 app.whenReady().then(async () => {
 
   var tick = Date.now();
@@ -61,6 +113,7 @@ app.whenReady().then(async () => {
 
 })
 
+// すべてのウィンドウが閉じられたときの処理
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
