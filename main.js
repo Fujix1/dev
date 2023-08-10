@@ -122,6 +122,9 @@ app.on('window-all-closed', () => {
 
 
 
+//------------------------------------
+// ipc通信
+//------------------------------------
 ipcMain.handle('channel_ichiri', async(event, ...args) => {
   console.log(...args);
   
@@ -137,9 +140,15 @@ ipcMain.handle('channel_ichiri', async(event, ...args) => {
   return 'return from main';
 });
 
-
+ipcMain.handle('window-reset', async(event, data)=>{
+  console.log(data);
+  mainWindow.setSize(MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height);
+  mainWindow.setPosition(MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y);
+  return(true);
+});
 
 /**
  * MAME 起動処理 
  */
 ipcMain.handle('executeMAME', rfExecuteMAME);
+

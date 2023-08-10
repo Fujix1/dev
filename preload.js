@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld( 'myApi', {
 
 contextBridge.exposeInMainWorld( 'retrofireAPI', {
   executeMAME: async (args) => await ipcRenderer.invoke('executeMAME', args),
+  resetWindow: async (args)=> await ipcRenderer.invoke('window-reset', args),
 });
 
 contextBridge.exposeInMainWorld('myvers', {

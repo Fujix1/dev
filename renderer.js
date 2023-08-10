@@ -20,7 +20,13 @@ function onLoad() {
   });
   document.querySelector('#test3').addEventListener('click', () => {
     sendByApiSoft(document.querySelector('#test3').value);
-  });  
+  });
+
+  document.querySelector('#btn-reset').addEventListener('click', async()=>{
+    // メインプロセスを呼び出し
+    result = await window.retrofireAPI.resetWindow('bokuhamachichan');
+  });
+  
 };
 
 async function sendByApi(zip) {
@@ -36,3 +42,4 @@ async function sendByApiSoft(zip) {
     softName: 'ys2'
   });
 }
+
