@@ -25,6 +25,7 @@ function onLoad() {
   document.querySelector('#btn-reset').addEventListener('click', async()=>{
     // メインプロセスを呼び出し
     result = await window.retrofireAPI.resetWindow('bokuhamachichan');
+    console.log(result);
   });
   
 };

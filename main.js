@@ -59,10 +59,11 @@ const createWindow = () => {
 
   // ウィンドウ内に指定HTMLを表示
   mainWindow.loadFile('index.html');
+  mainWindow.webContents.openDevTools();
 
   // 準備が整ったら表示
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
+    mainWindow.show();
   });
 
   // ウィンドウが閉じられる直前に実行
