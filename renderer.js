@@ -4,7 +4,6 @@ const information = document.getElementById('info');
 information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
 
 document.getElementById('info2').innerText = window.myApi.hamachi;
-
 document.getElementById('info2').innerText = window.myvers.st;
 
 
@@ -54,4 +53,7 @@ window.retrofireAPI.onUpdateClock((_event, value) => {
 
 window.retrofireAPI.onDebugMessage((_event, text) => {
   console.log("onDebugMessage", text);
+  const debug = document.querySelector('#debug');
+  debug.value = debug.value +"\n"+ text;
+  debug.scrollTop = debug.scrollHeight;
 });

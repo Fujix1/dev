@@ -158,6 +158,7 @@ ipcMain.handle('window-reset', async(event, data)=>{
   console.log(data);
   mainWindow.setSize(MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height);
   mainWindow.setPosition(MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y);
+  sendDebug("ウインドウリセット")
   return(true);
 });
 
@@ -170,6 +171,6 @@ ipcMain.handle('execute-MAME', rfExecuteMAME);
  * デバッグメッセージ送信
  */
 function sendDebug(text) {
-  mainWindow.webContents.send('debug-message', Date.now());
+  mainWindow.webContents.send('debug-message', text);
 }
 
