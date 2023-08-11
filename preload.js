@@ -11,10 +11,10 @@ contextBridge.exposeInMainWorld( 'myApi', {
 
 
 contextBridge.exposeInMainWorld( 'retrofireAPI', {
-  executeMAME: async (args) => await ipcRenderer.invoke('executeMAME', args),
+  executeMAME: async (args) => await ipcRenderer.invoke('execute-MAME', args),
   resetWindow: async (args)=> await ipcRenderer.invoke('window-reset', args),
 });
 
 contextBridge.exposeInMainWorld('myvers', {
   st: 'ぼくはまちちゃん'
-})
+});

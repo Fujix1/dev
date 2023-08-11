@@ -8,8 +8,14 @@ const { exec } = require('child_process');
 const { rfExecuteMAME, rfProfiles } = require('./rfConfig');
 const readline = require("node:readline");
 const Store = require('electron-store');
-const store = new Store();
 
+const store = new Store();
+/*const store = new Store({
+  cwd: path.dirname(app.getPath('userData')),  // 保存先のディレクトリ
+  name: 'config',                // ファイル名
+  fileExtension: 'json'          // 拡張子
+});
+*/
 
 //-------------------------------------------------------------------
 // 定数
@@ -151,5 +157,5 @@ ipcMain.handle('window-reset', async(event, data)=>{
 /**
  * MAME 起動処理 
  */
-ipcMain.handle('executeMAME', rfExecuteMAME);
+ipcMain.handle('execute-MAME', rfExecuteMAME);
 
