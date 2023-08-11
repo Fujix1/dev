@@ -7,6 +7,8 @@ const path = require('path');
 const { exec } = require('child_process');
 const { rfExecuteMAME, rfProfiles } = require('./rfConfig');
 const readline = require("node:readline");
+const child_process = require('child_process');
+
 const Store = require('electron-store');
 
 const store = new Store();
@@ -114,9 +116,14 @@ app.whenReady().then(async () => {
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
+      createWindow();
     }
   });
+
+  setInterval(() => {
+    //mainWindow.webContents.send('update-clock', Date.now());
+    sendDebug(Date.now())
+  }, 1000);
 
 })
 
@@ -158,4 +165,11 @@ ipcMain.handle('window-reset', async(event, data)=>{
  * MAME 起動処理 
  */
 ipcMain.handle('execute-MAME', rfExecuteMAME);
+
+/**
+ * デバッグメッセージ送信
+ */
+function sendDebug(text) {
+  mainWindow.webContents.send('debug-message', Date.now());
+}
 

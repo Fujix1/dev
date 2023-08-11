@@ -61,7 +61,7 @@ const rfExecuteMAME = async(event, ...args) => {
     }
     console.log(stdout);
   });
-  return 'return from rfExecuteMAME()';
+  return "return";
 
 };
 

@@ -44,3 +44,14 @@ async function sendByApiSoft(zip) {
   });
 }
 
+//------------------------------------
+// メインスレッドから受信
+//------------------------------------
+window.retrofireAPI.onUpdateClock((_event, value) => {
+  console.log(value);
+  document.querySelector('#info2').innerText = value;
+});
+
+window.retrofireAPI.onDebugMessage((_event, text) => {
+  console.log("onDebugMessage", text);
+});

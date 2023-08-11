@@ -11,6 +11,7 @@
       content="default-src 'self'; script-src 'self'"
     />
     <title>Hello from Electron renderer!</title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
   </head>
   <body>
     <h1>Hello from Electron renderer!</h1>
@@ -21,6 +22,9 @@
     <button type="button" class="" id="test2" value="outrun">outrun</button>
     <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button>
     <p><button type="button" id="btn-reset">リセット</button></p>
+    <div>
+      <textarea class="debug" id="debug"></textarea>
+    </div>
   </body>
   <script src="./renderer.js"></script>
 </html>
