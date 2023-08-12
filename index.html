@@ -11,20 +11,32 @@
       content="default-src 'self'; script-src 'self'"
     />
     <title>Hello from Electron renderer!</title>
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="./style/style.css">
   </head>
   <body>
-    <h1>Hello from Electron renderer!</h1>
-    <p>👋</p>
-    <p id="info"></p>
-    <p id="info2"></p>
-    <button type="button" class="" id="test1" value="mappyj">mappyj</button>
-    <button type="button" class="" id="test2" value="outrun">outrun</button>
-    <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button>
-    <p><button type="button" id="btn-reset">リセット</button></p>
-    <div>
-      <textarea class="debug" id="debug"></textarea>
+
+    <div class="l-wrap">
+      <div class="l-head">
+        l-head
+      </div>
+      <div class="l-main">
+        <h1>Hello from Electron renderer!</h1>
+        <p>👋</p>
+        <p id="info"></p>
+        <p id="info2"></p>
+        <button type="button" class="" id="test1" value="mappyj">mappyj</button>
+        <button type="button" class="" id="test2" value="outrun">outrun</button>
+        <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button>
+        <p><button type="button" id="btn-reset">リセット</button></p>
+        <div>
+          <textarea class="debug" id="debug" readonly></textarea>
+        </div>
+      </div>
+      <div class="l-footer">
+        l-footer
+      </div>
     </div>
+
   </body>
   <script src="./renderer.js"></script>
 </html>

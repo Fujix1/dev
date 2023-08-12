@@ -1,0 +1,14 @@
+.l-wrap {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.l-footer {
+  margin-top: auto;
+  background-color: #777;
+  color: #fff;
+  min-height: 30px;
+}

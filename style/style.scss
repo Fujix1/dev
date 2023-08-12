@@ -1,0 +1,8 @@
+@use "packages/normalize.css";
+@use "foundations/base";
+@use "foundations/layout";
+
+.debug {
+  width: 100%;
+  height: 100px;
+}
