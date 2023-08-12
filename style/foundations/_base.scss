@@ -12,4 +12,21 @@ body {
 
 textarea {
   box-sizing: border-box;
+  cursor: auto;
+}
+
+::-webkit-scrollbar{
+  width: 12px;
+
+}
+::-webkit-scrollbar-track{
+  background-color: #eee;
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb{
+  background-color: #d4aa70;
+  border-radius: 100px;
+  &:hover {
+    background-color: #d09139;
+  }
 }
