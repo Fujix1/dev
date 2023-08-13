@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------
 // モジュール
 //-------------------------------------------------------------------
-const { app, BrowserWindow, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const path = require('path');
 const { exec } = require('child_process');
 //const { rfExecuteMAME, rfProfiles } = require('./rfConfig');
@@ -47,8 +47,8 @@ const rfConfig = {
 
 const rfProfiles = [
   { title: 'テスト',
-    exePath: 'd:/mame/mame.exe',
-    workDir: 'd:/mame/',
+    exePath: 'C:/Users/tfuji/Desktop/mame/mame.exe',
+    workDir: 'C:/Users/tfuji/Desktop/mame/',
     option: '-mouse',
     optEnabled: false,
   }
@@ -108,6 +108,12 @@ const rfExecuteMAME = async(event, ...args) => {
   });
   subprocess.on('close', (code)=>{
     console.log(`child process exited with code ${code}`);
+    //sendDebug(`child process exited with code ${code}`);
+  });
+
+  subprocess.on('error', (err)=>{
+    shell.beep();
+    sendDebug(`${err}`);
     //sendDebug(`child process exited with code ${code}`);
   });
 
