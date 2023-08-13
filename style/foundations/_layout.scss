@@ -6,6 +6,12 @@
   flex-direction: column;
 }
 
+.l-main {
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow-y: auto;
+}
+
 .l-footer {
   margin-top: auto;
   background-color: #777;

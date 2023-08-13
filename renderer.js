@@ -1,5 +1,3 @@
-
-
 const information = document.getElementById('info');
 information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
 
@@ -10,6 +8,9 @@ document.getElementById('info2').innerText = window.myvers.st;
 // Window Onload ハンドラ
 window.addEventListener('DOMContentLoaded', onLoad);
 function onLoad() {
+
+  // empty the debug output
+  document.querySelector('#debug').value = '';
 
   document.querySelector('#test1').addEventListener('click', () => {
     sendByApi(document.querySelector('#test1').value);
@@ -23,7 +24,7 @@ function onLoad() {
 
   document.querySelector('#btn-reset').addEventListener('click', async()=>{
     // メインプロセスを呼び出し
-    result = await window.retrofireAPI.resetWindow('bokuhamachichan');
+    result = await window.retrofireAPI.resetWindow('reset');
     console.log(result);
   });
   
@@ -54,6 +55,6 @@ window.retrofireAPI.onUpdateClock((_event, value) => {
 window.retrofireAPI.onDebugMessage((_event, text) => {
   console.log("onDebugMessage", text);
   const debug = document.querySelector('#debug');
-  debug.value = debug.value +"\n"+ text;
+  debug.value = debug.value + text + "\n";
   debug.scrollTop = debug.scrollHeight;
 });
