@@ -27,6 +27,17 @@ function onLoad() {
     result = await window.retrofireAPI.resetWindow('reset');
     console.log(result);
   });
+
+
+  document.querySelector('#btn-dialog').addEventListener('click', async()=>{
+    // メインプロセスを呼び出し
+    result = await window.retrofireAPI.dialog('');
+    if (result.result == true) {
+      document.querySelector('#openImage').src = 'data:image/png;base64,'+result.img;
+    }
+    console.log(result);
+
+  });
   
 };
 

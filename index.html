@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="script-src 'self'">
     <title>Hello from Electron renderer!</title>
     <link rel="stylesheet" type="text/css" href="./style/style.css">
   </head>
@@ -28,8 +22,12 @@
         <button type="button" class="" id="test2" value="outrun">outrun</button>
         <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button>
         <p><button type="button" id="btn-reset">リセット</button></p>
+        <p><button type="button" id="btn-dialog">ダイアログ</button></p>
         <div>
           <textarea class="debug" id="debug" readonly></textarea>
+        </div>
+        <div>
+          <img id="openImage">
         </div>
       </div>
       <div class="l-footer">

@@ -1,14 +1,15 @@
-
 //-------------------------------------------------------------------
 // モジュール
 //-------------------------------------------------------------------
-const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
+const child_process = require('node:child_process');
 const path = require('node:path');
+const fs = require("node:fs");
 
+const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const Store = require('electron-store');
 const store = new Store();
-const {rfConfig, rfProfiles, rfExecuteMAME,sendDebug } = require('./rfConfig');
-let {mainWindow, record} = require('./rfConfig');
+
+const { rfConfig, rfProfiles } = require('./rfConfig');
 
 //-------------------------------------------------------------------
 // 定数
@@ -20,6 +21,15 @@ const MAIN_FORM_DEFAULT = {
   width: 1024,
   height: 768,
 }
+
+//-------------------------------------------------------------------
+// 変数
+//-------------------------------------------------------------------
+// ウインドウ管理
+let mainWindow;
+
+// ゲーム情報管理
+let record = {}
 
 /**
  * ウインドウ生成
@@ -66,7 +76,6 @@ const createWindow = () => {
  * resource.json を読み込む
  * @returns {boolean} - 読み込み完了
  */
-const fs = require("node:fs");
 const loadResource = () => {
   if ( fs.existsSync('./resource.json')) {
     try {
@@ -101,12 +110,6 @@ app.whenReady().then(async () => {
     }
   });
 
-  /*
-  setInterval(() => {
-    //mainWindow.webContents.send('update-clock', Date.now());
-    sendDebug(Date.now())
-  }, 1000);
-  */
 })
 
 // すべてのウィンドウが閉じられたときの処理
@@ -118,6 +121,74 @@ app.on('window-all-closed', () => {
 
 
 
+/**
+ * MAME 起動処理
+ * @param {{ zipName: string, softName: string }}
+ * @return { string }
+ */
+
+const executeMAME = async(event, ...args) => {
+  
+  // プロファイル未選択時
+  if (rfConfig.currentProfile == -1) {
+    sendDebug("executeMAME(): No Profile Set.");
+  }
+
+  let mameArgs = [args[0].zipName];
+
+  // ソフト選択時
+  if (args[0].softName !== undefined) {
+    mameArgs.push(args[0].softName);
+  }
+  // オプション
+  if (rfProfiles[rfConfig.currentProfile].optEnabled) {
+    mameArgs.push(rfProfiles[rfConfig.currentProfile].option);
+  }
+
+  const subprocess  = child_process.spawn( rfProfiles[rfConfig.currentProfile].exePath, mameArgs, 
+    { cwd: rfProfiles[rfConfig.currentProfile].workDir,
+      detached: true,
+     });
+
+  sendDebug( rfProfiles[rfConfig.currentProfile].exePath + ' ' + mameArgs.join(' '));
+  subprocess.unref();
+  subprocess.stdout.setEncoding('utf8');
+  subprocess.stdout.on('data', (data)=> {
+    console.log(data);
+    sendDebug(data);
+  });
+  subprocess.stderr.setEncoding('utf8');
+  subprocess.stderr.on('data',(data)=>{
+    console.log(data);
+    sendDebug(data);
+  });
+  subprocess.on('close', (code)=>{
+    console.log(`child process exited with code ${code}`);
+    //sendDebug(`child process exited with code ${code}`);
+  });
+
+  subprocess.on('error', (err)=>{
+    shell.beep();
+    sendDebug(`${err}`);
+    //sendDebug(`child process exited with code ${code}`);
+  });
+
+  return "return";
+};
+
+
+
+/**
+ * デバッグメッセージ送信
+ */
+function sendDebug(text) {
+  mainWindow.webContents.send('debug-message', text);
+}
+
+
+
+
+
 //------------------------------------
 // ipc通信
 //------------------------------------
@@ -125,12 +196,41 @@ ipcMain.handle('window-reset', async(event, data)=>{
   console.log(data);
   mainWindow.setSize(MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height);
   mainWindow.setPosition(MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y);
-  sendDebug("ウインドウリセット")
+  sendDebug("ウインドウリセット");
   return(true);
+});
+
+ipcMain.handle('open-dialog', async(event, data)=>{
+  const result = dialog.showOpenDialogSync(mainWindow, {
+    title: 'ｶﾞｿﾞｳｦｾﾝﾀｸｾﾖ',
+    properties: ['openFile'],
+    filters: [
+      { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
+    ]
+  });
+
+  let err = false;
+  let enc;
+
+  if (result) {
+    try {
+      const img = fs.readFileSync(result[0]);
+      enc = img.toString('base64');
+    } catch (e) {
+      err = true;
+      console.log(e);
+    }
+  }
+  if (err) {
+    return {result: false, err: e};
+  } else {
+    return {result: true, err: '', img: enc}
+  }
+  
 });
 
 /**
  * MAME 起動処理 
  */
-ipcMain.handle('execute-MAME', rfExecuteMAME);
+ipcMain.handle('execute-MAME', executeMAME);
 

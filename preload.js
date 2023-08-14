@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld( 'myApi', {
 contextBridge.exposeInMainWorld( 'retrofireAPI', {
   executeMAME: async (args) => await ipcRenderer.invoke('execute-MAME', args),
   resetWindow: async (args)=> await ipcRenderer.invoke('window-reset', args),
+  dialog: async (args)=> await ipcRenderer.invoke('open-dialog', args),
   onUpdateClock: (callback) => ipcRenderer.on('update-clock', callback),
   onDebugMessage: (callback) => ipcRenderer.on('debug-message', callback),
 });

@@ -22,6 +22,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
-    "update-electron-app": "^2.0.1"
+    "update-electron-app": "^2.0.1",
+    "validate-image-type": "^2.0.0"
   }
 }
