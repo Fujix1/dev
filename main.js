@@ -3,21 +3,12 @@
 // モジュール
 //-------------------------------------------------------------------
 const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
-const path = require('path');
-const { exec } = require('child_process');
-//const { rfExecuteMAME, rfProfiles } = require('./rfConfig');
-const readline = require("node:readline");
-const child_process = require('child_process');
+const path = require('node:path');
 
 const Store = require('electron-store');
-
 const store = new Store();
-/*const store = new Store({
-  cwd: path.dirname(app.getPath('userData')),  // 保存先のディレクトリ
-  name: 'config',                // ファイル名
-  fileExtension: 'json'          // 拡張子
-});
-*/
+const {rfConfig, rfProfiles, rfExecuteMAME,sendDebug } = require('./rfConfig');
+let {mainWindow, record} = require('./rfConfig');
 
 //-------------------------------------------------------------------
 // 定数
@@ -29,98 +20,6 @@ const MAIN_FORM_DEFAULT = {
   width: 1024,
   height: 768,
 }
-
-
-//-------------------------------------------------------------------
-// グローバル変数
-//-------------------------------------------------------------------
-// ウインドウ管理
-let mainWindow;
-
-// ゲーム情報管理
-let record = {}
-
-
-const rfConfig = {
-  currentProfile: 0, // 現在選択中のプロファイル番号
-};
-
-const rfProfiles = [
-  { title: 'テスト',
-    exePath: 'C:/Users/tfuji/Desktop/mame/mame.exe',
-    workDir: 'C:/Users/tfuji/Desktop/mame/',
-    option: '-mouse',
-    optEnabled: false,
-  }
-];
-
-const rfExecuteMAME = async(event, ...args) => {
-  
-  // プロファイル未選択時
-  if (rfConfig.currentProfile == -1) {
-    sendDebug("rfExecuteMAME(): No Profile Set.");
-  }
-
-  let mameArgs = [args[0].zipName];
-
-  // ソフト選択時
-  if (args[0].softName !== undefined) {
-    mameArgs.push(args[0].softName);
-  }
-  // オプション
-  if (rfProfiles[rfConfig.currentProfile].optEnabled) {
-    mameArgs.push(rfProfiles[rfConfig.currentProfile].option);
-  }
-
-  // 起動処理
-  /*child_process.execFile( 
-    rfProfiles[rfConfig.currentProfile].exePath,
-    mameArgs,
-  { cwd: rfProfiles[rfConfig.currentProfile].workDir }, 
-    (err, stdout, stderr)=>{
-    if (err) {
-      console.log(err);
-      sendDebug(err);
-    }
-    if (stderr) {
-      sendDebug(stderr);
-    }
-    console.log(stdout);
-    sendDebug(stdout);
-  });
-  */
-  const subprocess  = child_process.spawn( rfProfiles[rfConfig.currentProfile].exePath, mameArgs, 
-    { cwd: rfProfiles[rfConfig.currentProfile].workDir,
-      detached: true,
-     });
-
-  sendDebug( rfProfiles[rfConfig.currentProfile].exePath + ' ' + mameArgs.join(' '));
-  subprocess.unref();
-  subprocess.stdout.setEncoding('utf8');
-  subprocess.stdout.on('data', (data)=> {
-    console.log(data);
-    sendDebug(data);
-  });
-  subprocess.stderr.setEncoding('utf8');
-  subprocess.stderr.on('data',(data)=>{
-    console.log(data);
-    sendDebug(data);
-  });
-  subprocess.on('close', (code)=>{
-    console.log(`child process exited with code ${code}`);
-    //sendDebug(`child process exited with code ${code}`);
-  });
-
-  subprocess.on('error', (err)=>{
-    shell.beep();
-    sendDebug(`${err}`);
-    //sendDebug(`child process exited with code ${code}`);
-  });
-
-  return "return";
-
-};
-
 
 /**
  * ウインドウ生成
@@ -234,11 +133,4 @@ ipcMain.handle('window-reset', async(event, data)=>{
  * MAME 起動処理 
  */
 ipcMain.handle('execute-MAME', rfExecuteMAME);
-
-/**
- * デバッグメッセージ送信
- */
-function sendDebug(text) {
-  mainWindow.webContents.send('debug-message', text);
-}
 
