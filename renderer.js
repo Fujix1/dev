@@ -2,7 +2,6 @@ const information = document.getElementById('info');
 information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
 
 document.getElementById('info2').innerText = window.myApi.hamachi;
-document.getElementById('info2').innerText = window.myvers.st;
 
 
 // Window Onload ハンドラ

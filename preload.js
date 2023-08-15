@@ -17,8 +17,3 @@ contextBridge.exposeInMainWorld( 'retrofireAPI', {
   onUpdateClock: (callback) => ipcRenderer.on('update-clock', callback),
   onDebugMessage: (callback) => ipcRenderer.on('debug-message', callback),
 });
-
-contextBridge.exposeInMainWorld('myvers', {
-  st: 'ぼくはまちちゃん'
-});
-

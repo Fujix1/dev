@@ -9,7 +9,8 @@ const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const Store = require('electron-store');
 const store = new Store();
 
-const { validateMIMEType } = require('validate-image-type');
+const { validateBufferMIMEType } = require('validate-image-type');
+const sizeOf = require('image-size');
 
 const { rfConfig, rfProfiles } = require('./rfConfig');
 
@@ -181,18 +182,21 @@ const executeMAME = async(event, ...args) => {
 /**
  * ローカル画像を開いて BASE64 で返す
  * @param {string} path ローカルパス
- * @return {{result: boolean, error: string, img: string}}
+ * @return {{result: boolean, error: string, img: string, type: string, width: integer, height: integer }}
  */
 async function openLocalImage(path) {
   let err = false;
   let errorMessage = '';
   let enc;
   let img;  
+  let dimensions;
+
   try {
-    const validate = await validateMIMEType(path,
+    img = fs.readFileSync(path); // 開く
+    const validate = await validateBufferMIMEType( img,
                   {allowMimeTypes: ['image/jpeg', 'image/gif', 'image/png']}); // 画像ファイル検証
     if (validate.ok) {
-      img = fs.readFileSync(path); // 開く
+      dimensions = sizeOf(img);
       enc = img.toString('base64'); // base64
     } else {
       err = true;
@@ -206,8 +210,9 @@ async function openLocalImage(path) {
   if (err) {
     return {result: false, error: errorMessage};
   } else {
-    return {result: true, img: enc};
+    return {result: true, img: enc, type: dimensions.type, width: Number(dimensions.width), height: Number(dimensions.height)};
   }
+
 }
 
 
