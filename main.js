@@ -9,6 +9,8 @@ const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const Store = require('electron-store');
 const store = new Store();
 
+const { validateMIMEType } = require('validate-image-type');
+
 const { rfConfig, rfProfiles } = require('./rfConfig');
 
 //-------------------------------------------------------------------
@@ -176,6 +178,39 @@ const executeMAME = async(event, ...args) => {
   return "return";
 };
 
+/**
+ * ローカル画像を開いて BASE64 で返す
+ * @param {string} path ローカルパス
+ * @return {{result: boolean, error: string, img: string}}
+ */
+async function openLocalImage(path) {
+  let err = false;
+  let errorMessage = '';
+  let enc;
+  let img;  
+  try {
+    // 画像ファイル検証
+    const validate = await validateMIMEType(path,
+                  {allowMimeTypes: ['image/jpeg', 'image/gif', 'image/png']});
+    if (validate.ok) {
+      // 開く
+      img = fs.readFileSync(path);
+      enc = img.toString('base64');
+    } else {
+      err = true;
+      errorMessage = 'INVALID IMAGE FILE.';
+    }
+  } catch (e) {
+    err = true;
+    errorMessage = e;
+  }
+
+  if (err) {
+    return {result: false, error: errorMessage};
+  } else {
+    return {result: true, img: enc};
+  }
+}
 
 
 /**
@@ -201,6 +236,7 @@ ipcMain.handle('window-reset', async(event, data)=>{
 });
 
 ipcMain.handle('open-dialog', async(event, data)=>{
+
   const result = dialog.showOpenDialogSync(mainWindow, {
     title: 'ｶﾞｿﾞｳｦｾﾝﾀｸｾﾖ',
     properties: ['openFile'],
@@ -209,22 +245,8 @@ ipcMain.handle('open-dialog', async(event, data)=>{
     ]
   });
 
-  let err = false;
-  let enc;
-
   if (result) {
-    try {
-      const img = fs.readFileSync(result[0]);
-      enc = img.toString('base64');
-    } catch (e) {
-      err = true;
-      console.log(e);
-    }
-  }
-  if (err) {
-    return {result: false, err: e};
-  } else {
-    return {result: true, err: '', img: enc}
+    return openLocalImage(result[0]);
   }
   
 });
