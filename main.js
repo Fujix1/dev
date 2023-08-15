@@ -189,13 +189,11 @@ async function openLocalImage(path) {
   let enc;
   let img;  
   try {
-    // 画像ファイル検証
     const validate = await validateMIMEType(path,
-                  {allowMimeTypes: ['image/jpeg', 'image/gif', 'image/png']});
+                  {allowMimeTypes: ['image/jpeg', 'image/gif', 'image/png']}); // 画像ファイル検証
     if (validate.ok) {
-      // 開く
-      img = fs.readFileSync(path);
-      enc = img.toString('base64');
+      img = fs.readFileSync(path); // 開く
+      enc = img.toString('base64'); // base64
     } else {
       err = true;
       errorMessage = 'INVALID IMAGE FILE.';
