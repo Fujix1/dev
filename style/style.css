@@ -345,7 +345,7 @@ textarea.debug {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: rgba(136, 136, 136, 0.5);
+  background-color: rgba(136, 136, 136, 0.2);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -367,15 +367,12 @@ textarea.debug {
 .l-main {
   flex-grow: 1;
   flex-shrink: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
 
 .l-list {
   background-color: #f0f0f0;
-  flex-grow: 1;
-  overflow-y: auto;
 }
 
 .l-footer {
@@ -383,6 +380,29 @@ textarea.debug {
   background-color: rgb(53, 60, 65);
   color: #fff;
   min-height: 30px;
+}
+
+.m-fujList {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  flex-grow: 1;
+}
+.m-fujList__header {
+  display: flex;
+}
+.m-fujList__headerItem {
+  padding: 7px;
+  border-right: 1px solid #ddd;
+}
+.m-fujList__main {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+.m-fujList__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .debug {
@@ -398,4 +418,8 @@ textarea.debug {
   -o-object-fit: fill;
      object-fit: fill;
   image-rendering: -webkit-optimize-contrast;
+}
+
+.list-view {
+  width: 100%;
 }/*# sourceMappingURL=style.css.map */

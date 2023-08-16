@@ -9,19 +9,13 @@
 .l-main {
   flex-grow: 1;
   flex-shrink: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
 
-.l-test {
-
-}
-
 .l-list {
   background-color: #f0f0f0;
-  flex-grow: 1;
-  overflow-y: auto;
+
 }
 
 .l-footer {

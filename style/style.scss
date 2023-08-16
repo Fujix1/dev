@@ -2,6 +2,7 @@
 @use "foundations/variables";
 @use "foundations/base";
 @use "foundations/layout";
+@use "foundations/m-fujList";
 
 .debug {
   width: 100%;
@@ -17,4 +18,8 @@
     object-fit: fill;
     image-rendering: -webkit-optimize-contrast;
   }
+}
+
+.list-view {
+  width: 100%;
 }

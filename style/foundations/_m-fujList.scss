@@ -1,0 +1,23 @@
+.m-fujList {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  flex-grow: 1;
+  
+  &__header {
+    display: flex;
+  }
+  &__headerItem {
+    padding: 7px;
+    border-right: 1px solid #ddd;
+  }
+  &__main {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
