@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   font-size: 14px;
-  flex-grow: 1;
-  
   &__header {
     display: flex;
   }
@@ -11,13 +9,17 @@
     padding: 7px;
     border-right: 1px solid #ddd;
   }
-  &__main {
+  &__body {
     flex-grow: 1;
-    overflow-y: auto;
+    overflow: auto;
   }
   &__list {
     list-style: none;
     padding: 0;
     margin: 0;
+    position: relative;
+  }
+  &__listItem {
+
   }
 }

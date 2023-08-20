@@ -88,11 +88,15 @@ function onLoad() {
  *  }}
  */
 async function initListView(options) {
-  const lv = document.querySelector(options.target);
-  lv.numItems = options.numItems;
-  lv.columns = options.columns;
-  
-  lv.classList.add('m-fujList');
+
+  // props
+  let lastHeight; // リサイズ前のサイズ保持
+  let rowHeight;  // 列の高さ 
+
+  const list = document.querySelector(options.target);
+  list.numItems = options.numItems;
+  list.columns = options.columns;
+  list.classList.add('m-fujList');
 
   // カラムヘッダ追加
   const columnHeader = document.createElement('header');
@@ -103,24 +107,70 @@ async function initListView(options) {
     headerItem.innerText = e;
     columnHeader.appendChild(headerItem);
   });
-  lv.appendChild(columnHeader);
+  list.appendChild(columnHeader);
 
   // カラムボディ追加
-  const columnMain = document.createElement('main');
-  columnMain.className = 'm-fujList__main';
+  const columnBody = document.createElement('main');
+  columnBody.className = 'm-fujList__body';
   
-  const list = document.createElement('ul');
-  list.className = 'm-fujList__list';
-  columnMain.appendChild(list);
-  lv.appendChild(columnMain);
+  const ul = document.createElement('ul');
+  ul.className = 'm-fujList__list';
+  columnBody.appendChild(ul);
+  list.appendChild(columnBody);
 
-  for (let i=0; i<100; i++) {
+  // 列の高さ取得
+  const li = document.createElement('li');
+  li.className = 'm-fujList__listItem';
+  li.append(document.createTextNode('要素'));
+  ul.appendChild(li);
+  rowHeight = li.offsetHeight;
+  li.remove();
+
+  /*
+  for (let i=0; i<10000; i++) {
     const li = document.createElement('li');
+    li.className = 'm-fujList__listItem';
     li.append(document.createTextNode('要素'+i));
-    list.appendChild(li);
+    ul.appendChild(li);
+  }*/
+
+  lastHeight = columnBody.offsetHeight;
+  update();
+
+  window.addEventListener('resize', (e)=>{
+    if (lastHeight!=columnBody.offsetHeight) {
+      lastHeight = columnBody.offsetHeight;
+      //console.log('resized: '+lastHeight);
+      update();
+    }
+  });
+
+  function update() {
+    const numDOMs = ul.childElementCount; // 現在存在する要素数
+
+    // 必要な要素数
+    const neededRows = Math.ceil(lastHeight / rowHeight);
+
+    //console.log(numDOMs,neededRows,);
+
+    if (numDOMs < neededRows) {
+      for (let i=numDOMs; i<neededRows; i++) {
+        const li = document.createElement('li');
+        li.className = 'm-fujList__listItem';
+        li.append(document.createTextNode('要素'+i));
+        ul.appendChild(li);
+      }
+    } else 
+    if (numDOMs > neededRows) {
+      for (let i=numDOMs-1; i>=neededRows; i--) {
+        ul.removeChild(ul.children[i]);
+      }
+    }
+
   }
 
-  
+
+
 }
 
 async function sendByApi(zip) {
