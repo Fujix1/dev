@@ -407,7 +407,16 @@ textarea.debug {
   padding: 0;
   margin: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
 }
+.m-fujList__listItem {
+  display: block;
+  position: relative;
+}
+
 .debug {
   width: 100%;
   height: 200px;

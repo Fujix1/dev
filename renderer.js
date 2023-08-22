@@ -53,7 +53,7 @@ function onLoad() {
   });
 
   document.querySelector('#btn-item1').addEventListener('click', ()=>{
-    listViewMain.changeItemCount(1000);
+    listViewMain.changeItemCount(10000);
   });
   document.querySelector('#btn-item2').addEventListener('click', ()=>{
     listViewMain.changeItemCount(30);
@@ -85,7 +85,8 @@ class ListView {
     // DOM構成
     this.list = document.querySelector(target);
     this.list.classList.add('m-fujList');
-
+    this.list.focusVisible = true;
+    
     // カラムヘッダ追加
     const columnHeader = document.createElement('header');
     columnHeader.className = 'm-fujList__header';
@@ -115,10 +116,20 @@ class ListView {
     this.lastHeight = this.body.offsetHeight;
 
     // イベント追加
+    // リサイズ
     window.addEventListener('resize', (e)=>{
       if (this.lastHeight != this.body.offsetHeight) {
         this.lastHeight = this.body.offsetHeight;
         this.updateListView();
+      }
+    });
+
+    var isHandlingScroll = false;
+    this.body.addEventListener('scroll', async e=>{
+      if (!isHandlingScroll) {
+        isHandlingScroll = true;
+        await this.handleScroll();
+        isHandlingScroll = false;
       }
     });
     this.updateListView();
@@ -144,8 +155,21 @@ class ListView {
     }
   }
 
+  // 項目数変更時の処理
   changeItemCount(newItemCount) {
-    console.log(newItemCount)
+    // ステージの高さ設定
+    this.ulHeight = newItemCount * this.rowHeight;
+    this.ul.style.height = this.ulHeight+"px";
+  }
+
+  // スクロール時の処理
+  async handleScroll() {
+    const scrollY = this.body.scrollTop;
+    const position = Math.floor(scrollY / this.rowHeight) * this.rowHeight;
+    if (this.prevPosition != position) {
+      this.ul.style.paddingTop = position + 'px';
+      this.prevPosition = position;
+    }
   }
 }
 
