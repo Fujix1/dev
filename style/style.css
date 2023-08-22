@@ -390,6 +390,7 @@ textarea.debug {
   display: flex;
   flex-direction: column;
   font-size: 14px;
+  line-height: 16px;
 }
 .m-fujList__header {
   display: flex;
@@ -398,7 +399,7 @@ textarea.debug {
   padding: 7px;
   border-right: 1px solid #ddd;
 }
-.m-fujList__body {
+.m-fujList__main {
   flex-grow: 1;
   overflow: auto;
 }

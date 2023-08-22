@@ -79,7 +79,7 @@ class ListView {
     this.rowHeight = 0; // 列の高さ
 
     this.header; //
-    this.body;   //
+    this.main;   //
     this.ul;
 
     // DOM構成
@@ -99,12 +99,12 @@ class ListView {
     this.list.appendChild(columnHeader);
 
     // カラムボディ追加
-    this.body = document.createElement('main');
-    this.body.className = 'm-fujList__body';
+    this.main = document.createElement('main');
+    this.main.className = 'm-fujList__main';
     this.ul = document.createElement('ul');
     this.ul.className = 'm-fujList__list';
-    this.body.appendChild(this.ul);
-    this.list.appendChild(this.body);
+    this.main.appendChild(this.ul);
+    this.list.appendChild(this.main);
 
     // 行の高さ取得
     const li = document.createElement('li');
@@ -113,19 +113,20 @@ class ListView {
     this.ul.appendChild(li);
     this.rowHeight = li.offsetHeight;
     li.remove();
-    this.lastHeight = this.body.offsetHeight;
+    this.lastHeight = this.main.offsetHeight;
 
     // イベント追加
     // リサイズ
     window.addEventListener('resize', (e)=>{
-      if (this.lastHeight != this.body.offsetHeight) {
-        this.lastHeight = this.body.offsetHeight;
+      if (this.lastHeight != this.main.offsetHeight) {
+        this.lastHeight = this.main.offsetHeight;
         this.updateListView();
       }
     });
 
+    // スクロール
     var isHandlingScroll = false;
-    this.body.addEventListener('scroll', async e=>{
+    this.main.addEventListener('scroll', async e=>{
       if (!isHandlingScroll) {
         isHandlingScroll = true;
         await this.handleScroll();
@@ -157,14 +158,20 @@ class ListView {
 
   // 項目数変更時の処理
   changeItemCount(newItemCount) {
+
     // ステージの高さ設定
-    this.ulHeight = newItemCount * this.rowHeight;
-    this.ul.style.height = this.ulHeight+"px";
+    const newHeight = newItemCount * this.rowHeight;
+    if (this.main.scrollTop + this.main.offsetHeight > newHeight) {
+      // ステージが短くなるときはすぐスクロールさせる
+      this.main.scrollTop = newHeight;
+    }
+    
+    this.ul.style.height = newHeight+"px";
   }
 
   // スクロール時の処理
   async handleScroll() {
-    const scrollY = this.body.scrollTop;
+    const scrollY = this.main.scrollTop;
     const position = Math.floor(scrollY / this.rowHeight) * this.rowHeight;
     if (this.prevPosition != position) {
       this.ul.style.paddingTop = position + 'px';
