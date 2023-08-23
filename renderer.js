@@ -1,3 +1,4 @@
+
 const information = document.getElementById('info');
 information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
 
@@ -43,23 +44,31 @@ function onLoad() {
   document.querySelector('#btn-add').addEventListener('click', async()=>{
     
     listViewMain = new ListView('.list-view', ['ゲーム名','ZIP名','メーカー','年度','マスタ','ドライバ']);
-/*    
-    await initListView({
-      target: '.list-view',
-      numItems: 10000,
-      columns: ['ゲーム名','ZIP名','メーカー','年度','マスタ','ドライバ'],
-    });
-*/
+
   });
 
   document.querySelector('#btn-item1').addEventListener('click', ()=>{
-    listViewMain.changeItemCount(10000);
+    var tick = Date.now();
+    let data = [];
+    for (i=0; i<40000; i++) {
+      data.push('項目'+i);
+    }
+    listViewMain.updateList(data);
+    console.log(Date.now() - tick);  
   });
   document.querySelector('#btn-item2').addEventListener('click', ()=>{
-    listViewMain.changeItemCount(30);
+    var tick = Date.now();
+    let data = [];
+    for (i=0; i<30; i++) {
+      data.push('アイテム'+i);
+    }
+    listViewMain.updateList(data);
+    console.log(Date.now() - tick);  
   });
   document.querySelector('#btn-item3').addEventListener('click', ()=>{
-    listViewMain.changeItemCount(2);
+    var tick = Date.now();
+    listViewMain.updateList(['りんご','みかん','餃子']);
+    console.log(Date.now() - tick);  
   });
 
 
@@ -120,7 +129,8 @@ class ListView {
     window.addEventListener('resize', (e)=>{
       if (this.lastHeight != this.main.offsetHeight) {
         this.lastHeight = this.main.offsetHeight;
-        this.updateListView();
+        this.updateItemDoms();
+        this.updateDisplay();
       }
     });
 
@@ -129,18 +139,20 @@ class ListView {
     this.main.addEventListener('scroll', async e=>{
       if (!isHandlingScroll) {
         isHandlingScroll = true;
-        await this.handleScroll();
+        this.handleScroll();
         isHandlingScroll = false;
       }
     });
-    this.updateListView();
+
+    this.updateItemDoms();
+    this.updateList();
   }
   
-
-  updateListView() {
+  // 仮想要素の更新
+  updateItemDoms() {
     const numDOMs = this.ul.childElementCount; // 現在存在する要素数
     // 必要な要素数
-    const neededRows = Math.ceil(this.lastHeight / this.rowHeight);
+    const neededRows = Math.ceil(this.lastHeight / this.rowHeight)+1;
     if (numDOMs < neededRows) {
       for (let i=numDOMs; i<neededRows; i++) {
         const li = document.createElement('li');
@@ -156,27 +168,53 @@ class ListView {
     }
   }
 
-  // 項目数変更時の処理
+  // 項目数変更
   changeItemCount(newItemCount) {
-
     // ステージの高さ設定
-    const newHeight = newItemCount * this.rowHeight;
+    const newHeight = (newItemCount) * this.rowHeight;
     if (this.main.scrollTop + this.main.offsetHeight > newHeight) {
       // ステージが短くなるときはすぐスクロールさせる
       this.main.scrollTop = newHeight;
     }
-    
     this.ul.style.height = newHeight+"px";
   }
 
   // スクロール時の処理
-  async handleScroll() {
+  handleScroll() {
     const scrollY = this.main.scrollTop;
     const position = Math.floor(scrollY / this.rowHeight) * this.rowHeight;
     if (this.prevPosition != position) {
+      // 要素ずらす
       this.ul.style.paddingTop = position + 'px';
       this.prevPosition = position;
+      // 表示内容更新
+      this.updateDisplay();
     }
+  }
+
+  // 表示項目更新
+  updateDisplay(forceUpdate = false) {
+    // 表示中項目のインデックスを求める
+    let start = Math.floor(this.main.scrollTop / this.rowHeight);
+    let end = start + this.ul.childElementCount;
+    if (end > this.data.length) end = this.data.length;
+
+    // データ書き換え
+    let n = 0;
+    for (let i=start; i<end; i++) {
+      if (forceUpdate || this.ul.children[n].dataIndex != i) {
+        this.ul.children[n].innerText = this.data[i];
+        this.ul.children[n].dataIndex = i;
+      }
+      n++;
+    }
+  }
+
+  // 項目にデータを当てはめる
+  updateList(newData = []) {
+    this.data = newData;
+    this.changeItemCount(newData.length);
+    this.updateDisplay(true);
   }
 }
 
