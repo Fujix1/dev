@@ -32,7 +32,8 @@ const MAIN_FORM_DEFAULT = {
 let mainWindow;
 
 // ゲーム情報管理
-let record = {}
+let record = {};
+let recordString;
 
 /**
  * ウインドウ生成
@@ -82,7 +83,9 @@ const createWindow = () => {
 const loadResource = () => {
   if ( fs.existsSync('./resource.json')) {
     try {
-      record = JSON.parse(fs.readFileSync('./resource.json', 'utf8'));
+      recordString = fs.readFileSync('./resource.json', 'utf8');
+      //record = JSON.parse(fs.readFileSync('./resource.json', 'utf8'));
+      record = JSON.parse(recordString);
       return true;
     } catch(err) {
       console.log(err);
@@ -102,7 +105,8 @@ const loadResource = () => {
 app.whenReady().then(async () => {
 
   var tick = Date.now();
-  loadResource();
+  console.log(loadResource());
+  
   console.log(Date.now() - tick);  
 
   createWindow();
@@ -121,8 +125,6 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-
 
 /**
  * MAME 起動処理
@@ -224,9 +226,6 @@ function sendDebug(text) {
 }
 
 
-
-
-
 //------------------------------------
 // ipc通信
 //------------------------------------
@@ -251,7 +250,11 @@ ipcMain.handle('open-dialog', async(event, data)=>{
   if (result) {
     return openLocalImage(result[0]);
   }
-  
+});
+
+// ゲーム情報を返す
+ipcMain.handle('get-record', async(event, data)=>{
+  return recordString;
 });
 
 /**

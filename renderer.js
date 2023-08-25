@@ -1,11 +1,12 @@
 
+let listViewMain; // メインリストビュー
+let record; // 全ゲーム情報
+
+
 const information = document.getElementById('info');
 information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
 
 document.getElementById('info2').innerText = window.myApi.hamachi;
-
-
-let listViewMain;
 
 // Window Onload ハンドラ
 window.addEventListener('DOMContentLoaded', onLoad);
@@ -43,7 +44,14 @@ function onLoad() {
 
   document.querySelector('#btn-add').addEventListener('click', async()=>{
     
-    listViewMain = new ListView('.list-view', ['ゲーム名','ZIP名','メーカー','年度','マスタ','ドライバ']);
+    listViewMain = new ListView('.list-view', 
+      [{label:'ゲーム名', data: "desc", orderby: "desc"},
+       {label:'ZIP名', data: "zipname", orderby: "zipname"},
+       {label:'メーカー', data: "maker", orderby: "maker"},
+       {label:'年度', data: "year", orderby: "year"},
+       {label:'マスタ', data: "cloneof", orderby: "cloneof"},
+       {label:'ドライバ', data: "source", orderby: "source"}]
+      );
 
   });
 
@@ -71,13 +79,18 @@ function onLoad() {
     console.log(Date.now() - tick);  
   });
 
-
+  document.querySelector('#btn-getrecord').addEventListener('click', async()=>{
+    var tick = Date.now();
+    record = JSON.parse(await window.retrofireAPI.getRecord());;
+    console.log(Date.now() - tick);
+    console.log(Object.keys(record).length);
+  });
 };
 
 /**
  * リストビュー用クラス
  *  target: string, // 対象のセレクタ
- *  columns: [string], // カラムラベル
+ *  columns: [{label: string, data: string, orderby: string}] // カラム
  */
 class ListView {
 
@@ -99,10 +112,15 @@ class ListView {
     // カラムヘッダ追加
     const columnHeader = document.createElement('header');
     columnHeader.className = 'm-fujList__header';
-    columns.forEach(e=>{
+    let n = 0;
+    columns.forEach(item=>{
       const headerItem = document.createElement('div');
       headerItem.className = 'm-fujList__headerItem';
-      headerItem.innerText = e;
+      headerItem.innerText = item.label;
+      headerItem.setAttribute('colindex', n++);
+      headerItem.setAttribute('data', item.data);
+      headerItem.setAttribute('orderby', item.orderby);
+      
       columnHeader.appendChild(headerItem);
     });
     this.list.appendChild(columnHeader);

@@ -9,11 +9,12 @@ contextBridge.exposeInMainWorld( 'myApi', {
   executeMAME: async (...args) => await ipcRenderer.invoke('executeMAME', ...args),
 });
 
-
 contextBridge.exposeInMainWorld( 'retrofireAPI', {
   executeMAME: async (args) => await ipcRenderer.invoke('execute-MAME', args),
   resetWindow: async (args)=> await ipcRenderer.invoke('window-reset', args),
   dialog: async (args)=> await ipcRenderer.invoke('open-dialog', args),
+  getRecord: async (args) => await ipcRenderer.invoke('get-record', args),
   onUpdateClock: (callback) => ipcRenderer.on('update-clock', callback),
   onDebugMessage: (callback) => ipcRenderer.on('debug-message', callback),
+
 });
