@@ -45,12 +45,13 @@ function onLoad() {
   document.querySelector('#btn-add').addEventListener('click', async()=>{
     
     listViewMain = new ListView('.list-view', 
-      [{label:'ゲーム名', data: "desc", orderby: "desc"},
-       {label:'ZIP名', data: "zipname", orderby: "zipname"},
-       {label:'メーカー', data: "maker", orderby: "maker"},
-       {label:'年度', data: "year", orderby: "year"},
-       {label:'マスタ', data: "cloneof", orderby: "cloneof"},
-       {label:'ドライバ', data: "source", orderby: "source"}]
+      [{label:'ゲーム名', data: "desc", orderby: "desc", width: 380},
+       {label:'ZIP名', data: "zipname", orderby: "zipname", width: 100},
+       {label:'メーカー', data: "maker", orderby: "maker", width: 150},
+       {label:'年度', data: "year", orderby: "year", width: 60},
+       {label:'マスタ', data: "cloneof", orderby: "cloneof", width: 100},
+       {label:'ドライバ', data: "source", orderby: "source", width: 180}],
+       'main'
       );
 
   });
@@ -75,27 +76,28 @@ function onLoad() {
   });
   document.querySelector('#btn-item3').addEventListener('click', ()=>{
     var tick = Date.now();
-    listViewMain.updateList(['りんご','みかん','餃子']);
-    console.log(Date.now() - tick);  
+    listViewMain.updateList(record);
+    console.log(Date.now() - tick);
   });
 
   document.querySelector('#btn-getrecord').addEventListener('click', async()=>{
     var tick = Date.now();
     record = JSON.parse(await window.retrofireAPI.getRecord());;
     console.log(Date.now() - tick);
-    console.log(Object.keys(record).length);
+    console.log(record.length);
   });
 };
 
 /**
  * リストビュー用クラス
  *  target: string, // 対象のセレクタ
- *  columns: [{label: string, data: string, orderby: string}] // カラム
+ *  columns: [{label: string, data: string, orderby: string, width: integer}] // カラム
+ *  slug: string, // スラグ
  */
 class ListView {
 
   // コンストラクタ
-  constructor(target, columns) {
+  constructor(target, columns, slug) {
     this.numItems = 0; // 保持項目数
     this.lastHeight = 0; // リサイズ前のサイズ保持
     this.rowHeight = 0; // 列の高さ
@@ -103,25 +105,34 @@ class ListView {
     this.header; //
     this.main;   //
     this.ul;
+    this.columns = columns;
+    this.slug = slug;
 
     // DOM構成
     this.list = document.querySelector(target);
     this.list.classList.add('m-fujList');
     this.list.focusVisible = true;
     
+  
     // カラムヘッダ追加
     const columnHeader = document.createElement('header');
     columnHeader.className = 'm-fujList__header';
     let n = 0;
-    columns.forEach(item=>{
+    const root = document.querySelector(':root');
+  
+    this.columns.forEach(item=>{
+      // 変数埋め込み
+      root.style.setProperty("--listiview-" + slug + "-col-"+n+"-width", item.width+"px");
+      // 要素追加
       const headerItem = document.createElement('div');
       headerItem.className = 'm-fujList__headerItem';
       headerItem.innerText = item.label;
-      headerItem.setAttribute('colindex', n++);
+      headerItem.setAttribute('colindex', n);
       headerItem.setAttribute('data', item.data);
       headerItem.setAttribute('orderby', item.orderby);
-      
+      headerItem.style.width = "var(--listiview-" + slug + "-col-"+n+"-width)";
       columnHeader.appendChild(headerItem);
+      n++;
     });
     this.list.appendChild(columnHeader);
 
@@ -134,7 +145,7 @@ class ListView {
     this.list.appendChild(this.main);
 
     // 行の高さ取得
-    const li = document.createElement('li');
+    const li = document.createElement('a');
     li.className = 'm-fujList__listItem';
     li.append(document.createTextNode('要素'));
     this.ul.appendChild(li);
@@ -148,7 +159,7 @@ class ListView {
       if (this.lastHeight != this.main.offsetHeight) {
         this.lastHeight = this.main.offsetHeight;
         this.updateItemDoms();
-        this.updateDisplay();
+        this.handleScroll();
       }
     });
 
@@ -169,13 +180,32 @@ class ListView {
   // 仮想要素の更新
   updateItemDoms() {
     const numDOMs = this.ul.childElementCount; // 現在存在する要素数
-    // 必要な要素数
-    const neededRows = Math.ceil(this.lastHeight / this.rowHeight)+1;
+    const neededRows = Math.ceil(this.lastHeight / this.rowHeight); // 必要な要素数
+
     if (numDOMs < neededRows) {
       for (let i=numDOMs; i<neededRows; i++) {
-        const li = document.createElement('li');
+        const li = document.createElement('a');
+        li.setAttribute('href', "#");
         li.className = 'm-fujList__listItem';
-        li.append(document.createTextNode('要素'+i));
+        li.addEventListener('keydown', e=>{
+          console.log(e.code);
+          switch(e.code) {
+            case "Space":
+              break;
+          }
+        })
+        for (let j=0; j<this.columns.length; j++) {
+          const div = document.createElement('div');
+          div.classList.add('m-fujList__listItemCell');
+          if (j == 0) {
+            div.classList.add('m-fujList__listItemCell--bold');
+          }
+          div.classList.add('m-fujList__listItemCell--'+j);
+          div.setAttribute('cellindex', j);
+          div.setAttribute('celldata', this.columns[j].data);
+          div.style.width = "var(--listiview-" + this.slug + "-col-"+j+"-width)";
+          li.appendChild(div);
+        }
         this.ul.appendChild(li);
       }
     } else 
@@ -199,7 +229,7 @@ class ListView {
 
   // スクロール時の処理
   handleScroll() {
-    const scrollY = this.main.scrollTop;
+/*    const scrollY = this.main.scrollTop;
     const position = Math.floor(scrollY / this.rowHeight) * this.rowHeight;
     if (this.prevPosition != position) {
       // 要素ずらす
@@ -208,6 +238,31 @@ class ListView {
       // 表示内容更新
       this.updateDisplay();
     }
+    */
+
+    const start = Math.floor(this.main.scrollTop / this.rowHeight);
+    const end = start + this.ul.childElementCount;
+    for (let i=start; i<end; i++) {
+      const domIndex = i % this.ul.childElementCount;
+      const oldTop = this.ul.children[domIndex].style.top;
+      const newTop =  i * this.rowHeight + 'px';
+
+      if (oldTop != newTop) {
+        // DOM移動
+        this.ul.children[domIndex].style.top = newTop;
+        this.ul.children[domIndex].setAttribute('data-index',i);
+
+        // 表示内容更新
+        if (this.data.length > i) {
+          const li = this.ul.children[domIndex];
+          for (let j=0; j<li.childElementCount; j++) {
+            li.children[j].innerText = this.data[i][this.columns[j].data];
+          }
+        }
+      }
+    }
+
+    //this.updateDisplay();
   }
 
   // 表示項目更新
@@ -221,8 +276,14 @@ class ListView {
     let n = 0;
     for (let i=start; i<end; i++) {
       if (forceUpdate || this.ul.children[n].dataIndex != i) {
-        this.ul.children[n].innerText = this.data[i];
-        this.ul.children[n].dataIndex = i;
+        const li = this.ul.children[n];
+
+        //if (li.getAttribute('data-index') != i) {
+        //  li.setAttribute('data-index', i);
+          for (let j=0; j<li.childElementCount; j++) {
+            li.children[j].innerText = this.data[li.getAttribute('data-index')][this.columns[j].data];
+          }
+        //}
       }
       n++;
     }
@@ -231,7 +292,8 @@ class ListView {
   // 項目にデータを当てはめる
   updateList(newData = []) {
     this.data = newData;
-    this.changeItemCount(newData.length);
+    this.changeItemCount(this.data.length);
+    this.handleScroll();
     this.updateDisplay(true);
   }
 }

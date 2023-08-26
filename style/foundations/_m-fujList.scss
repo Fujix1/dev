@@ -1,15 +1,28 @@
+:root {
+--cl-text--highlight: #000;
+--cl-text--main: #000;
+--cl-text--weak: #666;
+}
+
 .m-fujList {
   display: flex;
   flex-direction: column;
-  font-size: 14px;
-  line-height: 16px;
-
+  font-family: 'Helvetica', 'Helvetica Neue', 'Helvetica Pro', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  background-color: #fff;
+  &:focus-within {
+    box-shadow: 1px 0px 0px cyan inset;
+  }
   &__header {
     display: flex;
   }
   &__headerItem {
     padding: 7px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid #f0f0f0;
+    box-sizing: border-box;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
   &__main {
     flex-grow: 1;
@@ -26,7 +39,41 @@
     box-sizing: border-box;
   }
   &__listItem {
-    display: block;
-    position: relative;
+    display: flex;
+    position: absolute;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    &:nth-child(2n) {
+      //background-color: #f0f0f0;
+    }
+    &:hover {
+      background-color: rgb(222, 247, 255);
+    }
+    &:focus {
+      background-color: rgba(194, 241, 255, 1);
+    }
+  }
+  &__listItemCell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #fff;
+    padding-left: 5px;
+    padding-right: 5px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    box-sizing: border-box;
+    width: 100px;
+    &--0 {
+      width: 300px;
+    }
+
+    color: var(--cl-text--weak);
+    &--bold {
+      font-weight: bold;
+      font-size: 110%;
+      color: var(--cl-text--highlight);
+    }
   }
 }
