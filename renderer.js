@@ -113,8 +113,7 @@ class ListView {
     this.list.classList.add('m-fujList');
     this.list.focusVisible = true;
     
-  
-    // カラムヘッダ追加
+    // ヘッダ追加
     const columnHeader = document.createElement('header');
     columnHeader.className = 'm-fujList__header';
     let n = 0;
@@ -126,17 +125,30 @@ class ListView {
       // 要素追加
       const headerItem = document.createElement('div');
       headerItem.className = 'm-fujList__headerItem';
-      headerItem.innerText = item.label;
       headerItem.setAttribute('colindex', n);
       headerItem.setAttribute('data', item.data);
       headerItem.setAttribute('orderby', item.orderby);
       headerItem.style.width = "var(--listiview-" + slug + "-col-"+n+"-width)";
+
+      const headerText = document.createElement('span');
+      headerText.className = 'm-fujList__headerText';
+      headerText.innerText = item.label;
+      headerItem.appendChild(headerText);
+      
+      const headerSplitter = document.createElement('div');
+      headerSplitter.className = 'm-fujList__headerSplitter';
+      headerSplitter.setAttribute('colindex', n);
+      headerItem.appendChild(headerSplitter);
+
       columnHeader.appendChild(headerItem);
+      
+
       n++;
     });
+
     this.list.appendChild(columnHeader);
 
-    // カラムボディ追加
+    // ボディ追加
     this.main = document.createElement('main');
     this.main.className = 'm-fujList__main';
     this.ul = document.createElement('ul');
@@ -145,7 +157,7 @@ class ListView {
     this.list.appendChild(this.main);
 
     // 行の高さ取得
-    const li = document.createElement('a');
+    const li = document.createElement('li');
     li.className = 'm-fujList__listItem';
     li.append(document.createTextNode('要素'));
     this.ul.appendChild(li);
@@ -184,16 +196,16 @@ class ListView {
 
     if (numDOMs < neededRows) {
       for (let i=numDOMs; i<neededRows; i++) {
-        const li = document.createElement('a');
-        li.setAttribute('href', "#");
+        const li = document.createElement('li');
+        li.setAttribute('tabindex', "0");
         li.className = 'm-fujList__listItem';
-        li.addEventListener('keydown', e=>{
+        /*li.addEventListener('keydown', e=>{
           console.log(e.code);
           switch(e.code) {
             case "Space":
               break;
           }
-        })
+        });*/
         for (let j=0; j<this.columns.length; j++) {
           const div = document.createElement('div');
           div.classList.add('m-fujList__listItemCell');
@@ -207,6 +219,13 @@ class ListView {
           li.appendChild(div);
         }
         this.ul.appendChild(li);
+        li.addEventListener('dblclick', async e=>{
+          const index = e.currentTarget.getAttribute('data-index');
+          const zipName =  this.data[index].zipname;
+          await window.retrofireAPI.executeMAME({
+            zipName: zipName
+          });
+        }); 
       }
     } else 
     if (numDOMs > neededRows) {
@@ -261,8 +280,6 @@ class ListView {
         }
       }
     }
-
-    //this.updateDisplay();
   }
 
   // 表示項目更新
@@ -298,6 +315,9 @@ class ListView {
   }
 }
 
+function onRun(e) {
+  console.log(e);
+}
 
 async function sendByApi(zip) {
   result = await window.retrofireAPI.executeMAME({
