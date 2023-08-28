@@ -101,6 +101,7 @@ class ListView {
     this.numItems = 0; // 保持項目数
     this.lastHeight = 0; // リサイズ前のサイズ保持
     this.rowHeight = 0; // 列の高さ
+    this.itemIndex = -1; // 選択中の項目インデックス
 
     this.header; //
     this.main;   //
@@ -111,7 +112,6 @@ class ListView {
     // DOM構成
     this.list = document.querySelector(target);
     this.list.classList.add('m-fujList');
-    this.list.focusVisible = true;
     
     // ヘッダ追加
     const columnHeader = document.createElement('header');
@@ -142,7 +142,6 @@ class ListView {
 
       columnHeader.appendChild(headerItem);
       
-
       n++;
     });
 
@@ -168,8 +167,8 @@ class ListView {
     // イベント追加
     // リサイズ
     window.addEventListener('resize', (e)=>{
-      if (this.lastHeight != this.main.offsetHeight) {
-        this.lastHeight = this.main.offsetHeight;
+      if (this.lastHeight != this.list.offsetHeight) {
+        this.lastHeight = this.list.offsetHeight;
         this.updateItemDoms();
         this.handleScroll();
       }
@@ -177,7 +176,7 @@ class ListView {
 
     // スクロール
     var isHandlingScroll = false;
-    this.main.addEventListener('scroll', async e=>{
+    this.list.addEventListener('scroll', async e=>{
       if (!isHandlingScroll) {
         isHandlingScroll = true;
         this.handleScroll();
@@ -219,57 +218,84 @@ class ListView {
           li.appendChild(div);
         }
         this.ul.appendChild(li);
-        li.addEventListener('dblclick', async e=>{
-          const index = e.currentTarget.getAttribute('data-index');
-          const zipName =  this.data[index].zipname;
-          await window.retrofireAPI.executeMAME({
-            zipName: zipName
-          });
-        }); 
+        li.addEventListener('dblclick', async e=>await this.onDubleClick(e)); 
+        li.addEventListener('click', async e=>await this.onClick(e));
+        li.addEventListener('focus', async e=>await this.onFocus(e));
+        li.addEventListener('blur', e=>{console.log('blur')});
+        
       }
-    } else 
-    if (numDOMs > neededRows) {
+    } else if (numDOMs > neededRows) {
       for (let i=numDOMs-1; i>=neededRows; i--) {
         this.ul.removeChild(this.ul.children[i]);
       }
     }
   }
 
+  async onDubleClick(e) { // セルでイベント発生
+    const index = e.currentTarget.getAttribute('data-index');
+    const zipName =  this.data[index].zipname;
+    await window.retrofireAPI.executeMAME({ zipName: zipName });
+  }
+
+  async onClick(e) {
+    //console.log(e);
+  }
+
+  async onFocus(e) { // 行でイベント発生
+
+    // 直前まで選択されていたものの処理
+    if (e.relatedTarget) {
+      // 選択中クラス外す
+      e.relatedTarget.classList.remove('m-fujList__listItem--selected');
+    }
+    e.target.classList.add('m-fujList__listItem--selected');
+    this.itemIndex = e.target.getAttribute('data-index');
+    
+  }
+
+  async onBlur(e) { // 行でイベント発生
+  }
+
   // 項目数変更
   changeItemCount(newItemCount) {
     // ステージの高さ設定
     const newHeight = (newItemCount) * this.rowHeight;
-    if (this.main.scrollTop + this.main.offsetHeight > newHeight) {
+    if (this.list.scrollTop + this.list.offsetHeight > newHeight) {
       // ステージが短くなるときはすぐスクロールさせる
-      this.main.scrollTop = newHeight;
+      this.list.scrollTop = newHeight;
     }
     this.ul.style.height = newHeight+"px";
+    
+    // 空のときは未選択にする
+    if (newItemCount == 0) {
+      this.itemIndex = -1;
+    }
   }
 
   // スクロール時の処理
   handleScroll() {
-/*    const scrollY = this.main.scrollTop;
-    const position = Math.floor(scrollY / this.rowHeight) * this.rowHeight;
-    if (this.prevPosition != position) {
-      // 要素ずらす
-      this.ul.style.paddingTop = position + 'px';
-      this.prevPosition = position;
-      // 表示内容更新
-      this.updateDisplay();
-    }
-    */
-
-    const start = Math.floor(this.main.scrollTop / this.rowHeight);
+    const start = Math.floor(this.list.scrollTop / this.rowHeight);
     const end = start + this.ul.childElementCount;
+
     for (let i=start; i<end; i++) {
       const domIndex = i % this.ul.childElementCount;
       const oldTop = this.ul.children[domIndex].style.top;
       const newTop =  i * this.rowHeight + 'px';
 
       if (oldTop != newTop) {
+        
         // DOM移動
         this.ul.children[domIndex].style.top = newTop;
         this.ul.children[domIndex].setAttribute('data-index',i);
+
+        
+        // 選択中クラス外す
+        this.ul.children[domIndex].classList.remove('m-fujList__listItem--selected');
+        this.ul.children[domIndex].setAttribute('selected', false);
+
+        // フォーカス外す
+        this.ul.children[domIndex].blur();
+
 
         // 表示内容更新
         if (this.data.length > i) {
@@ -278,14 +304,20 @@ class ListView {
             li.children[j].innerText = this.data[i][this.columns[j].data];
           }
         }
+      
+        // フォーカスの処理
+        if (this.ul.children[domIndex].getAttribute('data-index') == this.itemIndex && !this.ul.children[domIndex].hasFocus) {
+          this.ul.children[domIndex].focus();
+        }
       }
+
     }
   }
 
   // 表示項目更新
   updateDisplay(forceUpdate = false) {
     // 表示中項目のインデックスを求める
-    let start = Math.floor(this.main.scrollTop / this.rowHeight);
+    let start = Math.floor(this.list.scrollTop / this.rowHeight);
     let end = start + this.ul.childElementCount;
     if (end > this.data.length) end = this.data.length;
 
@@ -295,18 +327,18 @@ class ListView {
       if (forceUpdate || this.ul.children[n].dataIndex != i) {
         const li = this.ul.children[n];
 
-        //if (li.getAttribute('data-index') != i) {
-        //  li.setAttribute('data-index', i);
+        if (forceUpdate || li.getAttribute('data-index') != i) {
+          li.setAttribute('data-index', i);
           for (let j=0; j<li.childElementCount; j++) {
             li.children[j].innerText = this.data[li.getAttribute('data-index')][this.columns[j].data];
           }
-        //}
+        }
       }
       n++;
     }
   }
 
-  // 項目にデータを当てはめる
+  // データを入れ替え
   updateList(newData = []) {
     this.data = newData;
     this.changeItemCount(this.data.length);

@@ -313,10 +313,12 @@ template {
 
 :root {
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
-  --cl-text--highlight: #000;
-  --cl-text--main: #000;
+  --cl-text--highlight: #222;
+  --cl-text--main: #222;
   --cl-text--weak: #666;
-  --cl-bg--hover: #DEF7FF;
+  --cl-active: #c2f1ff;
+  --cl-active--sub: #def7ff;
+  --cl-disactive: #eee;
 }
 
 html {
@@ -397,12 +399,15 @@ textarea.debug {
   font-size: 12px;
   line-height: 20px;
   background-color: #fff;
-}
-.m-fujList:focus-within {
-  box-shadow: 0px 0px 0px 2px var(--cl-bg--hover) inset;
+  overflow: auto;
+  position: relative;
 }
 .m-fujList__header {
   display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #fff;
 }
 .m-fujList__headerItem {
   box-sizing: border-box;
@@ -414,7 +419,7 @@ textarea.debug {
   display: flex;
 }
 .m-fujList__headerItem:hover {
-  background-color: var(--cl-bg--hover);
+  background-color: var(--cl-active-sub);
 }
 .m-fujList__headerText {
   padding: 7px 7px 7px 7px;
@@ -432,7 +437,7 @@ textarea.debug {
 }
 .m-fujList__main {
   flex-grow: 1;
-  overflow: auto;
+  z-index: 0;
 }
 .m-fujList__list {
   list-style: none;
@@ -454,11 +459,14 @@ textarea.debug {
      -moz-user-select: none;
           user-select: none;
 }
-.m-fujList__listItem:hover {
-  background-color: rgb(222, 247, 255);
-}
 .m-fujList__listItem:focus {
-  background-color: rgb(194, 241, 255);
+  background-color: var(--cl-active--sub);
+}
+.m-fujList__listItem--selected {
+  background-color: var(--cl-disactive);
+}
+.m-fujList__listItem:hover {
+  background-color: var(--cl-active);
 }
 .m-fujList__listItemCell {
   white-space: nowrap;
