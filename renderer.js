@@ -301,13 +301,15 @@ class ListView {
         if (this.data.length > i) {
           const li = this.ul.children[domIndex];
           for (let j=0; j<li.childElementCount; j++) {
-            li.children[j].innerText = this.data[i][this.columns[j].data];
+            const text = this.data[li.getAttribute('data-index')][this.columns[j].data];
+            li.children[j].innerText = text ? text : '';
           }
         }
       
-        // フォーカスの処理
+        // フォーカスの復旧
         if (this.ul.children[domIndex].getAttribute('data-index') == this.itemIndex && !this.ul.children[domIndex].hasFocus) {
           this.ul.children[domIndex].focus();
+          this.ul.children[domIndex].classList.add('m-fujList__listItem--selected');
         }
       }
 
@@ -330,7 +332,8 @@ class ListView {
         if (forceUpdate || li.getAttribute('data-index') != i) {
           li.setAttribute('data-index', i);
           for (let j=0; j<li.childElementCount; j++) {
-            li.children[j].innerText = this.data[li.getAttribute('data-index')][this.columns[j].data];
+            const text = this.data[li.getAttribute('data-index')][this.columns[j].data];
+            li.children[j].innerText = text ? text : '';
           }
         }
       }

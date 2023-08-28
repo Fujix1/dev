@@ -316,9 +316,9 @@ template {
   --cl-text--highlight: #222;
   --cl-text--main: #222;
   --cl-text--weak: #666;
-  --cl-active: #c2f1ff;
-  --cl-active--sub: #def7ff;
-  --cl-disactive: #eee;
+  --cl-active: #def7ff;
+  --cl-active--sub: #c2f1ff;
+  --cl-disactive: #e3e3e3;
 }
 
 html {
