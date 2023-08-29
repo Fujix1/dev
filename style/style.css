@@ -403,6 +403,7 @@ textarea.debug {
   background-color: #fff;
   overflow: auto;
   position: relative;
+  width: 100%;
 }
 .m-fujList__header {
   display: flex;
@@ -422,7 +423,7 @@ textarea.debug {
   position: relative;
 }
 .m-fujList__headerItem:hover {
-  background-color: var(--cl-active-sub);
+  background-color: var(--cl-active--sub);
 }
 .m-fujList__headerText {
   padding: 7px 7px 7px 7px;
@@ -451,7 +452,6 @@ textarea.debug {
   position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   box-sizing: border-box;
 }
 .m-fujList__listItem {
@@ -459,7 +459,6 @@ textarea.debug {
   position: absolute;
   text-decoration: none;
   color: inherit;
-  width: 100%;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
@@ -472,6 +471,9 @@ textarea.debug {
 }
 .m-fujList__listItem:hover {
   background-color: var(--cl-active);
+}
+.is-dragging .m-fujList__listItem:hover {
+  background-color: inherit;
 }
 .m-fujList__listItemCell {
   white-space: nowrap;

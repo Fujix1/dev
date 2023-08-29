@@ -140,33 +140,40 @@ class ListView {
       headerSplitter.className = 'm-fujList__headerSplitter';
       headerSplitter.setAttribute('col-index', n);
 
-      // ヘッダサイズ ドラッグ＆ドロップ
+      /// ヘッダサイズ ドラッグ＆ドロップ
+      let dragStart = {};
+      let draggingColumnIndex;
+      let startWidth;
+
+      // ドラッグ中処理
+      const mouseMoveHandler = e => {
+        document.body.style.cursor = 'col-resize';
+        const delta = {x: e.pageX - dragStart.x, y: e.pageY - dragStart.y};
+
+        // 埋め込み変数更新
+        const newWidth = startWidth + delta.x;
+        if (newWidth>14) {
+          this.columns[draggingColumnIndex].width = startWidth + delta.x; 
+          root.style.setProperty("--listiview-" + slug + "-col-"+ draggingColumnIndex +"-width", startWidth + delta.x +"px");
+        }
+      }
+
+      const mouseUpHandler = e => {
+        document.body.style.cursor = '';
+        this.list.classList.remove('is-dragging');
+        console.log('dragged');
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        window.removeEventListener('mouseup', mouseUpHandler);
+      }
+
+      // ドラッグ開始
       headerSplitter.addEventListener('mousedown', e=>{ 
-
-        const dragStart = {x: e.pageX, y: e.pageY}; // 開始位置
-        const draggingColumnIndex = e.target.getAttribute('col-index'); // ドラッグ中のカラムインデックス
-        const startWidth = this.columns[draggingColumnIndex].width; // 開始の幅
-        
-        const mouseMoveHandler = (e)=>{
-          document.body.style.cursor = 'col-resize';
-          const delta = {x: e.pageX - dragStart.x,
-                         y: e.pageY - dragStart.y};
-          // 変数埋め込み
-          const newWidth = startWidth + delta.x;
-          if (newWidth>14) {
-            this.columns[draggingColumnIndex].width = startWidth + delta.x; 
-            root.style.setProperty("--listiview-" + slug + "-col-"+ draggingColumnIndex +"-width", startWidth + delta.x +"px");
-          }
-        }
-
+        this.list.classList.add('is-dragging');
+        dragStart = {x: e.pageX, y: e.pageY}; // 開始位置
+        draggingColumnIndex = e.target.getAttribute('col-index'); // ドラッグ中のカラムインデックス
+        startWidth = this.columns[draggingColumnIndex].width; // 開始の幅
         document.addEventListener('mousemove', mouseMoveHandler);
-
-        const mouseUpHandler = (e)=> {
-          document.body.style.cursor = '';
-          console.log('dragged');
-          document.removeEventListener('mousemove', mouseMoveHandler);
-        }
-        headerSplitter.addEventListener('mouseup', mouseUpHandler);
+        window.addEventListener('mouseup', mouseUpHandler);
       });
 
       headerSplitter.addEventListener('dragstart', e => false);
