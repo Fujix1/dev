@@ -160,20 +160,18 @@ class ListView {
         }
 
         document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', e=> {
-          document.body.style.cursor = '';
-          console.log('dragged')
-          document.removeEventListener('mousemove', mouseMoveHandler);
-        });
 
-       });
-      headerSplitter.addEventListener('mouseup', e=>{
+        const mouseUpHandler = (e)=> {
+          document.body.style.cursor = '';
+          console.log('dragged');
+          document.removeEventListener('mousemove', mouseMoveHandler);
+        }
+        headerSplitter.addEventListener('mouseup', mouseUpHandler);
       });
+
       headerSplitter.addEventListener('dragstart', e => false);
-      
 
       headerItem.appendChild(headerSplitter);
-
       columnHeader.appendChild(headerItem);
       
       n++;
