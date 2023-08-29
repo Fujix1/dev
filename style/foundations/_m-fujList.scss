@@ -24,6 +24,7 @@
     flex-shrink: 0;
     user-select: none;
     display: flex;
+    position: relative;
     &:hover {
       background-color: var(--cl-active-sub);
     }
@@ -34,6 +35,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    z-index: 0;
   }
   &__headerSplitter {
     width: 5px;
@@ -41,6 +43,7 @@
     flex-shrink: 0;
     cursor: col-resize;
     border-right: 1px solid #eee;
+    z-index: 1;
   }
   &__main {
     flex-grow: 1;

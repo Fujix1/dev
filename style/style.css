@@ -312,6 +312,7 @@ template {
 }
 
 :root {
+  --ff-base: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
   --cl-text--highlight: #222;
   --cl-text--main: #222;
@@ -331,6 +332,7 @@ body {
   width: 100%;
   height: 100%;
   max-width: 100%;
+  font-family: var(--ff-base);
 }
 
 textarea {
@@ -417,6 +419,7 @@ textarea.debug {
      -moz-user-select: none;
           user-select: none;
   display: flex;
+  position: relative;
 }
 .m-fujList__headerItem:hover {
   background-color: var(--cl-active-sub);
@@ -427,6 +430,7 @@ textarea.debug {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  z-index: 0;
 }
 .m-fujList__headerSplitter {
   width: 5px;
@@ -434,6 +438,7 @@ textarea.debug {
   flex-shrink: 0;
   cursor: col-resize;
   border-right: 1px solid #eee;
+  z-index: 1;
 }
 .m-fujList__main {
   flex-grow: 1;

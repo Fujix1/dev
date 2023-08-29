@@ -112,6 +112,7 @@ class ListView {
     // DOM構成
     this.list = document.querySelector(target);
     this.list.classList.add('m-fujList');
+    this.list.classList.add('m-fujList__slug--'+this.slug);
     
     // ヘッダ追加
     const columnHeader = document.createElement('header');
@@ -125,7 +126,7 @@ class ListView {
       // 要素追加
       const headerItem = document.createElement('div');
       headerItem.className = 'm-fujList__headerItem';
-      headerItem.setAttribute('colindex', n);
+      headerItem.setAttribute('col-index', n);
       headerItem.setAttribute('data', item.data);
       headerItem.setAttribute('orderby', item.orderby);
       headerItem.style.width = "var(--listiview-" + slug + "-col-"+n+"-width)";
@@ -137,7 +138,40 @@ class ListView {
       
       const headerSplitter = document.createElement('div');
       headerSplitter.className = 'm-fujList__headerSplitter';
-      headerSplitter.setAttribute('colindex', n);
+      headerSplitter.setAttribute('col-index', n);
+
+      // ヘッダサイズ ドラッグ＆ドロップ
+      headerSplitter.addEventListener('mousedown', e=>{ 
+
+        const dragStart = {x: e.pageX, y: e.pageY}; // 開始位置
+        const draggingColumnIndex = e.target.getAttribute('col-index'); // ドラッグ中のカラムインデックス
+        const startWidth = this.columns[draggingColumnIndex].width; // 開始の幅
+        
+        const mouseMoveHandler = (e)=>{
+          document.body.style.cursor = 'col-resize';
+          const delta = {x: e.pageX - dragStart.x,
+                         y: e.pageY - dragStart.y};
+          // 変数埋め込み
+          const newWidth = startWidth + delta.x;
+          if (newWidth>14) {
+            this.columns[draggingColumnIndex].width = startWidth + delta.x; 
+            root.style.setProperty("--listiview-" + slug + "-col-"+ draggingColumnIndex +"-width", startWidth + delta.x +"px");
+          }
+        }
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', e=> {
+          document.body.style.cursor = '';
+          console.log('dragged')
+          document.removeEventListener('mousemove', mouseMoveHandler);
+        });
+
+       });
+      headerSplitter.addEventListener('mouseup', e=>{
+      });
+      headerSplitter.addEventListener('dragstart', e => false);
+      
+
       headerItem.appendChild(headerSplitter);
 
       columnHeader.appendChild(headerItem);
@@ -221,7 +255,7 @@ class ListView {
         li.addEventListener('dblclick', async e=>await this.onDubleClick(e)); 
         li.addEventListener('click', async e=>await this.onClick(e));
         li.addEventListener('focus', async e=>await this.onFocus(e));
-        li.addEventListener('blur', e=>{console.log('blur')});
+        li.addEventListener('blur', e=>{});
         
       }
     } else if (numDOMs > neededRows) {
@@ -244,13 +278,22 @@ class ListView {
   async onFocus(e) { // 行でイベント発生
 
     // 直前まで選択されていたものの処理
-    if (e.relatedTarget) {
-      // 選択中クラス外す
-      e.relatedTarget.classList.remove('m-fujList__listItem--selected');
+    // e.relatedTarget は取りこぼしがある
+    const previousSelected = document.querySelector('.m-fujList__slug--'+this.slug + ' .m-fujList__listItem--selected');
+
+    // 同じものが選択されていたら何もしない
+    if (this.itemIndex == e.target.getAttribute('data-index')) {
+      return;
     }
+
+    // 選択中クラス外す
+    if (previousSelected !== null) {
+      previousSelected.classList.remove('m-fujList__listItem--selected');
+    }
+    // 新しい選択肢
     e.target.classList.add('m-fujList__listItem--selected');
     this.itemIndex = e.target.getAttribute('data-index');
-    
+    console.log('itemIndex = ', this.itemIndex);
   }
 
   async onBlur(e) { // 行でイベント発生
