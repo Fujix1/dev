@@ -2,11 +2,16 @@
   --ff-base: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro', san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
 
-  --cl-text--highlight: #222;
+  --cl-text--highlight: #bbb; //#222;
   --cl-text--main: #222;
-  --cl-text--weak: #666;
+  --cl-text--weak: #a7a7a7; //#666;
 
-  --cl-active: #def7ff;
-  --cl-active--sub: #c2f1ff;
-  --cl-disactive: #e3e3e3;
+  --cl-active: rgb(0, 129, 172);//#def7ff;
+  --cl-active--sub: #3f6074; //#c2f1ff;
+  --cl-disactive: #444;// #e3e3e3;
+
+  --cl-listheaderbg : #41444c;
+  --cl-listheadertext: #aab0c3;
+  --cl-listbg : #26282f;
+  --cl-listborder: #4e5458;
 }

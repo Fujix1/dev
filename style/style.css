@@ -314,12 +314,16 @@ template {
 :root {
   --ff-base: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
-  --cl-text--highlight: #222;
+  --cl-text--highlight: #bbb;
   --cl-text--main: #222;
-  --cl-text--weak: #666;
-  --cl-active: #def7ff;
-  --cl-active--sub: #c2f1ff;
-  --cl-disactive: #e3e3e3;
+  --cl-text--weak: #a7a7a7;
+  --cl-active: rgb(0, 129, 172);
+  --cl-active--sub: #3f6074;
+  --cl-disactive: #444;
+  --cl-listheaderbg: #41444c;
+  --cl-listheadertext: #aab0c3;
+  --cl-listbg: #26282f;
+  --cl-listborder: #4e5458;
 }
 
 html {
@@ -353,11 +357,11 @@ textarea.debug {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: rgba(136, 136, 136, 0.05);
+  background-color: #393b3b;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #bbb;
+  background-color: #7a8083;
   border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -400,7 +404,7 @@ textarea.debug {
   font-family: "Helvetica", "Helvetica Neue", "Helvetica Pro", "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
   font-size: 12px;
   line-height: 20px;
-  background-color: #fff;
+  background-color: var(--cl-listbg);
   overflow: auto;
   position: relative;
   width: 100%;
@@ -410,7 +414,7 @@ textarea.debug {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: #fff;
+  background-color: var(--cl-listbg);
 }
 .m-fujList__headerItem {
   box-sizing: border-box;
@@ -421,9 +425,34 @@ textarea.debug {
           user-select: none;
   display: flex;
   position: relative;
+  background-color: var(--cl-listheaderbg);
+  color: var(--cl-listheadertext);
+  border-bottom: 1px solid deepskyblue;
+  position: relative;
 }
-.m-fujList__headerItem:hover {
-  background-color: var(--cl-active--sub);
+.m-fujList__headerItem.is-resizing, .m-fujList__headerItem.is-dragging, .m-fujList__headerItem:hover {
+  background-color: var(--cl-active);
+  color: #fff;
+}
+.m-fujList__headerItem.is-dragging {
+  opacity: 0.8;
+  z-index: 1;
+}
+.m-fujList__headerItem.is-hovered-left:after, .m-fujList__headerItem.is-hovered-right:after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 3px;
+  height: 100%;
+  top: 0;
+  background-color: deepskyblue;
+  z-index: 1;
+}
+.m-fujList__headerItem.is-hovered-left:after {
+  left: -2px;
+}
+.m-fujList__headerItem.is-hovered-right:after {
+  right: -1px;
 }
 .m-fujList__headerText {
   padding: 7px 7px 7px 7px;
@@ -438,7 +467,7 @@ textarea.debug {
   flex-grow: 0;
   flex-shrink: 0;
   cursor: col-resize;
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--cl-listborder);
   z-index: 1;
 }
 .m-fujList__main {
@@ -453,6 +482,7 @@ textarea.debug {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .m-fujList__listItem {
   display: flex;
@@ -472,14 +502,17 @@ textarea.debug {
 .m-fujList__listItem:hover {
   background-color: var(--cl-active);
 }
-.is-dragging .m-fujList__listItem:hover {
-  background-color: inherit;
+.m-fujList__listItem:hover > div {
+  color: #eee;
+}
+.is-header-resizing .m-fujList__listItem, .is-header-dragging .m-fujList__listItem {
+  pointer-events: none;
 }
 .m-fujList__listItemCell {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-right: 1px solid #fff;
+  border-right: 1px solid var(--cl-listborder);
   padding-left: 5px;
   padding-right: 5px;
   flex-shrink: 0;

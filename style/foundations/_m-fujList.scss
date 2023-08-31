@@ -4,7 +4,7 @@
   font-family: 'Helvetica', 'Helvetica Neue', 'Helvetica Pro', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
   font-size: 12px;
   line-height: 20px;
-  background-color: #fff;
+  background-color: var(--cl-listbg);
   overflow: auto;
   position: relative;
   width: 100%;
@@ -12,12 +12,13 @@
   &:focus-within {
     //box-shadow: 0px 0px 0px 2px var(--cl-active-sub) inset;
   }
+
   &__header {
     display: flex;
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: #fff;
+    background-color: var(--cl-listbg );
   }
   &__headerItem {
     box-sizing: border-box;
@@ -26,11 +27,39 @@
     user-select: none;
     display: flex;
     position: relative;
+    background-color: var(--cl-listheaderbg);
+    color: var(--cl-listheadertext);
+    border-bottom: 1px solid deepskyblue;
+    position: relative;
+    &.is-resizing,
+    &.is-dragging,
     &:hover {
-      background-color: var(--cl-active--sub);
+      background-color: var(--cl-active);
+      color: #fff;
     }
+    &.is-dragging {
+      opacity: .8;
+      z-index: 1;
+    }
+    &.is-hovered-left:after,
+    &.is-hovered-right:after  {
+      content:'';
+      position: absolute;
+      display: block;
+      width: 3px;
+      height: 100%;
+      top: 0;
+      background-color: deepskyblue;
+      z-index: 1;
+    }
+    &.is-hovered-left:after {
+      left: -2px;
+    }
+    &.is-hovered-right:after  {
+      right: -1px;
+    }
+    
   }
-
   &__headerText {
     padding: 7px 7px 7px 7px;
     flex-grow: 1;
@@ -44,7 +73,7 @@
     flex-grow: 0;
     flex-shrink: 0;
     cursor: col-resize;
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--cl-listborder);
     z-index: 1;
   }
   &__main {
@@ -59,6 +88,7 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow: hidden;
   }
   &__listItem {
     display: flex;
@@ -77,16 +107,20 @@
     }
     &:hover {
       background-color: var(--cl-active);
+      &>div {
+        color: #eee;
+      }
     }
   }
-  .is-dragging &__listItem:hover {
-      background-color: inherit;
+  .is-header-resizing &__listItem,
+  .is-header-dragging &__listItem  { // カラムドラッグ中は反応させない
+    pointer-events: none;
   }
   &__listItemCell {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-right: 1px solid #fff;
+    border-right: 1px solid var(--cl-listborder);
     padding-left: 5px;
     padding-right: 5px;
     flex-shrink: 0;
