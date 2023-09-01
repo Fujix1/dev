@@ -45,12 +45,12 @@ function onLoad() {
   document.querySelector('#btn-add').addEventListener('click', async()=>{
     
     listViewMain = new ListView('.list-view', 
-      [{label:'ゲーム名', data: "desc", order: 0, width: 380},
-       {label:'ZIP名', data: "zipname", order: 1, width: 100},
-       {label:'メーカー', data: "maker", order: 2, width: 150},
-       {label:'年度', data: "year", order: 3, width: 60},
-       {label:'マスタ', data: "cloneof", order: 4, width: 100},
-       {label:'ドライバ', data: "source", order: 5, width: 180}],
+      [{label:'ゲーム名', data: "desc", order: 4, width: 380},
+       {label:'ZIP名', data: "zipname", order: 3, width: 100},
+       {label:'メーカー', data: "maker", order:5, width: 150},
+       {label:'年度', data: "year", order: 1, width: 60},
+       {label:'マスタ', data: "cloneof", order: 0, width: 100},
+       {label:'ドライバ', data: "source", order: 2, width: 180}],
        'main'
       );
 
@@ -139,8 +139,8 @@ class ListView {
       headerItem.setAttribute('col-index', n);
       headerItem.setAttribute('data', item.data);
       headerItem.setAttribute('orderby', item.orderby);
-      headerItem.style.width = "var(--listiview-" + slug + "-col-"+n+"-width)";
-      headerItem.style.order = "var(--listiview-" + slug + "-col-"+n+"-order)";
+      headerItem.style.width = "var(--listiview-" + this.slug + "-col-"+n+"-width)";
+      headerItem.style.order = "var(--listiview-" + this.slug + "-col-"+n+"-order)";
 
       const headerText = document.createElement('span');
       headerText.className = 'm-fujList__headerText';
@@ -169,7 +169,7 @@ class ListView {
         const newWidth = startWidth + delta.x;
         if (newWidth>14) {
           this.columns[resizingColumnIndex].width = startWidth + delta.x; 
-          root.style.setProperty("--listiview-" + slug + "-col-"+ resizingColumnIndex +"-width", startWidth + delta.x +"px");
+          root.style.setProperty("--listiview-" + this.slug + "-col-"+ resizingColumnIndex +"-width", startWidth + delta.x +"px");
         }
 
         // ラッパーの幅更新
@@ -213,11 +213,12 @@ class ListView {
       columnHeader.appendChild(headerItem);
 
       /// -------------------------------------------------------------------------
-      /// ヘッダカラム ドラッグ＆ドロップ
+      /// ヘッダカラム移動 ドラッグ＆ドロップ
       let draggingColumnIndex;
       let dragStart = {};
       let draggingItem;
       let hoverOnIndex = -1;
+      let direction = '';
 
       // ドラッグ中処理
       const dragMouseMoveHandler = e => {
@@ -236,6 +237,7 @@ class ListView {
             this.header.children[j].classList.remove('is-hovered-right');
           }
           if (i==draggingColumnIndex) {
+            direction = "";
             continue;
           }
           const targetRect = this.header.children[i].getBoundingClientRect();
@@ -243,9 +245,11 @@ class ListView {
             if (targetRect.right <= dragStart.x) { // 左向き
               this.header.children[i].classList.add('is-hovered-left');
               hoverOnIndex = i;
+              direction = "left";
             } else {
               this.header.children[i].classList.add('is-hovered-right');
               hoverOnIndex = i;
+              direction = "right";
             }
             break;
           }
@@ -254,46 +258,54 @@ class ListView {
 
       // ドラッグ完了
       const dragMouseUpHandler = e => {
-        console.log('dragged', hoverOnIndex)
+        console.log('dragged. from',  draggingColumnIndex, 'to',hoverOnIndex, "direction", direction)
+
+        // 一時クラス削除
         this.list.classList.remove('is-header-dragging');
         Array.from(this.header.children).forEach( item=>item.classList.remove('is-dragging'));
+
+        // イベント削除
         document.removeEventListener('mousemove', dragMouseMoveHandler);
         window.removeEventListener('mouseup', dragMouseUpHandler);
 
-        // 既存の order
-        const order = [];
-        this.columns.forEach(item=>{
-          order.push(item.order);
-        });
-
-        // 要素移動
-        moveArrayElement(order, parseInt(draggingColumnIndex), hoverOnIndex);
-        for (let i=0; i<this.columns.length; i++) {
-          this.columns[i].order = order[i];
-          // 変数埋め直し
-          root.style.setProperty("--listiview-" + this.slug + "-col-"+i+"-order", order[i]);
-        }
+        // from の元カラムインデックス
+        const fromIndex = this.columns[draggingColumnIndex].order;
         
         // 
         if (hoverOnIndex != -1) {
           this.header.children[hoverOnIndex].classList.remove('is-hovered-left');
           this.header.children[hoverOnIndex].classList.remove('is-hovered-right');
-        } else {
+          
+          // to の元カラムインデックス
+          const toIndex = this.columns[hoverOnIndex].order;
+
+          // 並び替え
+          const order = [];
+          for (let i=0; i<this.columns.length; i++) {
+            order[this.columns[i].order] = i;
+          }
+          array_move(order, fromIndex, toIndex);
+          for (let i=0; i<order.length; i++) {
+            this.columns[order[i]].order = i;
+            // 変数埋め直し
+            root.style.setProperty("--listiview-" + this.slug + "-col-"+order[i]+"-order", i);
+          }
         }
+
         draggingItem.style.left = '';
         hoverOnIndex = -1;
 
         // 配列要素移動
-        function moveArrayElement(array, from, to) {
-          if (from === to || from > array.length -1 || to > array.length - 1) { return array; }
-          const value = array[from];
-          const tail = array.slice(from + 1);
-          array.splice(from);
-          Array.prototype.push.apply(array, tail);
-          array.splice(to, 0, value);
-          return array;
+        function array_move(arr, old_index, new_index) {
+          if (new_index >= arr.length) {
+            var k = new_index - arr.length + 1;
+            while (k--) {
+              arr.push(undefined);
+            }
+          }
+          arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+          return arr; // for testing
         }
-
       }
       
       // ドラッグ開始
@@ -384,6 +396,7 @@ class ListView {
           }
         });*/
         for (let j=0; j<this.columns.length; j++) {
+          //console.log(j)
           const div = document.createElement('div');
           div.classList.add('m-fujList__listItemCell');
           if (j == 0) {
@@ -441,11 +454,9 @@ class ListView {
     console.log('itemIndex = ', this.itemIndex);
   }
 
-  async onBlur(e) { // 行でイベント発生
-  }
-
   // 項目数変更
   changeItemCount(newItemCount) {
+
     // ステージの高さ設定
     const newHeight = (newItemCount) * this.rowHeight;
     if (this.list.scrollTop + this.list.offsetHeight > newHeight) {
@@ -462,6 +473,7 @@ class ListView {
 
   // スクロール時の処理
   handleScroll() {
+
     const start = Math.floor(this.list.scrollTop / this.rowHeight);
     const end = start + this.ul.childElementCount;
 
@@ -504,6 +516,7 @@ class ListView {
 
   // 表示項目更新
   updateDisplay(forceUpdate = false) {
+
     // 表示中項目のインデックスを求める
     let start = Math.floor(this.list.scrollTop / this.rowHeight);
     let end = start + this.ul.childElementCount;
