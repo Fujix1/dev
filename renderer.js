@@ -10,7 +10,7 @@ document.getElementById('info2').innerText = window.myApi.hamachi;
 
 // Window Onload ハンドラ
 window.addEventListener('DOMContentLoaded', onLoad);
-function onLoad() {
+async function onLoad() {
 
   // empty the debug output
   document.querySelector('#debug').value = '';
@@ -31,7 +31,6 @@ function onLoad() {
     console.log(result);
   });
 
-
   document.querySelector('#btn-dialog').addEventListener('click', async()=>{
     // メインプロセスを呼び出し
     result = await window.retrofireAPI.dialog('');
@@ -39,21 +38,6 @@ function onLoad() {
       document.querySelector('#openImage').src = 'data:image/png;base64,'+result.img;
     }
     console.log(result);
-
-  });
-
-  document.querySelector('#btn-add').addEventListener('click', async()=>{
-    
-    listViewMain = new ListView('.list-view', 
-      [{label:'ゲーム名', data: "desc", order: 4, width: 380},
-       {label:'ZIP名', data: "zipname", order: 3, width: 100},
-       {label:'メーカー', data: "maker", order:5, width: 150},
-       {label:'年度', data: "year", order: 1, width: 60},
-       {label:'マスタ', data: "cloneof", order: 0, width: 100},
-       {label:'ドライバ', data: "source", order: 2, width: 180}],
-       'main'
-      );
-
   });
 
   document.querySelector('#btn-item1').addEventListener('click', ()=>{
@@ -71,8 +55,7 @@ function onLoad() {
     for (i=0; i<30; i++) {
       data.push('アイテム'+i);
     }
-    listViewMain.updateList(data);
-    console.log(Date.now() - tick);  
+
   });
   document.querySelector('#btn-item3').addEventListener('click', ()=>{
     var tick = Date.now();
@@ -85,13 +68,31 @@ function onLoad() {
     record = JSON.parse(await window.retrofireAPI.getRecord());;
     console.log(Date.now() - tick);
     console.log(record.length);
+    var tick = Date.now();
+    listViewMain.updateList(record);
+    console.log(Date.now() - tick);
   });
-};
+
+
+  // リストビュー初期化
+  listViewMain = new ListView('.list-view', [
+    {label:'ゲーム名', data: "desc", order: 0, width: 380, defaultSort: "asc"},
+    {label:'ZIP名', data: "zipname", order: 1, width: 100, defaultSort: "asc"},
+    {label:'メーカー', data: "maker", order:2, width: 150, defaultSort: "asc"},
+    {label:'年度', data: "year", order: 3, width: 60, defaultSort: "asc"},
+    {label:'マスタ', data: "cloneof", order: 4, width: 100, defaultSort: "asc"},
+    {label:'ドライバ', data: "source", order: 5, width: 180, defaultSort: "asc"}],
+    'main'
+  );
+  await listViewMain.init();
+}
+
+
 
 /**
  * リストビュー用クラス
  *  target: string, // 対象のセレクタ
- *  columns: [{label: string, data: string, width: integer, order: integer}] // カラム
+ *  columns: [{label: string, data: string, width: integer, order: integer, defaultSort: "asc"|"desc"}] // カラム
  *  slug: string, // スラグ
  */
 class ListView {
@@ -109,12 +110,45 @@ class ListView {
     this.columns = columns;
     this.slug = slug;
 
+    //------------------------------------------------------------------------------
     // DOM構成
     this.list = document.querySelector(target);
     this.list.classList.add('m-fujList');
     this.list.classList.add('m-fujList__slug--'+this.slug);
-    
-    
+
+  }
+
+  // 初期化 同期
+  async init() {
+
+    //------------------------------------------------------------------------------
+    // 設定復旧
+
+    // メインカラム
+    const store = await window.retrofireAPI.getStore("listview-"+this.slug+"-columns");
+    if (store.result) {
+      // 整合性チェック
+      let updated = false;
+      if (store.data.length != this.columns.length) { // カラム数が違う
+        updated = true;
+      } else {
+        for (let i=0; i<store.data.length; i++) { 
+          if (Object.keys(store.data[i]).length !== Object.keys(this.columns[i]).length) { // キー数違う
+            updated = true;
+            break;
+          }
+          if (store.data[i].label !== this.columns[i].label || store.data[i].data !== this.columns[i].data) { // ラベルと参照データ違う
+            updated = true;
+            break;
+          }
+        }
+      }
+      if (!updated) this.columns = store.data; else {
+        console.log("メインリストビュー: 設定デフォルト設定復旧");
+        window.retrofireAPI.setStore({key: "listview-"+this.slug+"-columns", val: this.columns});
+      }
+    }
+
     //------------------------------------------------------------------------------
     // ヘッダ追加
     const columnHeader = document.createElement('header');
@@ -127,9 +161,9 @@ class ListView {
     let totalWidth = 0;
     this.columns.forEach(item=>{
       // 変数埋め込み
-      root.style.setProperty("--listiview-" + slug + "-col-"+n+"-width", item.width+"px");
+      root.style.setProperty("--listiview-" + this.slug + "-col-"+n+"-width", item.width+"px");
       if ('order' in item) {
-        root.style.setProperty("--listiview-" + slug + "-col-"+n+"-order", item.order);
+        root.style.setProperty("--listiview-" + this.slug + "-col-"+n+"-order", item.order);
       }
       totalWidth += item.width;
 
@@ -178,7 +212,6 @@ class ListView {
           totalWidth += item.width;
         });
         this.header.style.width = totalWidth + 'px';
-        
       }
 
       // ドラッグ完了
@@ -190,6 +223,9 @@ class ListView {
         console.log('resized');
         document.removeEventListener('mousemove', mouseMoveHandler);
         window.removeEventListener('mouseup', mouseUpHandler);
+
+        // 設定保存
+        window.retrofireAPI.setStore({key: "listview-"+this.slug+"-columns", val: this.columns});
       }
 
       // ドラッグ開始
@@ -271,7 +307,7 @@ class ListView {
         // from の元カラムインデックス
         const fromIndex = this.columns[draggingColumnIndex].order;
         
-        // 
+        // 並び替え処理
         if (hoverOnIndex != -1) {
           this.header.children[hoverOnIndex].classList.remove('is-hovered-left');
           this.header.children[hoverOnIndex].classList.remove('is-hovered-right');
@@ -290,6 +326,9 @@ class ListView {
             // 変数埋め直し
             root.style.setProperty("--listiview-" + this.slug + "-col-"+order[i]+"-order", i);
           }
+          // 設定保存
+          window.retrofireAPI.setStore({key: "listview-"+this.slug+"-columns", val: this.columns});
+
         }
 
         draggingItem.style.left = '';
@@ -319,7 +358,6 @@ class ListView {
         draggingItem = e.target.parentNode;
 
         draggingColumnIndex = e.target.parentNode.getAttribute('col-index'); // ドラッグ中のカラムインデックス
-
 
         this.list.classList.add('is-header-dragging');
         e.target.parentNode.classList.add('is-dragging');
@@ -374,9 +412,10 @@ class ListView {
     });
 
     this.updateItemDoms();
-    this.updateList();
+    this.updateList();    
+    
   }
-  
+
   // 仮想要素の更新
   updateItemDoms() {
     const numDOMs = this.ul.childElementCount; // 現在存在する要素数
@@ -564,6 +603,8 @@ async function sendByApiSoft(zip) {
     softName: 'ys2'
   });
 }
+
+
 
 //------------------------------------
 // メインスレッドから受信

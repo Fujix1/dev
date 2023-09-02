@@ -70,10 +70,12 @@ const createWindow = () => {
   });
 
   // ウィンドウが閉じられる直前に実行
-  mainWindow.on('close', ()=>{
+  mainWindow.on('close', async ()=>{
     store.set('mainWindow.pos', mainWindow.getPosition());  // ウィンドウの座標を記録
     store.set('mainWindow.size', mainWindow.getSize());     // ウィンドウのサイズを記録
-  })
+
+  });
+
 }
 
 /**
@@ -261,4 +263,23 @@ ipcMain.handle('get-record', async(event, data)=>{
  * MAME 起動処理 
  */
 ipcMain.handle('execute-MAME', executeMAME);
+
+/**
+ * Store の値を返す
+ */
+ipcMain.handle('get-store', async (event, data) =>{
+  if (store.has(data)) {
+    return {result: true, data: store.get(data)};
+  } else {
+    return {result: false};
+  }
+});
+
+/**
+ * Store の値を保存
+ */
+ipcMain.handle('set-store', async(event, data) =>{
+  //console.log(data);
+  store.set(data.key, data.val);
+});
 
