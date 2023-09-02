@@ -61,7 +61,7 @@
     
   }
   &__headerText {
-    padding: 7px 7px 7px 7px;
+    padding: 11px 7px 3px 7px;
     flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
@@ -76,6 +76,26 @@
     border-right: 1px solid var(--cl-listborder);
     z-index: 1;
   }
+
+  &__sort:after {
+    font-family: "microns";
+    content: "\e706";
+    display: block;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    height: 1em;
+    line-height: 1em;
+    left: 50%;
+    top: 0px;
+    transform: translateX(-50%);
+    user-select: none;
+    pointer-events: none;
+  }
+  &__sort--desc:after{
+    content: "\e707";
+  }
+
   &__main {
     flex-grow: 1;
     z-index: 0;

@@ -47,10 +47,9 @@ async function onLoad() {
       data.push('項目'+i);
     }
     listViewMain.updateList(data);
-    console.log(Date.now() - tick);  
+    console.log(Date.now() - tick);
   });
   document.querySelector('#btn-item2').addEventListener('click', ()=>{
-    var tick = Date.now();
     let data = [];
     for (i=0; i<30; i++) {
       data.push('アイテム'+i);
@@ -75,15 +74,20 @@ async function onLoad() {
 
 
   // リストビュー初期化
-  listViewMain = new ListView('.list-view', [
-    {label:'ゲーム名', data: "desc", order: 0, width: 380, defaultSort: "asc"},
-    {label:'ZIP名', data: "zipname", order: 1, width: 100, defaultSort: "asc"},
-    {label:'メーカー', data: "maker", order:2, width: 150, defaultSort: "asc"},
-    {label:'年度', data: "year", order: 3, width: 60, defaultSort: "asc"},
-    {label:'マスタ', data: "cloneof", order: 4, width: 100, defaultSort: "asc"},
-    {label:'ドライバ', data: "source", order: 5, width: 180, defaultSort: "asc"}],
-    'main'
-  );
+  listViewMain = new ListView({
+    target: '.list-view',
+    columns: [
+      {label:'ゲーム名', data: "desc", order: 0, width: 380, defaultSort: "asc"},
+      {label:'ZIP名', data: "zipname", order: 1, width: 100, defaultSort: "asc"},
+      {label:'メーカー', data: "maker", order:2, width: 150, defaultSort: "asc"},
+      {label:'年度', data: "year", order: 3, width: 60, defaultSort: "asc"},
+      {label:'マスタ', data: "cloneof", order: 4, width: 100, defaultSort: "asc"},
+      {label:'ドライバ', data: "source", order: 5, width: 180, defaultSort: "asc"}
+    ],
+    slug: 'main',
+    orderByIndex: 1,
+    direction: "asc"
+    });
   await listViewMain.init();
 }
 
@@ -91,14 +95,22 @@ async function onLoad() {
 
 /**
  * リストビュー用クラス
- *  target: string, // 対象のセレクタ
+ * args:
+ *  target:   string,   // 対象のセレクタ
  *  columns: [{label: string, data: string, width: integer, order: integer, defaultSort: "asc"|"desc"}] // カラム
- *  slug: string, // スラグ
+ *  slug:     string,   // スラグ
+ *  orderByIndex:  integer,  // ソート対象の index
+ *  direction: "asc"|"desc", //
  */
 class ListView {
 
   // コンストラクタ
-  constructor(target, columns, slug) {
+  constructor(args) {
+    this.columns = args.columns;
+    this.slug = args.slug;
+    this.orderByIndex = args.orderByIndex;
+    this.direction = args.direction;
+
     this.numItems = 0; // 保持項目数
     this.lastHeight = 0; // リサイズ前のサイズ保持
     this.rowHeight = 0; // 列の高さ
@@ -107,12 +119,9 @@ class ListView {
     this.header; //
     this.main;   //
     this.ul;
-    this.columns = columns;
-    this.slug = slug;
-
     //------------------------------------------------------------------------------
     // DOM構成
-    this.list = document.querySelector(target);
+    this.list = document.querySelector(args.target);
     this.list.classList.add('m-fujList');
     this.list.classList.add('m-fujList__slug--'+this.slug);
 
@@ -156,6 +165,7 @@ class ListView {
     columnHeader.className = 'm-fujList__header';
     let n = 0;
     const root = document.querySelector(':root');
+    let columnWasDragged = false;
   
     // ヘッダカラム追加
     let totalWidth = 0;
@@ -172,7 +182,6 @@ class ListView {
       headerItem.className = 'm-fujList__headerItem';
       headerItem.setAttribute('col-index', n);
       headerItem.setAttribute('data', item.data);
-      headerItem.setAttribute('orderby', item.orderby);
       headerItem.style.width = "var(--listiview-" + this.slug + "-col-"+n+"-width)";
       headerItem.style.order = "var(--listiview-" + this.slug + "-col-"+n+"-order)";
 
@@ -186,6 +195,27 @@ class ListView {
       headerSplitter.setAttribute('col-index', n);
 
       /// -------------------------------------------------------------------------
+      /// ヘッダカラムクリック
+      headerItem.addEventListener('click', e=>{
+        // ドラッグされたときはキャンセル
+        if (columnWasDragged) {
+          e.preventDefault();
+          return;
+        }
+        const clickedIndex = e.currentTarget.getAttribute('col-index');
+        let newOrderByIndex, newDirection;
+        newOrderByIndex = clickedIndex;
+
+        if (this.orderByIndex == clickedIndex) {
+          newDirection = (this.direction=='asc')?'desc':'asc';
+        } else {
+          newDirection = this.columns[clickedIndex].defaultSort;
+        }
+        this.sort(newOrderByIndex, newDirection);
+
+      });
+
+      /// -------------------------------------------------------------------------
       /// ヘッダカラムリサイズ ドラッグ＆ドロップ
       let resizeStart = {};
       let resizingColumnIndex;
@@ -195,13 +225,13 @@ class ListView {
       const mouseMoveHandler = e => {
         document.body.style.cursor = 'col-resize';
         const delta = {x: e.pageX - resizeStart.x, y: e.pageY - resizeStart.y};
-
+        
         // 親要素のスクロールXを考慮
         delta.x += this.list.scrollLeft;
 
         // 埋め込み変数更新
         const newWidth = startWidth + delta.x;
-        if (newWidth>14) {
+        if (newWidth>=20) {
           this.columns[resizingColumnIndex].width = startWidth + delta.x; 
           root.style.setProperty("--listiview-" + this.slug + "-col-"+ resizingColumnIndex +"-width", startWidth + delta.x +"px");
         }
@@ -255,6 +285,7 @@ class ListView {
       let draggingItem;
       let hoverOnIndex = -1;
       let direction = '';
+      const DRAGTHRESHOLD = 5; // ドラッグ判定する移動量
 
       // ドラッグ中処理
       const dragMouseMoveHandler = e => {
@@ -262,6 +293,14 @@ class ListView {
         // 親要素のスクロールXを考慮
         delta.x += this.list.scrollLeft;
 
+        // 閾値以上動いたら ドラッグされた
+        if (Math.abs(delta.x) > DRAGTHRESHOLD) {
+          columnWasDragged = true;
+        } else {
+          columnWasDragged = false;
+          return;
+        }
+        
         // ドラッグ移動
         draggingItem.style.left = delta.x + 'px';
         
@@ -349,7 +388,7 @@ class ListView {
       
       // ドラッグ開始
       headerText.addEventListener('mousedown', e=>{
-        console.log('mousedown');
+        columnWasDragged = false; // ドラッグ済みリセット
 
         dragStart = {x: e.pageX, y: e.pageY}; // 開始位置
         // 親要素のスクロールXを考慮
@@ -364,7 +403,6 @@ class ListView {
         document.addEventListener('mousemove', dragMouseMoveHandler);
         window.addEventListener('mouseup', dragMouseUpHandler);
       });
-
 
       n++;
     });
@@ -412,7 +450,8 @@ class ListView {
     });
 
     this.updateItemDoms();
-    this.updateList();    
+    this.sort(this.orderByIndex, this.direction);
+    this.updateList();
     
   }
 
@@ -585,6 +624,33 @@ class ListView {
     this.changeItemCount(this.data.length);
     this.handleScroll();
     this.updateDisplay(true);
+  }
+
+  // ソート
+  sort(orderByIndex, direction) {
+
+    // クラスリセット
+    if (this.orderByIndex != orderByIndex) {
+      this.header.childNodes[this.orderByIndex].classList.remove('m-fujList__sort');
+      this.header.childNodes[this.orderByIndex].classList.remove('m-fujList__sort--asc');
+      this.header.childNodes[this.orderByIndex].classList.remove('m-fujList__sort--desc');
+    }
+    
+    // クラス追加
+    this.orderByIndex = orderByIndex;
+    this.direction = direction;
+    this.header.childNodes[this.orderByIndex].classList.add('m-fujList__sort');
+    if (this.direction=="asc") {
+      this.header.childNodes[this.orderByIndex].classList.add('m-fujList__sort--asc');
+      this.header.childNodes[this.orderByIndex].classList.remove('m-fujList__sort--desc');
+    } else {
+      this.header.childNodes[this.orderByIndex].classList.add('m-fujList__sort--desc');
+      this.header.childNodes[this.orderByIndex].classList.remove('m-fujList__sort--asc');
+    }
+
+    this.orderByIndex = orderByIndex;
+    this.direction = direction;
+
   }
 }
 
