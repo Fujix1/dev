@@ -1148,7 +1148,7 @@ textarea.debug {
   border-right: 1px solid var(--cl-listborder);
   z-index: 1;
 }
-.m-fujList__sort:after {
+.m-fujList__sort:before {
   font-family: "microns";
   content: "\e706";
   display: block;
@@ -1165,7 +1165,7 @@ textarea.debug {
           user-select: none;
   pointer-events: none;
 }
-.m-fujList__sort--desc:after {
+.m-fujList__sort--desc:before {
   content: "\e707";
 }
 .m-fujList__main {

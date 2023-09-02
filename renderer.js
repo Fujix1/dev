@@ -284,8 +284,7 @@ class ListView {
       let dragStart = {};
       let draggingItem;
       let hoverOnIndex = -1;
-      let direction = '';
-      const DRAGTHRESHOLD = 5; // ドラッグ判定する移動量
+      const DRAGTHRESHOLD = 3; // ドラッグ判定する移動量
 
       // ドラッグ中処理
       const dragMouseMoveHandler = e => {
@@ -298,6 +297,7 @@ class ListView {
           columnWasDragged = true;
         } else {
           columnWasDragged = false;
+          draggingItem.style.left = '0px';
           return;
         }
         
@@ -312,7 +312,6 @@ class ListView {
             this.header.children[j].classList.remove('is-hovered-right');
           }
           if (i==draggingColumnIndex) {
-            direction = "";
             continue;
           }
           const targetRect = this.header.children[i].getBoundingClientRect();
@@ -320,11 +319,9 @@ class ListView {
             if (targetRect.right <= dragStart.x) { // 左向き
               this.header.children[i].classList.add('is-hovered-left');
               hoverOnIndex = i;
-              direction = "left";
             } else {
               this.header.children[i].classList.add('is-hovered-right');
               hoverOnIndex = i;
-              direction = "right";
             }
             break;
           }
@@ -333,7 +330,7 @@ class ListView {
 
       // ドラッグ完了
       const dragMouseUpHandler = e => {
-        console.log('dragged. from',  draggingColumnIndex, 'to',hoverOnIndex, "direction", direction)
+        //console.log('dragged. from',  draggingColumnIndex, 'to',hoverOnIndex,)
 
         // 一時クラス削除
         this.list.classList.remove('is-header-dragging');

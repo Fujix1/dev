@@ -77,7 +77,7 @@
     z-index: 1;
   }
 
-  &__sort:after {
+  &__sort:before {
     font-family: "microns";
     content: "\e706";
     display: block;
@@ -92,7 +92,7 @@
     user-select: none;
     pointer-events: none;
   }
-  &__sort--desc:after{
+  &__sort--desc:before{
     content: "\e707";
   }
 
