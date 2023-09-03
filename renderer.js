@@ -8,6 +8,8 @@ let record; // 全ゲーム情報
 
 //document.getElementById('info2').innerText = window.myApi.hamachi;
 
+
+
 // Window Onload ハンドラ
 window.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
@@ -130,20 +132,18 @@ class ListView {
     this.header; //
     this.main;   //
     this.ul;
-    //------------------------------------------------------------------------------
+    
     // DOM構成
     this.list = document.querySelector(args.target);
     this.list.classList.add('m-fujList');
     this.list.classList.add('m-fujList__slug--'+this.slug);
-
   }
 
-  // 初期化 同期
+  // 初期化
   async init() {
 
     //------------------------------------------------------------------------------
     // 設定復旧
-
     const settings = await window.retrofireAPI.getStore("listview-"+this.slug);
     console.log(settings)
 
@@ -448,15 +448,6 @@ class ListView {
     li.remove();
     this.lastHeight = this.main.offsetHeight;
 
-    // リサイズイベント
-    window.addEventListener('resize', (e)=>{
-      if (this.lastHeight != this.list.offsetHeight) {
-        this.lastHeight = this.list.offsetHeight;
-        this.updateItemDoms();
-        this.handleScroll();
-      }
-    });
-
     // スクロールイベント
     var isHandlingScroll = false;
     this.list.addEventListener('scroll', async e=>{
@@ -467,6 +458,15 @@ class ListView {
       }
     });
 
+    // リサイズオブザーバ
+    this.resizeObserver = new window.ResizeObserver( entries =>{
+      if (entries[0].target == this.list) {
+        //console.log("size changed");
+        this.onResize();
+      }
+    });
+    this.resizeObserver.observe(this.list);
+        
     // 初期表示
     this.updateItemDoms();
     this.setSortArrow(this.orderByIndex, this.sortDirection);
@@ -474,10 +474,16 @@ class ListView {
     this.changeItemCount(this.data.length);
     this.handleScroll();
     this.updateDisplay();
-
-
   }
 
+  // リサイズ処理
+  onResize() {
+    if (this.lastHeight != this.list.offsetHeight) {
+      this.lastHeight = this.list.offsetHeight;
+      this.updateItemDoms();
+      this.handleScroll();
+    }
+  }
   // 仮想要素の更新
   updateItemDoms() {
     const numDOMs = this.ul.childElementCount; // 現在存在する要素数
