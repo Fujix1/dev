@@ -93,15 +93,12 @@ async function onLoad() {
     ],
     slug: 'main',
     orderByIndex: 1,
-    sortDirection: "asc"
+    sortDirection: "asc",
+    index: -1,
   });
   await listViewMain.init();
   console.log('listview init:', Date.now() - tick,"ms");
-  /*
-  var tick = Date.now();
-  listViewMain.updateList(record);
-  console.log(Date.now() - tick);  
-  */
+
 }
 
 /**
@@ -113,6 +110,7 @@ async function onLoad() {
  *  slug:     string,   // スラグ
  *  orderByIndex:  integer,  // ソート対象の index
  *  sortDirection: "asc"|"desc", // ソート順
+ *  index: integer, // 選択中のインデックス (-1 選択なし)
  */
 class ListView {
 
@@ -127,7 +125,7 @@ class ListView {
     this.numItems = 0; // 保持項目数
     this.lastHeight = 0; // リサイズ前のサイズ保持
     this.rowHeight = 0; // 列の高さ
-    this.itemIndex = -1; // 選択中の項目インデックス
+    this.index = -1; // 選択中の項目インデックス
 
     this.header; //
     this.main;   //
@@ -146,31 +144,30 @@ class ListView {
     //------------------------------------------------------------------------------
     // 設定復旧
 
-    // メインカラム
     const settings = await window.retrofireAPI.getStore("listview-"+this.slug);
     console.log(settings)
 
-    if (settings.result) {
+    if (settings) {
       // 整合性チェック
       let updated = false;
-      if (settings.data.columns.length != this.columns.length) { // カラム数が違う
+      if (settings.columns.length != this.columns.length) { // カラム数が違う
         updated = true;
       } else {
-        for (let i=0; i<settings.data.columns.length; i++) { 
-          if (Object.keys(settings.data.columns[i]).length !== Object.keys(this.columns[i]).length) { // キー数違う
+        for (let i=0; i<settings.columns.length; i++) { 
+          if (Object.keys(settings.columns[i]).length !== Object.keys(this.columns[i]).length) { // キー数違う
             updated = true;
             break;
           }
-          if (settings.data.columns[i].label !== this.columns[i].label || settings.data.columns[i].data !== this.columns[i].data) { // ラベルと参照データ違う
+          if (settings.columns[i].label !== this.columns[i].label || settings.columns[i].data !== this.columns[i].data) { // ラベルと参照データ違う
             updated = true;
             break;
           }
         }
       }
       if (!updated) {
-        this.columns = settings.data.columns;
-        this.sortDirection = settings.data.sortDirection;
-        this.orderByIndex = settings.data.orderByIndex;
+        this.columns = settings.columns;
+        this.sortDirection = settings.sortDirection;
+        this.orderByIndex = settings.orderByIndex;
       } else {
         console.log("メインリストビュー: カラム設定デフォルト設定復旧");
         this.saveSettings();
@@ -477,6 +474,8 @@ class ListView {
     this.changeItemCount(this.data.length);
     this.handleScroll();
     this.updateDisplay();
+
+
   }
 
   // 仮想要素の更新
@@ -542,7 +541,7 @@ class ListView {
     const previousSelected = document.querySelector('.m-fujList__slug--'+this.slug + ' .m-fujList__listItem--selected');
 
     // 同じものが選択されていたら何もしない
-    if (this.itemIndex == e.target.getAttribute('data-index')) {
+    if (this.index == e.target.getAttribute('data-index')) {
       return;
     }
 
@@ -552,13 +551,13 @@ class ListView {
     }
     // 新しい選択肢
     e.target.classList.add('m-fujList__listItem--selected');
-    this.itemIndex = e.target.getAttribute('data-index');
-    console.log('itemIndex = ', this.itemIndex);
+    this.index = e.target.getAttribute('data-index');
+    console.log('index = ', this.index);
   }
 
   // 項目数変更
   changeItemCount(newItemCount) {
-
+   
     // ステージの高さ設定
     const newHeight = (newItemCount) * this.rowHeight;
     if (this.list.scrollTop + this.list.offsetHeight > newHeight) {
@@ -567,9 +566,10 @@ class ListView {
     }
     this.ul.style.height = newHeight+"px";
     
-    // 空のときは未選択にする
     if (newItemCount == 0) {
-      this.itemIndex = -1;
+      this.index = -1;
+    } else if (newItemCount - 1 < this.index) {
+      this.index = newItemCount;
     }
   }
 
@@ -607,7 +607,7 @@ class ListView {
         }
       
         // フォーカスの復旧
-        if (this.ul.children[domIndex].getAttribute('data-index') == this.itemIndex && !this.ul.children[domIndex].hasFocus) {
+        if (this.ul.children[domIndex].getAttribute('data-index') == this.index && !this.ul.children[domIndex].hasFocus) {
           this.ul.children[domIndex].focus();
           this.ul.children[domIndex].classList.add('m-fujList__listItem--selected');
         }

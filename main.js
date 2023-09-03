@@ -276,9 +276,9 @@ ipcMain.handle('execute-MAME', executeMAME);
  */
 ipcMain.handle('get-store', async (event, data) =>{
   if (store.has(data)) {
-    return {result: true, data: store.get(data)};
+    return store.get(data);
   } else {
-    return {result: false};
+    return;
   }
 });
 
@@ -294,6 +294,5 @@ ipcMain.handle('set-store', async(event, data) =>{
  */
 ipcMain.handle('set-store-temp', async(event, data) =>{
   settingsToBeStored[data.key] = data.val;
-  console.log(settingsToBeStored)
 });
 
