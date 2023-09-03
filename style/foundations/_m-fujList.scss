@@ -29,7 +29,7 @@
     position: relative;
     background-color: var(--cl-listheaderbg);
     color: var(--cl-listheadertext);
-    border-bottom: 1px solid deepskyblue;
+    border-bottom: 1px solid var(--cl-theme);
     position: relative;
     &.is-resizing,
     &.is-dragging,
@@ -49,7 +49,7 @@
       width: 3px;
       height: 100%;
       top: 0;
-      background-color: deepskyblue;
+      background-color: var(--cl-theme);
       z-index: 1;
     }
     &.is-hovered-left:after {

@@ -995,9 +995,10 @@ template {
   --cl-text--highlight: #bbb;
   --cl-text--main: #222;
   --cl-text--weak: #a7a7a7;
-  --cl-active: rgb(0, 129, 172);
-  --cl-active--sub: #3f6074;
-  --cl-disactive: #444;
+  --cl-theme: #00bddb;
+  --cl-active: #1b9baf;
+  --cl-active--sub: #3a6b72;
+  --cl-disactive: #555;
   --cl-listheaderbg: #41444c;
   --cl-listheadertext: #aab0c3;
   --cl-listbg: #26282f;
@@ -1105,7 +1106,7 @@ textarea.debug {
   position: relative;
   background-color: var(--cl-listheaderbg);
   color: var(--cl-listheadertext);
-  border-bottom: 1px solid deepskyblue;
+  border-bottom: 1px solid var(--cl-theme);
   position: relative;
 }
 .m-fujList__headerItem.is-resizing, .m-fujList__headerItem.is-dragging, .m-fujList__headerItem:hover {
@@ -1123,7 +1124,7 @@ textarea.debug {
   width: 3px;
   height: 100%;
   top: 0;
-  background-color: deepskyblue;
+  background-color: var(--cl-theme);
   z-index: 1;
 }
 .m-fujList__headerItem.is-hovered-left:after {

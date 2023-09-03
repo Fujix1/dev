@@ -3,10 +3,10 @@ let listViewMain; // メインリストビュー
 let record; // 全ゲーム情報
 
 
-const information = document.getElementById('info');
-information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
+//const information = document.getElementById('info');
+//information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
 
-document.getElementById('info2').innerText = window.myApi.hamachi;
+//document.getElementById('info2').innerText = window.myApi.hamachi;
 
 // Window Onload ハンドラ
 window.addEventListener('DOMContentLoaded', onLoad);
@@ -58,7 +58,7 @@ async function onLoad() {
   });
   document.querySelector('#btn-item3').addEventListener('click', ()=>{
     var tick = Date.now();
-    listViewMain.updateList(record);
+    listViewMain.sort();
     console.log(Date.now() - tick);
   });
 
@@ -211,8 +211,10 @@ class ListView {
         } else {
           newDirection = this.columns[clickedIndex].defaultSort;
         }
-        this.sort(newOrderByIndex, newDirection);
-
+        this.setSortArrow(newOrderByIndex, newDirection);
+        
+        this.sort();
+        this.updateDisplay(true);
       });
 
       /// -------------------------------------------------------------------------
@@ -284,7 +286,7 @@ class ListView {
       let dragStart = {};
       let draggingItem;
       let hoverOnIndex = -1;
-      const DRAGTHRESHOLD = 3; // ドラッグ判定する移動量
+      const DRAGTHRESHOLD = 5; // ドラッグ判定する移動量
 
       // ドラッグ中処理
       const dragMouseMoveHandler = e => {
@@ -446,8 +448,9 @@ class ListView {
       }
     });
 
+    // 初期表示
     this.updateItemDoms();
-    this.sort(this.orderByIndex, this.direction);
+    this.setSortArrow(this.orderByIndex, this.direction);
     this.updateList();
     
   }
@@ -623,8 +626,8 @@ class ListView {
     this.updateDisplay(true);
   }
 
-  // ソート
-  sort(orderByIndex, direction) {
+  // ソート矢印の表示と変数の更新
+  setSortArrow(orderByIndex, direction) {
 
     // クラスリセット
     if (this.orderByIndex != orderByIndex) {
@@ -649,6 +652,29 @@ class ListView {
     this.direction = direction;
 
   }
+
+  // 配列ソート
+  sort() {
+    var tick = Date.now();
+    this.data.sort((a,b)=>{
+      let itemA = a[this.columns[this.orderByIndex].data];//.toUpperCase();
+      let itemB = b[this.columns[this.orderByIndex].data];//.toUpperCase();
+      itemA = (itemA)? itemA.toUpperCase(): '';
+      itemB = (itemB)? itemB.toUpperCase(): '';
+      
+      let result = 0;
+      if (itemA < itemB) {
+        result = -1;
+      } else if (itemA > itemB) {
+        result = 1;
+      }
+      if (this.direction=="desc") {
+        result *= -1;
+      }
+      return result;
+    });
+    console.log('sort:', Date.now() - tick,"ms");
+  }
 }
 
 function onRun(e) {
@@ -672,11 +698,6 @@ async function sendByApiSoft(zip) {
 //------------------------------------
 // メインスレッドから受信
 //------------------------------------
-window.retrofireAPI.onUpdateClock((_event, value) => {
-  console.log(value);
-  document.querySelector('#info2').innerText = value;
-});
-
 window.retrofireAPI.onDebugMessage((_event, text) => {
   console.log("onDebugMessage", text);
   const debug = document.querySelector('#debug');
