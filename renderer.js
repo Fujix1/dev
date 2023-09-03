@@ -269,6 +269,8 @@ class ListView {
         // 親要素のスクロールXを考慮
         resizeStart.x += this.list.scrollLeft;
 
+        columnWasDragged = true; // クリックイベント抑制
+
         resizingColumnIndex = e.target.getAttribute('col-index'); // ドラッグ中のカラムインデックス
         startWidth = this.columns[resizingColumnIndex].width; // 開始の幅
         document.addEventListener('mousemove', mouseMoveHandler);
@@ -657,8 +659,8 @@ class ListView {
   sort() {
     var tick = Date.now();
     this.data.sort((a,b)=>{
-      let itemA = a[this.columns[this.orderByIndex].data];//.toUpperCase();
-      let itemB = b[this.columns[this.orderByIndex].data];//.toUpperCase();
+      let itemA = a[this.columns[this.orderByIndex].data];
+      let itemB = b[this.columns[this.orderByIndex].data];
       itemA = (itemA)? itemA.toUpperCase(): '';
       itemB = (itemB)? itemB.toUpperCase(): '';
       
