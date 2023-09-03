@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld( 'retrofireAPI', {
   resetWindow: async (args)=> await ipcRenderer.invoke('window-reset', args),
   getStore: async (args) => await ipcRenderer.invoke('get-store', args),
   setStore: async (args) => await ipcRenderer.invoke('set-store', args),
+  setStoreTemp: async (args) => await ipcRenderer.invoke('set-store-temp', args),
   
   dialog: async (args)=> await ipcRenderer.invoke('open-dialog', args),
   getRecord: async (args) => await ipcRenderer.invoke('get-record', args),

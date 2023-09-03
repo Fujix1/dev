@@ -72,9 +72,16 @@ async function onLoad() {
     console.log(Date.now() - tick);
   });
 
+  // ゲームデータ読み込み
+  var tick = Date.now();
+  record = JSON.parse(await window.retrofireAPI.getRecord());;
+  console.log(Date.now() - tick);
+  console.log(record.length);
 
   // リストビュー初期化
+  var tick = Date.now();
   listViewMain = new ListView({
+    data: record,
     target: '.list-view',
     columns: [
       {label:'ゲーム名', data: "desc", order: 0, width: 380, defaultSort: "asc"},
@@ -86,30 +93,36 @@ async function onLoad() {
     ],
     slug: 'main',
     orderByIndex: 1,
-    direction: "asc"
-    });
+    sortDirection: "asc"
+  });
   await listViewMain.init();
+  console.log('listview init:', Date.now() - tick,"ms");
+  /*
+  var tick = Date.now();
+  listViewMain.updateList(record);
+  console.log(Date.now() - tick);  
+  */
 }
-
-
 
 /**
  * リストビュー用クラス
  * args:
+ *  data: {}, // 表示用データ
  *  target:   string,   // 対象のセレクタ
  *  columns: [{label: string, data: string, width: integer, order: integer, defaultSort: "asc"|"desc"}] // カラム
  *  slug:     string,   // スラグ
  *  orderByIndex:  integer,  // ソート対象の index
- *  direction: "asc"|"desc", //
+ *  sortDirection: "asc"|"desc", // ソート順
  */
 class ListView {
 
   // コンストラクタ
   constructor(args) {
+    this.data = args.data;
     this.columns = args.columns;
     this.slug = args.slug;
     this.orderByIndex = args.orderByIndex;
-    this.direction = args.direction;
+    this.sortDirection = args.sortDirection;
 
     this.numItems = 0; // 保持項目数
     this.lastHeight = 0; // リサイズ前のサイズ保持
@@ -134,27 +147,33 @@ class ListView {
     // 設定復旧
 
     // メインカラム
-    const store = await window.retrofireAPI.getStore("listview-"+this.slug+"-columns");
-    if (store.result) {
+    const settings = await window.retrofireAPI.getStore("listview-"+this.slug);
+    console.log(settings)
+
+    if (settings.result) {
       // 整合性チェック
       let updated = false;
-      if (store.data.length != this.columns.length) { // カラム数が違う
+      if (settings.data.columns.length != this.columns.length) { // カラム数が違う
         updated = true;
       } else {
-        for (let i=0; i<store.data.length; i++) { 
-          if (Object.keys(store.data[i]).length !== Object.keys(this.columns[i]).length) { // キー数違う
+        for (let i=0; i<settings.data.columns.length; i++) { 
+          if (Object.keys(settings.data.columns[i]).length !== Object.keys(this.columns[i]).length) { // キー数違う
             updated = true;
             break;
           }
-          if (store.data[i].label !== this.columns[i].label || store.data[i].data !== this.columns[i].data) { // ラベルと参照データ違う
+          if (settings.data.columns[i].label !== this.columns[i].label || settings.data.columns[i].data !== this.columns[i].data) { // ラベルと参照データ違う
             updated = true;
             break;
           }
         }
       }
-      if (!updated) this.columns = store.data; else {
-        console.log("メインリストビュー: 設定デフォルト設定復旧");
-        window.retrofireAPI.setStore({key: "listview-"+this.slug+"-columns", val: this.columns});
+      if (!updated) {
+        this.columns = settings.data.columns;
+        this.sortDirection = settings.data.sortDirection;
+        this.orderByIndex = settings.data.orderByIndex;
+      } else {
+        console.log("メインリストビュー: カラム設定デフォルト設定復旧");
+        this.saveSettings();
       }
     }
 
@@ -207,7 +226,7 @@ class ListView {
         newOrderByIndex = clickedIndex;
 
         if (this.orderByIndex == clickedIndex) {
-          newDirection = (this.direction=='asc')?'desc':'asc';
+          newDirection = (this.sortDirection=='asc')?'desc':'asc';
         } else {
           newDirection = this.columns[clickedIndex].defaultSort;
         }
@@ -215,6 +234,7 @@ class ListView {
         
         this.sort();
         this.updateDisplay(true);
+        this.saveSettings();
       });
 
       /// -------------------------------------------------------------------------
@@ -257,7 +277,7 @@ class ListView {
         window.removeEventListener('mouseup', mouseUpHandler);
 
         // 設定保存
-        window.retrofireAPI.setStore({key: "listview-"+this.slug+"-columns", val: this.columns});
+        this.saveSettings();
       }
 
       // ドラッグ開始
@@ -333,7 +353,7 @@ class ListView {
       }
 
       // ドラッグ完了
-      const dragMouseUpHandler = e => {
+      const dragMouseUpHandler = async e => {
         //console.log('dragged. from',  draggingColumnIndex, 'to',hoverOnIndex,)
 
         // 一時クラス削除
@@ -367,7 +387,7 @@ class ListView {
             root.style.setProperty("--listiview-" + this.slug + "-col-"+order[i]+"-order", i);
           }
           // 設定保存
-          window.retrofireAPI.setStore({key: "listview-"+this.slug+"-columns", val: this.columns});
+          await this.saveSettings();
 
         }
 
@@ -452,9 +472,11 @@ class ListView {
 
     // 初期表示
     this.updateItemDoms();
-    this.setSortArrow(this.orderByIndex, this.direction);
-    this.updateList();
-    
+    this.setSortArrow(this.orderByIndex, this.sortDirection);
+    this.sort();
+    this.changeItemCount(this.data.length);
+    this.handleScroll();
+    this.updateDisplay();
   }
 
   // 仮想要素の更新
@@ -553,7 +575,7 @@ class ListView {
 
   // スクロール時の処理
   handleScroll() {
-
+    // DOM 項目の再配置
     const start = Math.floor(this.list.scrollTop / this.rowHeight);
     const end = start + this.ul.childElementCount;
 
@@ -629,7 +651,7 @@ class ListView {
   }
 
   // ソート矢印の表示と変数の更新
-  setSortArrow(orderByIndex, direction) {
+  setSortArrow(orderByIndex, sortDirection) {
 
     // クラスリセット
     if (this.orderByIndex != orderByIndex) {
@@ -640,9 +662,9 @@ class ListView {
     
     // クラス追加
     this.orderByIndex = orderByIndex;
-    this.direction = direction;
+    this.sortDirection = sortDirection;
     this.header.childNodes[this.orderByIndex].classList.add('m-fujList__sort');
-    if (this.direction=="asc") {
+    if (this.sortDirection=="asc") {
       this.header.childNodes[this.orderByIndex].classList.add('m-fujList__sort--asc');
       this.header.childNodes[this.orderByIndex].classList.remove('m-fujList__sort--desc');
     } else {
@@ -651,8 +673,7 @@ class ListView {
     }
 
     this.orderByIndex = orderByIndex;
-    this.direction = direction;
-
+    this.sortDirection = sortDirection;
   }
 
   // 配列ソート
@@ -670,12 +691,27 @@ class ListView {
       } else if (itemA > itemB) {
         result = 1;
       }
-      if (this.direction=="desc") {
+      if (this.sortDirection=="desc") {
         result *= -1;
       }
       return result;
     });
     console.log('sort:', Date.now() - tick,"ms");
+  }
+
+  // リストビューの設定保存
+  async saveSettings() {
+    const settings = {
+      columns: this.columns,
+      orderByIndex: this.orderByIndex,
+      sortDirection: this.sortDirection,
+    }
+    try {
+      await window.retrofireAPI.setStoreTemp({key: "listview-"+this.slug, val: settings});
+      console.log('setting sent');
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 

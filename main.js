@@ -35,6 +35,9 @@ let mainWindow;
 let record = {};
 let recordString;
 
+// 受信した設定
+let settingsToBeStored = {};
+
 /**
  * ウインドウ生成
  */
@@ -73,6 +76,10 @@ const createWindow = () => {
   mainWindow.on('close', async ()=>{
     store.set('mainWindow.pos', mainWindow.getPosition());  // ウィンドウの座標を記録
     store.set('mainWindow.size', mainWindow.getSize());     // ウィンドウのサイズを記録
+    
+    for (const [key, value] of Object.entries(settingsToBeStored)) { // 受信済み設定
+      store.set(key, value);
+    }
 
   });
 
@@ -279,7 +286,14 @@ ipcMain.handle('get-store', async (event, data) =>{
  * Store の値を保存
  */
 ipcMain.handle('set-store', async(event, data) =>{
-  //console.log(data);
   store.set(data.key, data.val);
+});
+
+/**
+ * Store の値を一時保持
+ */
+ipcMain.handle('set-store-temp', async(event, data) =>{
+  settingsToBeStored[data.key] = data.val;
+  console.log(settingsToBeStored)
 });
 
