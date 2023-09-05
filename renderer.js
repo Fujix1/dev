@@ -53,7 +53,7 @@ async function onLoad() {
   });
 
   document.querySelector('#btn-search').addEventListener('click', ()=>{
-    listViewMain.search(document.querySelector('#search').value);
+    listViewMain.updateListView(document.querySelector('#search').value);
   });
 
   document.querySelector('#btn-getrecord').addEventListener('click', async()=>{
@@ -116,9 +116,9 @@ class ListView {
     this.orderByIndex = args.orderByIndex;
     this.sortDirection = args.sortDirection;
 
-    this.workData = []; // ソート・抽出用の参照テーブル
+    this.sortedData = []; // ソート済みの参照テーブル
     for(let i = 0;i < this.data.length;i++) {
-      this.workData.push(i);
+      this.sortedData.push(i);
     }
     this.filteredData = []; // フィルタ済みの参照テーブル
     this.searchWord = ''; // 検索文字列
@@ -228,10 +228,8 @@ class ListView {
         }
         this.setSortArrow(newOrderByIndex, newDirection);
         
-        this.sort();
-        this.search(this.searchWord);
-        this.changeItemCount(this.workData.length);
-        this.updateRowTexts(true);
+        this.updateListView(this.searchWord);
+
         this.saveSettings();
         
       });
@@ -471,13 +469,11 @@ class ListView {
         
     // 初期表示
     this.setSortArrow(this.orderByIndex, this.sortDirection);
-    this.sort();
-    this.search(this.searchWord);
-    
-    this.changeItemCount(this.workData.length);
     this.updateVirtualDoms();
     this.updateRowDOMs();
-    this.updateRowTexts();
+    
+    this.updateListView(this.searchWord);
+    
   }
 
   // リサイズ処理
@@ -605,7 +601,6 @@ class ListView {
         
         // DOM移動
         this.ul.children[domIndex].style.top = newTop;
-        //this.ul.children[domIndex].setAttribute('data-index', this.workData[i]);
         this.ul.children[domIndex].setAttribute('virtual-index', i);
         
         // 選択中クラス外す
@@ -616,7 +611,7 @@ class ListView {
         this.ul.children[domIndex].blur();
 
         // 表示内容更新
-        if (this.workData.length > i) {
+        if (this.filteredData.length > i) {
           const li = this.ul.children[domIndex];
           this.updateRow(li);
         }
@@ -642,15 +637,19 @@ class ListView {
 
   // 一行の更新
   updateRow(li, forceUpdate = false) {
+
     const virtualIndex = li.getAttribute('virtual-index');
     const dataIndex = li.getAttribute('data-index');
-    if (!dataIndex || forceUpdate || this.workData[virtualIndex] != dataIndex) {
-      const workIndex = this.workData[virtualIndex];
-      li.setAttribute('data-index', workIndex);
-
-      for (let i=0; i<li.childElementCount; i++) {
-        const text = this.data[workIndex][this.columns[i].data];
-        li.children[i].innerText = text ? text : '';
+    if (!dataIndex || forceUpdate || this.filteredData[virtualIndex] != dataIndex) {
+      const filteredIndex = this.filteredData[virtualIndex];
+      if (filteredIndex) {
+        li.setAttribute('data-index', filteredIndex);
+        for (let i=0; i<li.childElementCount; i++) {
+          const text = this.data[filteredIndex][this.columns[i].data];
+          li.children[i].innerText = text ? text : '';
+        }        
+      } else {
+        li.setAttribute('data-index', "-1");
       }
     }
   }
@@ -694,7 +693,7 @@ class ListView {
     var tick = Date.now();
     console.log(this.columns[this.orderByIndex].data, this.sortDirection);
 
-    this.workData.sort((a,b) => {
+    this.sortedData.sort((a,b) => {
       // 大元のデータでソート
       let itemA = this.data[a][this.columns[this.orderByIndex].data];
       let itemB = this.data[b][this.columns[this.orderByIndex].data];
@@ -715,26 +714,34 @@ class ListView {
     console.log('sort:', Date.now() - tick,"ms");
   }
 
+  // ソートと検索と表示更新
+  updateListView(word = '') {
+    this.sort();
+    this.filter(word);
+    this.changeItemCount(this.filteredData.length);
+    this.updateRowTexts(); 
+  }
+
   // 検索
-  search(word = '') {
+  filter(word = '') {
 
     var tick = Date.now();
     this.searchWord = word;
     word = word.trim().toUpperCase();
-    if (word === '') return;
+    //if (word === '') return;
     word = word.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     });
     
     // フィルタ用データをソート済みデータから作る
     this.filteredData = [];
-    for(let i = 0;i < this.workData.length;i++) {
-      if (word==="" || this.data[this.workData[i]].desc.toUpperCase().indexOf(word) != -1) {
-        this.filteredData.push(this.workData[i]);
+    for(let i = 0;i < this.sortedData.length;i++) {
+      if (word==="" || this.data[this.sortedData[i]].desc.toUpperCase().indexOf(word) != -1) {
+        this.filteredData.push(this.sortedData[i]);
       }
     }
     console.log('search:', Date.now() - tick,"ms");
-    console.log(this.filteredData)
+    console.log(this.filteredData.length)
 
   }
 
