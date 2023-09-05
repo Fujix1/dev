@@ -116,6 +116,9 @@
     text-decoration: none;
     color: inherit;
     user-select: none;
+    &>div {
+      color: var(--cl-text--inactive);
+    }
     &:nth-child(2n) {
       //background-color: #f0f0f0;
     }
@@ -124,11 +127,14 @@
     }
     &--selected { // 選択中（フォーカスなし）
       background-color: var(--cl-disactive);
+      &>div {
+        color: var(--cl-text);
+      }
     }
     &:hover {
       background-color: var(--cl-active);
       &>div {
-        color: #eee;
+        color: var(--cl-text);
       }
     }
   }

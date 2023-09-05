@@ -990,19 +990,40 @@ template {
 }
 
 :root {
-  --ff-base: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", san-serif;
+  --ff-base: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans","", san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
-  --cl-text--highlight: #bbb;
-  --cl-text--main: #222;
-  --cl-text--weak: #a7a7a7;
-  --cl-theme: #00bddb;
-  --cl-active: #1b9baf;
-  --cl-active--sub: #3a6b72;
-  --cl-disactive: #555;
-  --cl-listheaderbg: #41444c;
-  --cl-listheadertext: #aab0c3;
-  --cl-listbg: #26282f;
-  --cl-listborder: #4e5458;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --cl-text--highlight: #bbb;
+    --cl-text--main: #222;
+    --cl-text--weak: #a7a7a7;
+    --cl-theme: #43bbdf;
+    --cl-active: #2592b3;
+    --cl-active--sub: #3b5057;
+    --cl-disactive: #555;
+    --cl-text: #eee;
+    --cl-text--inactive: #aaa;
+    --cl-listheaderbg: #41444c;
+    --cl-listheadertext: #aab0c3;
+    --cl-listbg: #26282f;
+    --cl-listborder: #4e5458;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cl-text--highlight: #bbb;
+    --cl-text--main: #222;
+    --cl-text--weak: #a7a7a7;
+    --cl-theme: #00bddb;
+    --cl-active: #1b9baf;
+    --cl-active--sub: #3a6b72;
+    --cl-disactive: #555;
+    --cl-listheaderbg: #41444c;
+    --cl-listheadertext: #aab0c3;
+    --cl-listbg: #26282f;
+    --cl-listborder: #4e5458;
+  }
 }
 
 html {
@@ -1192,17 +1213,23 @@ textarea.debug {
      -moz-user-select: none;
           user-select: none;
 }
+.m-fujList__listItem > div {
+  color: var(--cl-text--inactive);
+}
 .m-fujList__listItem:focus {
   background-color: var(--cl-active--sub);
 }
 .m-fujList__listItem--selected {
   background-color: var(--cl-disactive);
 }
+.m-fujList__listItem--selected > div {
+  color: var(--cl-text);
+}
 .m-fujList__listItem:hover {
   background-color: var(--cl-active);
 }
 .m-fujList__listItem:hover > div {
-  color: #eee;
+  color: var(--cl-text);
 }
 .is-header-resizing .m-fujList__listItem, .is-header-dragging .m-fujList__listItem {
   pointer-events: none;
@@ -1231,7 +1258,7 @@ textarea.debug {
 
 .debug {
   width: 100%;
-  height: 200px;
+  height: 100%;
   display: block;
 }
 

@@ -1,7 +1,6 @@
 
 let listViewMain; // メインリストビュー
-let record; // 全ゲーム情報
-
+let record; // オリジナルの全ゲーム情報
 
 //const information = document.getElementById('info');
 //information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
@@ -43,13 +42,7 @@ async function onLoad() {
   });
 
   document.querySelector('#btn-item1').addEventListener('click', ()=>{
-    var tick = Date.now();
-    let data = [];
-    for (i=0; i<40000; i++) {
-      data.push('項目'+i);
-    }
-    listViewMain.updateList(data);
-    console.log(Date.now() - tick);
+
   });
   document.querySelector('#btn-item2').addEventListener('click', ()=>{
     let data = [];
@@ -58,20 +51,19 @@ async function onLoad() {
     }
 
   });
-  document.querySelector('#btn-item3').addEventListener('click', ()=>{
-    var tick = Date.now();
-    listViewMain.sort();
-    console.log(Date.now() - tick);
+
+  document.querySelector('#btn-search').addEventListener('click', ()=>{
+    listViewMain.search(document.querySelector('#search').value);
   });
 
   document.querySelector('#btn-getrecord').addEventListener('click', async()=>{
-    var tick = Date.now();
-    record = JSON.parse(await window.retrofireAPI.getRecord());;
-    console.log(Date.now() - tick);
-    console.log(record.length);
-    var tick = Date.now();
-    listViewMain.updateList(record);
-    console.log(Date.now() - tick);
+    //var tick = Date.now();
+    //record = JSON.parse(await window.retrofireAPI.getRecord());;
+    //console.log(Date.now() - tick);
+    //console.log(record.length);
+    //var tick = Date.now();
+    //listViewMain.updateList(record);
+    //console.log(Date.now() - tick);
   });
 
   // ゲームデータ読み込み
@@ -106,7 +98,7 @@ async function onLoad() {
 /**
  * リストビュー用クラス
  * args:
- *  data: {}, // 表示用データ
+ *  data: {}, // 元データ
  *  target:   string,   // 対象のセレクタ
  *  columns: [{label: string, data: string, width: integer, order: integer, defaultSort: "asc"|"desc"}] // カラム
  *  slug:     string,   // スラグ
@@ -124,16 +116,23 @@ class ListView {
     this.orderByIndex = args.orderByIndex;
     this.sortDirection = args.sortDirection;
 
+    this.workData = []; // ソート・抽出用の参照テーブル
+    for(let i = 0;i < this.data.length;i++) {
+      this.workData.push(i);
+    }
+    this.filteredData = []; // フィルタ済みの参照テーブル
+    this.searchWord = ''; // 検索文字列
+
     this.numItems = 0; // 保持項目数
+
     this.lastHeight = 0; // リサイズ前のサイズ保持
     this.rowHeight = 0; // 列の高さ
-    this.index = -1; // 選択中の項目インデックス
-
+    this.dataIndex = -1; // 選択中のデータインデックス
+  
+    // DOM構成
     this.header; //
     this.main;   //
     this.ul;
-    
-    // DOM構成
     this.list = document.querySelector(args.target);
     this.list.classList.add('m-fujList');
     this.list.classList.add('m-fujList__slug--'+this.slug);
@@ -230,8 +229,11 @@ class ListView {
         this.setSortArrow(newOrderByIndex, newDirection);
         
         this.sort();
-        this.updateDisplay(true);
+        this.search(this.searchWord);
+        this.changeItemCount(this.workData.length);
+        this.updateRowTexts(true);
         this.saveSettings();
+        
       });
 
       /// -------------------------------------------------------------------------
@@ -453,7 +455,7 @@ class ListView {
     this.list.addEventListener('scroll', async e=>{
       if (!isHandlingScroll) {
         isHandlingScroll = true;
-        this.handleScroll();
+        this.updateRowDOMs();
         isHandlingScroll = false;
       }
     });
@@ -468,26 +470,32 @@ class ListView {
     this.resizeObserver.observe(this.list);
         
     // 初期表示
-    this.updateItemDoms();
     this.setSortArrow(this.orderByIndex, this.sortDirection);
     this.sort();
-    this.changeItemCount(this.data.length);
-    this.handleScroll();
-    this.updateDisplay();
+    this.search(this.searchWord);
+    
+    this.changeItemCount(this.workData.length);
+    this.updateVirtualDoms();
+    this.updateRowDOMs();
+    this.updateRowTexts();
   }
 
   // リサイズ処理
   onResize() {
-    if (this.lastHeight != this.list.offsetHeight) {
-      this.lastHeight = this.list.offsetHeight;
-      this.updateItemDoms();
-      this.handleScroll();
+    // ステージの高さ
+    const stageHeight = this.list.offsetHeight - this.header.offsetHeight;
+    if (this.lastHeight != stageHeight) {
+      this.lastHeight = stageHeight;
+      this.updateVirtualDoms();
+      this.updateRowDOMs();
     }
   }
-  // 仮想要素の更新
-  updateItemDoms() {
+  
+  // 仮想要素をリストビューサイズに合わせて追加・削除
+  updateVirtualDoms() {
+    console.log('updateVirtualDoms');
     const numDOMs = this.ul.childElementCount; // 現在存在する要素数
-    const neededRows = Math.ceil(this.lastHeight / this.rowHeight) +1 ; // 必要な要素数
+    const neededRows = Math.ceil(this.lastHeight / this.rowHeight) + 1; // 必要な要素数
 
     // 不足分追加
     if (numDOMs < neededRows) {
@@ -503,7 +511,6 @@ class ListView {
           }
         });*/
         for (let j=0; j<this.columns.length; j++) {
-          //console.log(j)
           const div = document.createElement('div');
           div.classList.add('m-fujList__listItemCell');
           if (j == 0) {
@@ -521,7 +528,6 @@ class ListView {
         li.addEventListener('click', async e=>await this.onClick(e));
         li.addEventListener('focus', async e=>await this.onFocus(e));
         li.addEventListener('blur', e=>{});
-        
       }
     } else if (numDOMs > neededRows) {
       for (let i=numDOMs-1; i>=neededRows; i--) {
@@ -531,8 +537,8 @@ class ListView {
   }
 
   async onDubleClick(e) { // セルでイベント発生
-    const index = e.currentTarget.getAttribute('data-index');
-    const zipName =  this.data[index].zipname;
+    const dataIndex = e.currentTarget.getAttribute('data-index');
+    const zipName =  this.data[dataIndex].zipname;
     await window.retrofireAPI.executeMAME({ zipName: zipName });
   }
 
@@ -547,7 +553,7 @@ class ListView {
     const previousSelected = document.querySelector('.m-fujList__slug--'+this.slug + ' .m-fujList__listItem--selected');
 
     // 同じものが選択されていたら何もしない
-    if (this.index == e.target.getAttribute('data-index')) {
+    if (this.dataIndex == e.target.getAttribute('data-index')) {
       return;
     }
 
@@ -557,13 +563,18 @@ class ListView {
     }
     // 新しい選択肢
     e.target.classList.add('m-fujList__listItem--selected');
-    this.index = e.target.getAttribute('data-index');
-    console.log('index = ', this.index);
+    this.dataIndex = e.target.getAttribute('data-index');
+    console.log('data-index = ', this.dataIndex);
+  }
+
+  // 行選択処理
+  onRowSelect(dataIndex) {
+
   }
 
   // 項目数変更
   changeItemCount(newItemCount) {
-   
+    console.log('changeItemCount')
     // ステージの高さ設定
     const newHeight = (newItemCount) * this.rowHeight;
     if (this.list.scrollTop + this.list.offsetHeight > newHeight) {
@@ -573,14 +584,14 @@ class ListView {
     this.ul.style.height = newHeight+"px";
     
     if (newItemCount == 0) {
-      this.index = -1;
-    } else if (newItemCount - 1 < this.index) {
-      this.index = newItemCount;
-    }
+      this.dataIndex = -1;
+    } 
   }
 
-  // スクロール時の処理
-  handleScroll() {
+  // 行の仮想DOMをスクロール位置に合わせて再配置
+  updateRowDOMs() {
+    console.log('updateRowDOMs')
+
     // DOM 項目の再配置
     const start = Math.floor(this.list.scrollTop / this.rowHeight);
     const end = start + this.ul.childElementCount;
@@ -594,7 +605,8 @@ class ListView {
         
         // DOM移動
         this.ul.children[domIndex].style.top = newTop;
-        this.ul.children[domIndex].setAttribute('data-index',i);
+        //this.ul.children[domIndex].setAttribute('data-index', this.workData[i]);
+        this.ul.children[domIndex].setAttribute('virtual-index', i);
         
         // 選択中クラス外す
         this.ul.children[domIndex].classList.remove('m-fujList__listItem--selected');
@@ -604,16 +616,13 @@ class ListView {
         this.ul.children[domIndex].blur();
 
         // 表示内容更新
-        if (this.data.length > i) {
+        if (this.workData.length > i) {
           const li = this.ul.children[domIndex];
-          for (let j=0; j<li.childElementCount; j++) {
-            const text = this.data[li.getAttribute('data-index')][this.columns[j].data];
-            li.children[j].innerText = text ? text : '';
-          }
+          this.updateRow(li);
         }
       
         // フォーカスの復旧
-        if (this.ul.children[domIndex].getAttribute('data-index') == this.index && !this.ul.children[domIndex].hasFocus) {
+        if (this.ul.children[domIndex].getAttribute('data-index') == this.dataIndex && !this.ul.children[domIndex].hasFocus) {
           this.ul.children[domIndex].focus();
           this.ul.children[domIndex].classList.add('m-fujList__listItem--selected');
         }
@@ -623,28 +632,26 @@ class ListView {
   }
 
   // 表示項目更新
-  updateDisplay(forceUpdate = false) {
+  updateRowTexts(forceUpdate = false) {
+    console.log('updateRowTexts');
 
-    // 表示中項目のインデックスを求める
-    let start = Math.floor(this.list.scrollTop / this.rowHeight);
-    let end = start + this.ul.childElementCount;
-    if (end > this.data.length) end = this.data.length;
+    this.ul.childNodes.forEach(li => {
+      this.updateRow(li, forceUpdate);
+    });
+  }
 
-    // データ書き換え
-    let n = 0;
-    for (let i=start; i<end; i++) {
-      if (forceUpdate || this.ul.children[n].dataIndex != i) {
-        const li = this.ul.children[n];
+  // 一行の更新
+  updateRow(li, forceUpdate = false) {
+    const virtualIndex = li.getAttribute('virtual-index');
+    const dataIndex = li.getAttribute('data-index');
+    if (!dataIndex || forceUpdate || this.workData[virtualIndex] != dataIndex) {
+      const workIndex = this.workData[virtualIndex];
+      li.setAttribute('data-index', workIndex);
 
-        if (forceUpdate || li.getAttribute('data-index') != i) {
-          li.setAttribute('data-index', i);
-          for (let j=0; j<li.childElementCount; j++) {
-            const text = this.data[li.getAttribute('data-index')][this.columns[j].data];
-            li.children[j].innerText = text ? text : '';
-          }
-        }
+      for (let i=0; i<li.childElementCount; i++) {
+        const text = this.data[workIndex][this.columns[i].data];
+        li.children[i].innerText = text ? text : '';
       }
-      n++;
     }
   }
 
@@ -652,8 +659,8 @@ class ListView {
   updateList(newData = []) {
     this.data = newData;
     this.changeItemCount(this.data.length);
-    this.handleScroll();
-    this.updateDisplay(true);
+    this.updateRowDOMs();
+    this.updateRowTexts(true);
   }
 
   // ソート矢印の表示と変数の更新
@@ -682,12 +689,15 @@ class ListView {
     this.sortDirection = sortDirection;
   }
 
-  // 配列ソート
+  // ソート
   sort() {
     var tick = Date.now();
-    this.data.sort((a,b)=>{
-      let itemA = a[this.columns[this.orderByIndex].data];
-      let itemB = b[this.columns[this.orderByIndex].data];
+    console.log(this.columns[this.orderByIndex].data, this.sortDirection);
+
+    this.workData.sort((a,b) => {
+      // 大元のデータでソート
+      let itemA = this.data[a][this.columns[this.orderByIndex].data];
+      let itemB = this.data[b][this.columns[this.orderByIndex].data];
       itemA = (itemA)? itemA.toUpperCase(): '';
       itemB = (itemB)? itemB.toUpperCase(): '';
       
@@ -705,6 +715,29 @@ class ListView {
     console.log('sort:', Date.now() - tick,"ms");
   }
 
+  // 検索
+  search(word = '') {
+
+    var tick = Date.now();
+    this.searchWord = word;
+    word = word.trim().toUpperCase();
+    if (word === '') return;
+    word = word.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+    
+    // フィルタ用データをソート済みデータから作る
+    this.filteredData = [];
+    for(let i = 0;i < this.workData.length;i++) {
+      if (word==="" || this.data[this.workData[i]].desc.toUpperCase().indexOf(word) != -1) {
+        this.filteredData.push(this.workData[i]);
+      }
+    }
+    console.log('search:', Date.now() - tick,"ms");
+    console.log(this.filteredData)
+
+  }
+
   // リストビューの設定保存
   async saveSettings() {
     const settings = {
@@ -714,7 +747,7 @@ class ListView {
     }
     try {
       await window.retrofireAPI.setStoreTemp({key: "listview-"+this.slug, val: settings});
-      console.log('setting sent');
+      console.log('setting sent to main.js');
     } catch (e) {
       console.log(e);
     }

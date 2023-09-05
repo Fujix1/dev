@@ -1,19 +1,44 @@
 :root {
-  --ff-base: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro', san-serif;
+  --ff-base: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro',"Noto Sans CJK JP", 'Noto Sans','', san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
 
-  --cl-text--highlight: #bbb; //#222;
-  --cl-text--main: #222;
-  --cl-text--weak: #a7a7a7; //#666;
+  @media (prefers-color-scheme: light) {
 
-  --cl-theme: #00bddb;
+    --cl-text--highlight: #bbb;
+    --cl-text--main: #222;
+    --cl-text--weak: #a7a7a7; //#666;
   
-  --cl-active: #1b9baf;
-  --cl-active--sub: #3a6b72; //#c2f1ff;
-  --cl-disactive: #555;// #e3e3e3;
+    --cl-theme: #43bbdf;
+    
+    --cl-active: #2592b3;
+    --cl-active--sub: #3b5057; //#c2f1ff;
+    --cl-disactive: #555;// #e3e3e3;
+  
+    --cl-text: #eee;
+    --cl-text--inactive: #aaa;
+    --cl-listheaderbg : #41444c;
+    --cl-listheadertext: #aab0c3;
+    --cl-listbg : #26282f;
+    --cl-listborder: #4e5458;
+  
+  }
 
-  --cl-listheaderbg : #41444c;
-  --cl-listheadertext: #aab0c3;
-  --cl-listbg : #26282f;
-  --cl-listborder: #4e5458;
+  @media (prefers-color-scheme: dark) {
+
+    --cl-text--highlight: #bbb; //#222;
+    --cl-text--main: #222;
+    --cl-text--weak: #a7a7a7; //#666;
+  
+    --cl-theme: #00bddb;
+    
+    --cl-active: #1b9baf;
+    --cl-active--sub: #3a6b72; //#c2f1ff;
+    --cl-disactive: #555;// #e3e3e3;
+  
+    --cl-listheaderbg : #41444c;
+    --cl-listheadertext: #aab0c3;
+    --cl-listbg : #26282f;
+    --cl-listborder: #4e5458;
+    
+  }
 }

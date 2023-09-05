@@ -12,7 +12,13 @@ const store = new Store();
 const { validateBufferMIMEType } = require('validate-image-type');
 const sizeOf = require('image-size');
 
-const { rfConfig, rfProfiles } = require('./rfConfig');
+const { CONSTS, rfConfig, rfProfiles } = require('./rfConfig');
+
+//-------------------------------------------------------------------
+// 初期設定
+//-------------------------------------------------------------------
+app.disableHardwareAcceleration();
+
 
 //-------------------------------------------------------------------
 // 定数
@@ -32,8 +38,8 @@ const MAIN_FORM_DEFAULT = {
 let mainWindow;
 
 // ゲーム情報管理
-let record = {};
 let recordString;
+let mame32jString;
 
 // 受信した設定
 let settingsToBeStored = {};
@@ -90,13 +96,31 @@ const createWindow = () => {
  * @returns {boolean} - 読み込み完了
  */
 const loadResource = () => {
-  if ( fs.existsSync('./resource.json')) {
+  if ( fs.existsSync(CONSTS.PATH_RESOURCES)) {
     try {
-      recordString = fs.readFileSync('./resource.json', 'utf8');
-      //record = JSON.parse(fs.readFileSync('./resource.json', 'utf8'));
-      record = JSON.parse(recordString);
+      recordString = fs.readFileSync(CONSTS.PATH_RESOURCES, 'utf8');
+      //record = JSON.parse(fs.readFileSync(PATH_RESOURCES, 'utf8'));
+      //record = JSON.parse(recordString);
       return true;
     } catch(err) {
+      console.log(err);
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+/**
+ * mame32j.lst を読み込む
+ * @returns {boolean}
+ */
+const loadMame32j = () => {
+  if (fs.existsSync(CONSTS.PATH_MAME32J)) {
+    try {
+      mame32jString = fs.readFileSync(CONSTS.PATH_MAME32J, 'utf8');
+      return true;
+    } catch (err) {
       console.log(err);
       return false;
     }
@@ -114,9 +138,10 @@ const loadResource = () => {
 app.whenReady().then(async () => {
 
   var tick = Date.now();
-  console.log(loadResource());
-  
-  console.log(Date.now() - tick);  
+  console.log(loadResource()); 
+  console.log("loadResource:", Date.now() - tick, "ms");  
+
+
 
   createWindow();
 
