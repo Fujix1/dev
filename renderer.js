@@ -53,7 +53,9 @@ async function onLoad() {
   });
 
   document.querySelector('#btn-search').addEventListener('click', ()=>{
+    var tick = Date.now();
     listViewMain.updateListView(document.querySelector('#search').value);
+    console.log(Date.now() - tick);
   });
 
   document.querySelector('#btn-getrecord').addEventListener('click', async()=>{
@@ -62,7 +64,6 @@ async function onLoad() {
     //console.log(Date.now() - tick);
     //console.log(record.length);
     //var tick = Date.now();
-    //listViewMain.updateList(record);
     //console.log(Date.now() - tick);
   });
 
@@ -642,7 +643,7 @@ class ListView {
     const dataIndex = li.getAttribute('data-index');
     if (!dataIndex || forceUpdate || this.filteredData[virtualIndex] != dataIndex) {
       const filteredIndex = this.filteredData[virtualIndex];
-      if (filteredIndex) {
+      if (filteredIndex !== undefined) {
         li.setAttribute('data-index', filteredIndex);
         for (let i=0; i<li.childElementCount; i++) {
           const text = this.data[filteredIndex][this.columns[i].data];
@@ -652,14 +653,6 @@ class ListView {
         li.setAttribute('data-index', "-1");
       }
     }
-  }
-
-  // データを入れ替え
-  updateList(newData = []) {
-    this.data = newData;
-    this.changeItemCount(this.data.length);
-    this.updateRowDOMs();
-    this.updateRowTexts(true);
   }
 
   // ソート矢印の表示と変数の更新
@@ -728,7 +721,6 @@ class ListView {
     var tick = Date.now();
     this.searchWord = word;
     word = word.trim().toUpperCase();
-    //if (word === '') return;
     word = word.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     });
