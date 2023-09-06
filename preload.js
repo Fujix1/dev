@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld( 'retrofireAPI', {
   
   dialog: async (args)=> await ipcRenderer.invoke('open-dialog', args),
   getRecord: async (args) => await ipcRenderer.invoke('get-record', args),
+  getMame32j: async (args) => await ipcRenderer.invoke('get-mame32j', args),
   onUpdateClock: (callback) => ipcRenderer.on('update-clock', callback),
   onDebugMessage: (callback) => ipcRenderer.on('debug-message', callback),
 

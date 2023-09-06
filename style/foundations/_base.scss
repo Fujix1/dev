@@ -31,17 +31,17 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 ::-webkit-scrollbar{
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background-color: #393b3b;
+  background-color: var(--cl-scrollbar-track);
 }
 ::-webkit-scrollbar-thumb{
-  background-color: #7a8083;
+  background-color: var(--cl-scrollbar-thumb);
   box-sizing: border-box;
   border-radius: 6px;
   &:hover {
-    background-color: #999;
+    background-color: var(--cl-scrollbar-thumb-hover);
   }
 }

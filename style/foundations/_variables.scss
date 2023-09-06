@@ -2,7 +2,63 @@
   --ff-base: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro',"Noto Sans CJK JP", 'Noto Sans','', san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
 
+
+
   @media (prefers-color-scheme: light) {
+    --cl-scrollbar-track: #393b3b;
+    --cl-scrollbar-thumb: #7a8083;
+    --cl-scrollbar-thumb-hover: #999;
+
+    --cl-text--highlight: #bbb;
+    --cl-text--main: #222;
+    --cl-text--weak: #a7a7a7; //#666;
+  
+    --cl-theme: #43bbdf;
+    
+    --cl-active: #2592b3;
+    --cl-active--sub: #3b5057; //#c2f1ff;
+    --cl-disactive: #555;// #e3e3e3;
+  
+    --cl-text: #eee;
+    --cl-text--inactive: #ccc;
+    --cl-listheaderbg : #41444c;
+    --cl-listheadertext: #a4c4dd;
+    --cl-listheader-text-hover: #eee;
+    --cl-listbg : #26282f;
+    --cl-listheader-border: #4e5458;
+    --cl-listborder: #4e5458;
+    --cl-list-bg-2n: transparent;
+    /*
+    --cl-scrollbar-track: #fff;
+    --cl-scrollbar-thumb: #aaa;
+    --cl-scrollbar-thumb-hover: #76bdff;
+
+    --cl-text--highlight: #bbb;
+    --cl-text--main: #eee;
+    --cl-text--weak: #a7a7a7; //#666;
+  
+    --cl-theme: #bcdaf7;
+    
+    --cl-active: #deefff;
+    --cl-active--sub: #bcdaf7;
+    --cl-disactive: #e3e3e3;
+  
+    --cl-text: #111;
+    --cl-text--inactive: #333;
+    --cl-listheaderbg : #fff;
+    --cl-listheadertext: #3a434b;
+    --cl-listheader-text-hover: #111;
+    --cl-listbg : #fff;
+    --cl-listheader-border: #f0f0f0;
+    --cl-listborder: transparent;
+    --cl-list-bg-2n: #fafafa;
+*/  
+  }
+
+  @media (prefers-color-scheme: dark) {
+    --cl-scrollbar-track: #393b3b;
+    --cl-scrollbar-thumb: #7a8083;
+    --cl-scrollbar-thumb-hover: #999;
 
     --cl-text--highlight: #bbb;
     --cl-text--main: #222;
@@ -17,28 +73,11 @@
     --cl-text: #eee;
     --cl-text--inactive: #aaa;
     --cl-listheaderbg : #41444c;
-    --cl-listheadertext: #aab0c3;
+    --cl-listheadertext: #a4c4dd;
+    --cl-listheader-text-hover: #eee;
     --cl-listbg : #26282f;
+    --cl-listheader-border: #4e5458;
     --cl-listborder: #4e5458;
-  
-  }
-
-  @media (prefers-color-scheme: dark) {
-
-    --cl-text--highlight: #bbb; //#222;
-    --cl-text--main: #222;
-    --cl-text--weak: #a7a7a7; //#666;
-  
-    --cl-theme: #00bddb;
-    
-    --cl-active: #1b9baf;
-    --cl-active--sub: #3a6b72; //#c2f1ff;
-    --cl-disactive: #555;// #e3e3e3;
-  
-    --cl-listheaderbg : #41444c;
-    --cl-listheadertext: #aab0c3;
-    --cl-listbg : #26282f;
-    --cl-listborder: #4e5458;
-    
+    --cl-list-bg-2n: transparent;
   }
 }

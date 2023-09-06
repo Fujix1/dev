@@ -99,8 +99,6 @@ const loadResource = () => {
   if ( fs.existsSync(CONSTS.PATH_RESOURCES)) {
     try {
       recordString = fs.readFileSync(CONSTS.PATH_RESOURCES, 'utf8');
-      //record = JSON.parse(fs.readFileSync(PATH_RESOURCES, 'utf8'));
-      //record = JSON.parse(recordString);
       return true;
     } catch(err) {
       console.log(err);
@@ -119,6 +117,9 @@ const loadMame32j = () => {
   if (fs.existsSync(CONSTS.PATH_MAME32J)) {
     try {
       mame32jString = fs.readFileSync(CONSTS.PATH_MAME32J, 'utf8');
+      if (mame32jString.charCodeAt(0) === 0xFEFF) { // BOM削除
+        mame32jString = mame32jString.substring(1);
+      }
       return true;
     } catch (err) {
       console.log(err);
@@ -129,7 +130,6 @@ const loadMame32j = () => {
   }
 }
 
-
 //------------------------------------
 // [app] イベント処理
 //------------------------------------
@@ -138,10 +138,12 @@ const loadMame32j = () => {
 app.whenReady().then(async () => {
 
   var tick = Date.now();
-  console.log(loadResource()); 
+  loadResource(); 
   console.log("loadResource:", Date.now() - tick, "ms");  
 
-
+  var tick = Date.now();
+  loadMame32j(); 
+  console.log("loadMame32j:", Date.now() - tick, "ms");  
 
   createWindow();
 
@@ -290,6 +292,12 @@ ipcMain.handle('open-dialog', async(event, data)=>{
 ipcMain.handle('get-record', async(event, data)=>{
   return recordString;
 });
+
+// ゲーム情報を返す
+ipcMain.handle('get-mame32j', async(event, data)=>{
+  return mame32jString;
+});
+
 
 /**
  * MAME 起動処理 

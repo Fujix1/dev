@@ -2,16 +2,28 @@
 let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 
-//const information = document.getElementById('info');
-//information.innerText = `This app is using Chrome (v${window.myApi.chrome()}), Node.js (v${window.myApi.node()}), and Electron (v${window.myApi.electron()})`
+const LANG = { JP: 0, EN: 1,};
+let config = {
+  language: LANG.JP, // 言語設定
+}
 
-//document.getElementById('info2').innerText = window.myApi.hamachi;
-
-
-
-// Window Onload ハンドラ
+// Window Onload
 window.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
+
+  // 設定適用
+  document.getElementById('language').checked = (config.language == LANG.EN);
+  
+
+  // キー入力
+  window.addEventListener('keydown', e => {
+    switch (e.key) {
+      case "F12": 
+        config.language = (config.language==LANG.JP)?LANG.EN:LANG.JP;
+        document.getElementById('language').checked = (config.language == LANG.EN);
+      break;
+    }
+  });
 
   // empty the debug output
   document.querySelector('#debug').value = '';
@@ -72,20 +84,36 @@ async function onLoad() {
   });
 
 
-  document.querySelector('#btn-getrecord').addEventListener('click', async()=>{
-    //var tick = Date.now();
-    //record = JSON.parse(await window.retrofireAPI.getRecord());;
-    //console.log(Date.now() - tick);
-    //console.log(record.length);
-    //var tick = Date.now();
-    //console.log(Date.now() - tick);
-  });
-
   // ゲームデータ読み込み
   var tick = Date.now();
-  record = JSON.parse(await window.retrofireAPI.getRecord());;
+  record = JSON.parse(await window.retrofireAPI.getRecord());
+  // descJ と kana 追加
+  for(let i=0; i<record.length;i++) {
+    record[i].kana = record[i].desc;
+    record[i].descJ = record[i].desc;
+  } 
   console.log(Date.now() - tick);
-  console.log(record.length);
+  console.log("resources.json:",record.length);
+
+  var tick = Date.now();
+  mame32j = await window.retrofireAPI.getMame32j();
+  mame32j = mame32j.split("\r\n");
+  
+  let n = 0;
+  for(let i=0; i<mame32j.length;i++) {
+    const item = mame32j[i].split("\t");
+    for (j=n; j<record.length; j++) {
+      if (record[j].zipname === item[0]) {
+        record[j].descJ = item[1];
+        record[j].kana = item[2];
+        n = j+1;
+        break;
+      }
+    }
+  }
+
+  console.log("mame32j:", Date.now() - tick);
+
 
   // リストビュー初期化
   var tick = Date.now();
@@ -95,8 +123,8 @@ async function onLoad() {
     columns: [
       {label:'ゲーム名', data: "desc", order: 0, width: 380, defaultSort: "asc"},
       {label:'ZIP名', data: "zipname", order: 1, width: 100, defaultSort: "asc"},
-      {label:'メーカー', data: "maker", order:2, width: 150, defaultSort: "asc"},
-      {label:'年度', data: "year", order: 3, width: 60, defaultSort: "asc"},
+      {label:'メーカー', data: "maker", order:2, width: 160, defaultSort: "asc"},
+      {label:'年度', data: "year", order: 3, width: 55, defaultSort: "asc"},
       {label:'マスタ', data: "cloneof", order: 4, width: 100, defaultSort: "asc"},
       {label:'ドライバ', data: "source", order: 5, width: 180, defaultSort: "asc"}
     ],
@@ -660,7 +688,12 @@ class ListView {
       if (filteredIndex !== undefined) {
         li.setAttribute('data-index', filteredIndex);
         for (let i=0; i<li.childElementCount; i++) {
-          const text = this.data[filteredIndex][this.columns[i].data];
+          let text;
+          if (config.language == LANG.JP && this.columns[i].data == 'desc') {
+            text = this.data[filteredIndex].descJ;
+          } else {
+            text = this.data[filteredIndex][this.columns[i].data];
+          }
           li.children[i].innerText = text ? text : '';
         }        
       } else {
@@ -695,15 +728,32 @@ class ListView {
     this.sortDirection = sortDirection;
   }
 
+  // ソートと検索と表示更新
+  updateListView(word = '') {
+    this.sort();
+    this.filter(word);
+    this.changeItemCount(this.filteredData.length);
+    this.updateRowTexts(); 
+  }
+  
   // ソート
   sort() {
     var tick = Date.now();
-    console.log(this.columns[this.orderByIndex].data, this.sortDirection);
 
     this.sortedData.sort((a,b) => {
+
       // 大元のデータでソート
-      let itemA = this.data[a][this.columns[this.orderByIndex].data];
-      let itemB = this.data[b][this.columns[this.orderByIndex].data];
+      let itemA, itemB;
+
+      // 日本語のゲーム名はかなでソート
+      if (config.language === LANG.JP && this.columns[this.orderByIndex].data === 'desc') {
+        itemA = this.data[a].kana;
+        itemB = this.data[b].kana;
+      } else {
+      
+       itemA = this.data[a][this.columns[this.orderByIndex].data];
+        itemB = this.data[b][this.columns[this.orderByIndex].data];
+      }
       itemA = (itemA)? itemA.toUpperCase(): '';
       itemB = (itemB)? itemB.toUpperCase(): '';
       
@@ -721,14 +771,6 @@ class ListView {
     console.log('sort:', Date.now() - tick,"ms");
   }
 
-  // ソートと検索と表示更新
-  updateListView(word = '') {
-    this.sort();
-    this.filter(word);
-    this.changeItemCount(this.filteredData.length);
-    this.updateRowTexts(); 
-  }
-
   // 検索
   filter(word = '') {
 
@@ -738,17 +780,28 @@ class ListView {
     word = word.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     });
+    /*word = word.replace(/[ァ-ン]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0x60);
+    });*/
     
     // フィルタ用データをソート済みデータから作る
     this.filteredData = [];
+
     for(let i = 0;i < this.sortedData.length;i++) {
-      if (word==="" || (
-          this.data[this.sortedData[i]].desc.toLowerCase().indexOf(word) != -1 ||
+      if (word==="") { // 検索文字列が空のとき
+        this.filteredData.push(this.sortedData[i]);
+      } else {
+        /*const hiragana = this.data[this.sortedData[i]].descJ.toLowerCase().replace(/[ァ-ン]/g, function(s) {
+          return String.fromCharCode(s.charCodeAt(0) - 0x60);
+        });*/
+        if ((config.language == LANG.JP && this.data[this.sortedData[i]].descJ.toLowerCase().indexOf(word) != -1 ) || 
+          (config.language == LANG.EN && this.data[this.sortedData[i]].desc.toLowerCase().indexOf(word) != -1 ) ||
           this.data[this.sortedData[i]].zipname.toLowerCase().indexOf(word) != -1 ||
           this.data[this.sortedData[i]].maker.toLowerCase().indexOf(word) != -1 ||
           this.data[this.sortedData[i]].source.indexOf(word) != -1
-        )) {
-        this.filteredData.push(this.sortedData[i]);
+        ) {
+          this.filteredData.push(this.sortedData[i]);
+        }
       }
     }
     console.log('search:', Date.now() - tick,"ms");
