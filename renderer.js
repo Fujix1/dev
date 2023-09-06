@@ -61,7 +61,7 @@ async function onLoad() {
 
   document.querySelector("#search").addEventListener('input', e=>{
     if (e.target.getAttribute('IME') !== 'true') {
-      listViewMain.updateListView(e.target.value);
+      listViewMain.updateListViewSearch(e.target.value);
     }
   });
 
@@ -74,12 +74,12 @@ async function onLoad() {
   document.querySelector("#search").addEventListener('compositionend', e=>{
     e.target.setAttribute('IME', false);
     console.log('compositionend:', e.target.value);
-    listViewMain.updateListView(e.target.value);
+    listViewMain.updateListViewSearch(e.target.value);
   });
 
   document.querySelector('#btn-search').addEventListener('click', ()=>{
     var tick = Date.now();
-    listViewMain.updateListView(document.querySelector('#search').value);
+    listViewMain.updateListViewSearch(document.querySelector('#search').value);
     console.log(Date.now() - tick);
   });
 
@@ -731,6 +731,13 @@ class ListView {
   // ソートと検索と表示更新
   updateListView(word = '') {
     this.sort();
+    this.filter(word);
+    this.changeItemCount(this.filteredData.length);
+    this.updateRowTexts(); 
+  }
+
+  // 検索と表示更新
+  updateListViewSearch(word = '') {
     this.filter(word);
     this.changeItemCount(this.filteredData.length);
     this.updateRowTexts(); 
