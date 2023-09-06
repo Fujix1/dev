@@ -120,11 +120,11 @@
     &>div {
       color: var(--cl-text--inactive);
     }
-    &:nth-child(2n) {
+    &:not(:focus):nth-child(2n) {
       background-color: var(--cl-list-bg-2n);
     }
     &:focus {
-      background-color: var(--cl-active--sub);
+      background-color: var(--cl-active--sub)!important;
     }
     &--selected { // 選択中（フォーカスなし）
       background-color: var(--cl-disactive)!important;

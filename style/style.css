@@ -1264,11 +1264,11 @@ input[type=search]::-webkit-search-results-decoration {
 .m-fujList__listItem > div {
   color: var(--cl-text--inactive);
 }
-.m-fujList__listItem:nth-child(2n) {
+.m-fujList__listItem:not(:focus):nth-child(2n) {
   background-color: var(--cl-list-bg-2n);
 }
 .m-fujList__listItem:focus {
-  background-color: var(--cl-active--sub);
+  background-color: var(--cl-active--sub) !important;
 }
 .m-fujList__listItem--selected {
   background-color: var(--cl-disactive) !important;
