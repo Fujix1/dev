@@ -18,7 +18,8 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: var(--cl-listbg );
+    background-color: var(--cl-listbg);
+    box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.4);    
   }
   &__headerItem {
     box-sizing: border-box;

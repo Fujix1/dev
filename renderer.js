@@ -45,11 +45,24 @@ async function onLoad() {
 
   });
   document.querySelector('#btn-item2').addEventListener('click', ()=>{
-    let data = [];
-    for (i=0; i<30; i++) {
-      data.push('アイテム'+i);
-    }
+  });
 
+  document.querySelector("#search").addEventListener('input', e=>{
+    if (e.target.getAttribute('IME') !== 'true') {
+      listViewMain.updateListView(e.target.value);
+    }
+  });
+
+  // IME 変換中
+  document.querySelector("#search").addEventListener('compositionstart', e=>{
+    e.target.setAttribute('IME', true);
+  });
+
+  // IME 変換確定
+  document.querySelector("#search").addEventListener('compositionend', e=>{
+    e.target.setAttribute('IME', false);
+    console.log('compositionend:', e.target.value);
+    listViewMain.updateListView(e.target.value);
   });
 
   document.querySelector('#btn-search').addEventListener('click', ()=>{
@@ -57,6 +70,7 @@ async function onLoad() {
     listViewMain.updateListView(document.querySelector('#search').value);
     console.log(Date.now() - tick);
   });
+
 
   document.querySelector('#btn-getrecord').addEventListener('click', async()=>{
     //var tick = Date.now();
@@ -720,7 +734,7 @@ class ListView {
 
     var tick = Date.now();
     this.searchWord = word;
-    word = word.trim().toUpperCase();
+    word = word.trim().toLowerCase();
     word = word.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     });
@@ -728,7 +742,12 @@ class ListView {
     // フィルタ用データをソート済みデータから作る
     this.filteredData = [];
     for(let i = 0;i < this.sortedData.length;i++) {
-      if (word==="" || this.data[this.sortedData[i]].desc.toUpperCase().indexOf(word) != -1) {
+      if (word==="" || (
+          this.data[this.sortedData[i]].desc.toLowerCase().indexOf(word) != -1 ||
+          this.data[this.sortedData[i]].zipname.toLowerCase().indexOf(word) != -1 ||
+          this.data[this.sortedData[i]].maker.toLowerCase().indexOf(word) != -1 ||
+          this.data[this.sortedData[i]].source.indexOf(word) != -1
+        )) {
         this.filteredData.push(this.sortedData[i]);
       }
     }
