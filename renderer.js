@@ -5,6 +5,7 @@ let record; // オリジナルの全ゲーム情報
 const LANG = { JP: 0, EN: 1,};
 let config = {
   language: LANG.JP, // 言語設定
+  searchWord: '',
 }
 
 // Window Onload
@@ -14,7 +15,6 @@ async function onLoad() {
   // 設定適用
   document.getElementById('language').checked = (config.language == LANG.EN);
   
-
   // キー入力
   window.addEventListener('keydown', e => {
     switch (e.key) {
@@ -816,7 +816,7 @@ class ListView {
 
   }
 
-  // リストビューの設定保存
+  // listviewの設定保存
   async saveSettings() {
     const settings = {
       columns: this.columns,
@@ -824,7 +824,7 @@ class ListView {
       sortDirection: this.sortDirection,
     }
     try {
-      await window.retrofireAPI.setStoreTemp({key: "listview-"+this.slug, val: settings});
+       window.retrofireAPI.setStoreTemp({key: "listview-"+this.slug, val: settings});
       console.log('setting sent to main.js');
     } catch (e) {
       console.log(e);
@@ -832,8 +832,14 @@ class ListView {
   }
 }
 
-function onRun(e) {
-  console.log(e);
+// フォームのconfig送信
+async function saveFormConfig() {
+  try {
+    await window.retrofireAPI.setStoreTemp({key: "config", val: config});
+    console.log('config sent to main.js');
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 async function sendByApi(zip) {
