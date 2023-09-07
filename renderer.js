@@ -704,6 +704,12 @@ class ListView {
             } else {
               li.children[i].classList.remove('m-fujList__cellIcon--clone');  
             }
+            if (!this.data[filteredIndex].status) {
+              li.children[i].classList.add('m-fujList__cellIcon--nowork');
+            } else {
+              li.children[i].classList.remove('m-fujList__cellIcon--nowork');  
+            }            
+
           }
           if (config.language == LANG.JP && this.columns[i].data == 'desc') {
             text = this.data[filteredIndex].descJ;

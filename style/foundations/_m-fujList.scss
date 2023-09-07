@@ -3,7 +3,7 @@
   flex-direction: column;
   font-family: var(--ff-base);
   font-size: 12px;
-  line-height: 21px;
+  line-height: 20px;
   background-color: var(--cl-listbg);
   overflow: auto;
   position: relative;
@@ -162,20 +162,30 @@
     }
   }
   &__cellIcon {
-    padding-left: 27px;
+    padding-left: 24px;
     &:before {
       content: "";
       display: block;
       width: 20px;
-      height: 21px;
+      height: 20px;
       background: url(./pics/ico_rom.svg) no-repeat left center;
-      background-size: 19px;
+      background-size: 16px;
       position: absolute;
       left: 3px;
       top: 0;
     }
-    &--clone:before {
-      background-image: url(./pics/ico_rom_clone.svg);
+    &--clone {
+      &:before {
+        background-image: url(./pics/ico_rom_clone.svg);
+      }
+    }
+    &--nowork {
+      &:before {
+        background-image: url(./pics/ico_nowork.svg);
+      }
+    }
+    &--clone.m-fujList_cellIcon--nowork:before {
+      background-image: url(./pics/ico_nowork_clone.svg);
     }
   }
 }
