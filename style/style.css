@@ -1286,6 +1286,7 @@ input[type=search]::-webkit-search-results-decoration {
   pointer-events: none;
 }
 .m-fujList__listItemCell {
+  position: relative;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
