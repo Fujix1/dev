@@ -1150,7 +1150,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-direction: column;
   font-family: var(--ff-base);
   font-size: 12px;
-  line-height: 20px;
+  line-height: 21px;
   background-color: var(--cl-listbg);
   overflow: auto;
   position: relative;
@@ -1301,6 +1301,23 @@ input[type=search]::-webkit-search-results-decoration {
 .m-fujList__listItemCell--bold {
   font-size: 100%;
   color: var(--cl-text--highlight);
+}
+.m-fujList__cellIcon {
+  padding-left: 27px;
+}
+.m-fujList__cellIcon:before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 21px;
+  background: url(./pics/ico_rom.svg) no-repeat left center;
+  background-size: 19px;
+  position: absolute;
+  left: 3px;
+  top: 0;
+}
+.m-fujList__cellIcon--clone:before {
+  background-image: url(./pics/ico_rom_clone.svg);
 }
 
 .debug {

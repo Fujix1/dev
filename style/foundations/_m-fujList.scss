@@ -3,7 +3,7 @@
   flex-direction: column;
   font-family: var(--ff-base);
   font-size: 12px;
-  line-height: 20px;
+  line-height: 21px;
   background-color: var(--cl-listbg);
   overflow: auto;
   position: relative;
@@ -159,6 +159,23 @@
       //font-weight: bold;
       font-size: 100%;
       color: var(--cl-text--highlight);
+    }
+  }
+  &__cellIcon {
+    padding-left: 27px;
+    &:before {
+      content: "";
+      display: block;
+      width: 20px;
+      height: 21px;
+      background: url(./pics/ico_rom.svg) no-repeat left center;
+      background-size: 19px;
+      position: absolute;
+      left: 3px;
+      top: 0;
+    }
+    &--clone:before {
+      background-image: url(./pics/ico_rom_clone.svg);
     }
   }
 }

@@ -8,13 +8,22 @@ let config = {
   searchWord: '',
 }
 
+
+
+
 // Window Onload
 window.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
 
-  // 設定適用
-  document.getElementById('language').checked = (config.language == LANG.EN);
-  
+  // 設定読み込みと適用
+  config = await window.retrofireAPI.getStore('config');
+  if (config.searchWord) {
+    document.getElementById('search').value = config.searchWord;
+  }
+  if (config.language) {
+    document.getElementById('language').checked = (config.language == LANG.EN);
+  }
+
   // キー入力
   window.addEventListener('keydown', e => {
     switch (e.key) {
@@ -59,9 +68,12 @@ async function onLoad() {
   document.querySelector('#btn-item2').addEventListener('click', ()=>{
   });
 
+  // 検索欄入力イベント
   document.querySelector("#search").addEventListener('input', e=>{
     if (e.target.getAttribute('IME') !== 'true') {
-      listViewMain.updateListViewSearch(e.target.value);
+      config.searchWord = e.target.value;
+      listViewMain.updateListViewSearch();
+      saveFormConfig();
     }
   });
 
@@ -73,16 +85,17 @@ async function onLoad() {
   // IME 変換確定
   document.querySelector("#search").addEventListener('compositionend', e=>{
     e.target.setAttribute('IME', false);
-    console.log('compositionend:', e.target.value);
-    listViewMain.updateListViewSearch(e.target.value);
+    //console.log('compositionend:', e.target.value);
+    config.searchWord = e.target.value;
+    listViewMain.updateListViewSearch();
+    saveFormConfig();
   });
 
   document.querySelector('#btn-search').addEventListener('click', ()=>{
-    var tick = Date.now();
-    listViewMain.updateListViewSearch(document.querySelector('#search').value);
-    console.log(Date.now() - tick);
+    config.searchWord = document.querySelector('#search').value;
+    listViewMain.updateListViewSearch();
+    saveFormConfig();
   });
-
 
   // ゲームデータ読み込み
   var tick = Date.now();
@@ -111,9 +124,7 @@ async function onLoad() {
       }
     }
   }
-
-  console.log("mame32j:", Date.now() - tick);
-
+  console.log("mame32j:", Date.now() - tick,"ms");
 
   // リストビュー初期化
   var tick = Date.now();
@@ -164,8 +175,6 @@ class ListView {
       this.sortedData.push(i);
     }
     this.filteredData = []; // フィルタ済みの参照テーブル
-    this.searchWord = ''; // 検索文字列
-
     this.numItems = 0; // 保持項目数
 
     this.lastHeight = 0; // リサイズ前のサイズ保持
@@ -187,7 +196,6 @@ class ListView {
     //------------------------------------------------------------------------------
     // 設定復旧
     const settings = await window.retrofireAPI.getStore("listview-"+this.slug);
-    console.log(settings)
 
     if (settings) {
       // 整合性チェック
@@ -270,9 +278,7 @@ class ListView {
           newDirection = this.columns[clickedIndex].defaultSort;
         }
         this.setSortArrow(newOrderByIndex, newDirection);
-        
-        this.updateListView(this.searchWord);
-
+        this.updateListView();
         this.saveSettings();
         
       });
@@ -504,7 +510,6 @@ class ListView {
     // リサイズオブザーバ
     this.resizeObserver = new window.ResizeObserver( entries =>{
       if (entries[0].target == this.list) {
-        //console.log("size changed");
         this.onResize();
       }
     });
@@ -514,9 +519,7 @@ class ListView {
     this.setSortArrow(this.orderByIndex, this.sortDirection);
     this.updateVirtualDoms();
     this.updateRowDOMs();
-    
-    this.updateListView(this.searchWord);
-    
+    this.updateListView();
   }
 
   // リサイズ処理
@@ -542,6 +545,7 @@ class ListView {
         const li = document.createElement('li');
         li.setAttribute('tabindex', "0");
         li.className = 'm-fujList__listItem';
+        
         /*li.addEventListener('keydown', e=>{
           console.log(e.code);
           switch(e.code) {
@@ -549,6 +553,7 @@ class ListView {
               break;
           }
         });*/
+
         for (let j=0; j<this.columns.length; j++) {
           const div = document.createElement('div');
           div.classList.add('m-fujList__listItemCell');
@@ -683,12 +688,23 @@ class ListView {
 
     const virtualIndex = li.getAttribute('virtual-index');
     const dataIndex = li.getAttribute('data-index');
+
     if (!dataIndex || forceUpdate || this.filteredData[virtualIndex] != dataIndex) {
       const filteredIndex = this.filteredData[virtualIndex];
       if (filteredIndex !== undefined) {
         li.setAttribute('data-index', filteredIndex);
+
         for (let i=0; i<li.childElementCount; i++) {
           let text;
+
+          if (this.columns[i].data == 'desc') { // アイコン
+            li.children[i].classList.add('m-fujList__cellIcon');
+            if (this.data[filteredIndex].cloneof) {
+              li.children[i].classList.add('m-fujList__cellIcon--clone');
+            } else {
+              li.children[i].classList.remove('m-fujList__cellIcon--clone');  
+            }
+          }
           if (config.language == LANG.JP && this.columns[i].data == 'desc') {
             text = this.data[filteredIndex].descJ;
           } else {
@@ -729,16 +745,16 @@ class ListView {
   }
 
   // ソートと検索と表示更新
-  updateListView(word = '') {
+  updateListView() {
     this.sort();
-    this.filter(word);
+    this.filter();
     this.changeItemCount(this.filteredData.length);
     this.updateRowTexts(); 
   }
 
   // 検索と表示更新
-  updateListViewSearch(word = '') {
-    this.filter(word);
+  updateListViewSearch() {
+    this.filter();
     this.changeItemCount(this.filteredData.length);
     this.updateRowTexts(); 
   }
@@ -779,10 +795,9 @@ class ListView {
   }
 
   // 検索
-  filter(word = '') {
-
+  filter() {
+    let word = config.searchWord;
     var tick = Date.now();
-    this.searchWord = word;
     word = word.trim().toLowerCase();
     word = word.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
@@ -812,7 +827,7 @@ class ListView {
       }
     }
     console.log('search:', Date.now() - tick,"ms");
-    console.log(this.filteredData.length)
+    console.log(this.filteredData.length+ '件')
 
   }
 
@@ -833,9 +848,9 @@ class ListView {
 }
 
 // フォームのconfig送信
-async function saveFormConfig() {
+function saveFormConfig() {
   try {
-    await window.retrofireAPI.setStoreTemp({key: "config", val: config});
+    window.retrofireAPI.setStoreTemp({key: "config", val: config});
     console.log('config sent to main.js');
   } catch (e) {
     console.log(e);

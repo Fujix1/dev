@@ -293,7 +293,7 @@ ipcMain.handle('get-record', async(event, data)=>{
   return recordString;
 });
 
-// ゲーム情報を返す
+// mame32j.lstを返す
 ipcMain.handle('get-mame32j', async(event, data)=>{
   return mame32jString;
 });
