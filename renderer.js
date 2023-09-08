@@ -28,13 +28,14 @@ async function onLoad() {
     document.querySelector('input[name="searchRadio"][value="'+readConfig.searchTarget+'"]').checked = true;
   }
 
-  // キー入力
+  // キー入力処理
   window.addEventListener('keydown', e => {
-
     switch (e.key) {
       case "F12": 
         config.language = (config.language==LANG.JP)?LANG.EN:LANG.JP;
         document.getElementById('language').checked = (config.language == LANG.EN);
+        listViewMain.updateListView();
+        saveFormConfig();
       break;
       case "Backspace":
         const search = document.getElementById('search'); 
@@ -46,6 +47,14 @@ async function onLoad() {
       break;
     }
   });
+
+  // 言語切替
+  document.getElementById('language').addEventListener('change', e=>{
+    
+    config.language = (e.target.checked)?LANG.EN:LANG.JP;
+    listViewMain.updateListView();
+    saveFormConfig();
+  })
 
   // empty the debug output
   document.querySelector('#debug').value = '';
@@ -69,10 +78,9 @@ async function onLoad() {
   document.querySelector('#btn-dialog').addEventListener('click', async()=>{
     // メインプロセスを呼び出し
     result = await window.retrofireAPI.dialog('');
-    if (result.result == true) {
+    if (result && result.result == true) {
       document.querySelector('#openImage').src = 'data:image/png;base64,'+result.img;
     }
-    console.log(result);
   });
 
   document.querySelector('#btn-item1').addEventListener('click', ()=>{
