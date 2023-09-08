@@ -9,8 +9,6 @@ let config = {
 }
 
 
-
-
 // Window Onload
 window.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
@@ -26,10 +24,18 @@ async function onLoad() {
 
   // キー入力
   window.addEventListener('keydown', e => {
+
     switch (e.key) {
       case "F12": 
         config.language = (config.language==LANG.JP)?LANG.EN:LANG.JP;
         document.getElementById('language').checked = (config.language == LANG.EN);
+      break;
+      case "Backspace":
+        const search = document.getElementById('search'); 
+        if (e.target !== search ) {
+          search.focus();
+          e.preventDefault();
+        }
       break;
     }
   });
@@ -91,11 +97,7 @@ async function onLoad() {
     saveFormConfig();
   });
 
-  document.querySelector('#btn-search').addEventListener('click', ()=>{
-    config.searchWord = document.querySelector('#search').value;
-    listViewMain.updateListViewSearch();
-    saveFormConfig();
-  });
+
 
   // ゲームデータ読み込み
   var tick = Date.now();

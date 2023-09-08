@@ -11,19 +11,52 @@
 
     <div class="l-wrap">
       <div class="l-head">
-        l-head
+        <div class="l-head__item">
+          <label>
+            <input type="checkbox" id="language">
+            英語
+          </label>
+        </div>
+        <div class="l-head__item">
+          <div class="p-search">
+            <div class="p-search__dropbox">
+              <div class="p-search__dropboxIcon">
+                &#xe744;
+              </div>
+              <div class="p-search__dropboxStage">
+                <label class="p-search__dropboxLabel">
+                  <input type="radio" class="p-search__dropboxRadio" name="search" value="" checked>すべて
+                </label>
+                <label class="p-search__dropboxLabel">
+                  <input type="radio" class="p-search__dropboxRadio" name="search" value="desc">ゲーム名
+                </label>
+                <label class="p-search__dropboxLabel">
+                  <input type="radio" class="p-search__dropboxRadio" name="search" value="zipname">ZIP名
+                </label>
+                <label class="p-search__dropboxLabel">
+                  <input type="radio" class="p-search__dropboxRadio" name="search" value="maker">メーカー
+                </label>
+                <label class="p-search__dropboxLabel">
+                  <input type="radio" class="p-search__dropboxRadio" name="search" value="source">ドライバ
+                </label>
+              </div>
+
+            </div>
+            <input class="p-search__input" id="search" type="search" maxlength="20" size="16" value="" spellcheck="false">
+          </div>
+        </div>
       </div>
       <div class="l-main">
+        <div class="l-list">
+          <div class="list-view" tabindex="0">
+          </div>
+        </div>
         <div class="l-test">
           <p><button type="button" class="" id="test1" value="mappyj">mappyj</button>
             <button type="button" class="" id="test2" value="outrun">outrun</button>
             <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button><button type="button" id="btn-reset">リセット</button>
-            <label>
-              <input type="checkbox" id="language">
-              英語
-            </label>
-          </p>
-          <p><button type="button" id="btn-dialog">ダイアログ</button><button type="button" id="btn-item1">40000</button><button type="button" id="btn-item2">30</button>&nbsp;<input id="search" type="search" maxlength="20" size="16" value="" spellcheck="false"><button type="button" id="btn-search">検索</button></p>
+            <button type="button" id="btn-dialog">ダイアログ</button><button type="button" id="btn-item1">40000</button>
+            <button type="button" id="btn-item2">30</button>&nbsp;</p>
           <div style="display: flex; width: 100%;">
             <div style="flex-grow: 1;">
               <textarea class="debug" id="debug" readonly></textarea>
@@ -31,10 +64,6 @@
             <div class="openImage">
               <img id="openImage">
             </div>  
-          </div>
-        </div>
-        <div class="l-list">
-          <div class="list-view" tabindex="0">
           </div>
         </div>
       </div>

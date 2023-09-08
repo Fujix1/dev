@@ -73,8 +73,7 @@ a {
 abbr[title] {
   border-bottom: none; /* 1 */
   text-decoration: underline; /* 2 */
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted; /* 2 */
+  text-decoration: underline dotted; /* 2 */
 }
 
 /**
@@ -174,9 +173,7 @@ button,
 [type=button],
 [type=reset],
 [type=submit] {
-  -webkit-appearance: button;
-     -moz-appearance: button;
-          appearance: button;
+  appearance: button;
 }
 
 /**
@@ -260,7 +257,7 @@ textarea {
  */
 [type=search] {
   -webkit-appearance: textfield; /* 1 */
-  outline-offset: -2px; /* 2 */
+  /*outline-offset: -2px; /* 2 */
 }
 
 /**
@@ -328,9 +325,7 @@ template {
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 
 .mu-arrow-left:before {
@@ -992,22 +987,26 @@ template {
 :root {
   --ff-base: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans","", san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
+  --font-size: 12px;
 }
 @media (prefers-color-scheme: light) {
   :root {
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
+    --cl-ui-boxshadow: 2px 2px 3px 1px rgba(0,0,0,.3);
+    --cl-l-head-bg: #26282f;
     --cl-text--highlight: #bbb;
     --cl-text--main: #222;
     --cl-text--weak: #a7a7a7;
     --cl-theme: #43bbdf;
+    --cl-theme--gray: #cecece;
     --cl-active: #2592b3;
     --cl-active--sub: #3c6f80;
     --cl-disactive: #555;
     --cl-text: #eee;
     --cl-text--inactive: #ccc;
-    --cl-listheaderbg: #41444c;
+    --cl-listheaderbg: #343436;
     --cl-listheadertext: #a4c4dd;
     --cl-listheader-text-hover: #eee;
     --cl-listbg: #26282f;
@@ -1069,6 +1068,7 @@ html {
   overflow: hidden;
   width: 100%;
   height: 100%;
+  font-size: var(--font-size);
 }
 
 body {
@@ -1121,6 +1121,16 @@ input[type=search]::-webkit-search-results-decoration {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 0;
+}
+
+.l-head {
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--cl-l-head-bg);
+  color: var(--cl-text--weak);
+  padding: 10px;
 }
 
 .l-main {
@@ -1162,15 +1172,13 @@ input[type=search]::-webkit-search-results-decoration {
   top: 0;
   z-index: 1;
   background-color: var(--cl-listbg);
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.5);
 }
 .m-fujList__headerItem {
   box-sizing: border-box;
   flex-grow: 0;
   flex-shrink: 0;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
   display: flex;
   position: relative;
   background-color: var(--cl-listheaderbg);
@@ -1230,9 +1238,7 @@ input[type=search]::-webkit-search-results-decoration {
   left: 50%;
   top: 0px;
   transform: translateX(-50%);
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
   pointer-events: none;
 }
 .m-fujList__sort--desc:before {
@@ -1257,9 +1263,7 @@ input[type=search]::-webkit-search-results-decoration {
   position: absolute;
   text-decoration: none;
   color: inherit;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 .m-fujList__listItem > div {
   color: var(--cl-text--inactive);
@@ -1327,6 +1331,85 @@ input[type=search]::-webkit-search-results-decoration {
   background-image: url(./pics/ico_nowork_clone.svg);
 }
 
+.p-search {
+  position: relative;
+  border-bottom: 1px solid var(--cl-theme--gray);
+  transition: 0.2s;
+  display: flex;
+}
+.p-search:focus-within {
+  border-bottom: 1px solid var(--cl-theme);
+}
+.p-search__input {
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  border-radius: 0;
+  font-size: 130%;
+  line-height: 22px;
+  color: var(--cl-text);
+  flex-grow: 1;
+}
+.p-search__dropbox {
+  position: relative;
+}
+.p-search__dropboxIcon {
+  display: block;
+  font-family: "microns";
+  font-size: 20px;
+  text-align: center;
+  user-select: none;
+  cursor: pointer;
+  padding: 0 3px;
+}
+.p-search__dropbox:hover .p-search__dropboxIcon {
+  color: var(--cl-theme);
+}
+.p-search__dropbox:hover .p-search__dropboxStage {
+  pointer-events: all;
+  visibility: visible;
+}
+.p-search__dropboxStage {
+  pointer-events: none;
+  visibility: hidden;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  background-color: var(--cl-listheaderbg);
+  border: 1px solid var(--cl-listborder);
+  box-shadow: var(--cl-ui-boxshadow);
+}
+.p-search__dropboxLabel {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 24px;
+  user-select: none;
+  color: var(--cl-text);
+  padding: 0.1em 2em 0.1em 2.5em;
+  position: relative;
+}
+.p-search__dropboxLabel:hover {
+  background-color: var(--cl-active);
+}
+.p-search__dropboxRadio {
+  appearance: none;
+}
+.p-search__dropboxRadio:checked:before {
+  content: "\e718";
+  font-family: "microns";
+  color: var(--cl-text);
+  display: block;
+  font-size: 160%;
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .debug {
   width: 100%;
   height: 100%;
@@ -1337,8 +1420,7 @@ input[type=search]::-webkit-search-results-decoration {
   display: block;
   width: 320px;
   height: 240px;
-  -o-object-fit: fill;
-     object-fit: fill;
+  object-fit: fill;
   image-rendering: -webkit-optimize-contrast;
 }
 

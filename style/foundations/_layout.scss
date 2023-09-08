@@ -4,6 +4,16 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 0;
+}
+
+.l-head {
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--cl-l-head-bg);
+  color: var(--cl-text--weak);
+  padding: 10px;  
 }
 
 .l-main {

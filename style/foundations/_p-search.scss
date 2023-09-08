@@ -1,0 +1,80 @@
+.p-search {
+  position: relative;
+  border-bottom: 1px solid var(--cl-theme--gray);
+  transition: .2s;
+  display: flex;
+  &:focus-within {
+    border-bottom: 1px solid var(--cl-theme);
+  }
+  &__input {
+    appearance: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    border-radius: 0;
+    font-size: 130%;
+    line-height: 22px;
+    color: var(--cl-text);
+    flex-grow: 1;
+  }
+  &__dropbox {
+    position: relative;
+    &Icon {
+      display: block;
+      font-family: "microns";
+      font-size: 20px;
+      text-align: center;
+      user-select: none;
+      cursor: pointer;
+      padding: 0 3px;
+    }
+    &:hover {
+      .p-search__dropboxIcon {
+         color: var(--cl-theme);
+      }
+      .p-search__dropboxStage {
+        pointer-events: all;
+        visibility: visible;
+      }
+    }
+    &Stage {
+      pointer-events: none;
+      visibility: hidden;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      background-color: var(--cl-listheaderbg);
+      border: 1px solid var(--cl-listborder);
+      box-shadow: var(--cl-ui-boxshadow);
+    }
+    &Label {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      font-size: 14px;
+      line-height: 24px;
+      user-select: none;
+      color: var(--cl-text);
+      padding: 0.1em 2em 0.1em 2.5em;
+      position: relative;
+      &:hover {
+        background-color: var(--cl-active);
+      }
+    }
+    &Radio {
+      appearance: none;
+      &:checked:before {
+        content: "\e718";
+        font-family: "microns";
+        color: var(--cl-text);
+        display: block;
+        font-size: 160%;
+        position: absolute;
+        left: 9px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+  }
+}
