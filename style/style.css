@@ -1097,6 +1097,10 @@ input[type=search]::-webkit-search-results-decoration {
   display: none;
 }
 
+::selection {
+  background: var(--cl-active);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -1380,6 +1384,7 @@ input[type=search]::-webkit-search-results-decoration {
   background-color: var(--cl-listheaderbg);
   border: 1px solid var(--cl-listborder);
   box-shadow: var(--cl-ui-boxshadow);
+  border-radius: 2px;
 }
 .p-search__dropboxLabel {
   display: flex;

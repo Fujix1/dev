@@ -1,4 +1,4 @@
-
+//'use strict';
 let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 
@@ -6,20 +6,26 @@ const LANG = { JP: 0, EN: 1,};
 let config = {
   language: LANG.JP, // 言語設定
   searchWord: '',
+  searchTarget: '',
 }
-
 
 // Window Onload
 window.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
 
   // 設定読み込みと適用
-  config = await window.retrofireAPI.getStore('config');
-  if (config.searchWord) {
-    document.getElementById('search').value = config.searchWord;
+  readConfig = await window.retrofireAPI.getStore('config');
+  if (readConfig.searchWord) {
+    config.searchWord = readConfig.searchWord;
+    document.getElementById('search').value = readConfig.searchWord;
   }
-  if (config.language) {
-    document.getElementById('language').checked = (config.language == LANG.EN);
+  if (readConfig.language) {
+    config.language = readConfig.language;
+    document.getElementById('language').checked = (readConfig.language == LANG.EN);
+  }
+  if (readConfig.searchTarget) {
+    config.searchTarget = readConfig.searchTarget;
+    document.querySelector('input[name="searchRadio"][value="'+readConfig.searchTarget+'"]').checked = true;
   }
 
   // キー入力
@@ -34,6 +40,7 @@ async function onLoad() {
         const search = document.getElementById('search'); 
         if (e.target !== search ) {
           search.focus();
+          search.select();
           e.preventDefault();
         }
       break;
@@ -97,7 +104,14 @@ async function onLoad() {
     saveFormConfig();
   });
 
-
+  // 検索対象
+  document.getElementsByName('searchRadio').forEach(item => {
+    item.addEventListener('change', e=>{
+      config.searchTarget = document.querySelector('input[name="searchRadio"]:checked').value;
+      listViewMain.updateListViewSearch();
+      saveFormConfig();
+    });
+  });
 
   // ゲームデータ読み込み
   var tick = Date.now();
@@ -111,7 +125,7 @@ async function onLoad() {
   console.log("resources.json:",record.length);
 
   var tick = Date.now();
-  mame32j = await window.retrofireAPI.getMame32j();
+  let mame32j = await window.retrofireAPI.getMame32j();
   mame32j = mame32j.split("\r\n");
   
   let n = 0;
@@ -804,6 +818,7 @@ class ListView {
 
   // 検索
   filter() {
+
     let word = config.searchWord;
     var tick = Date.now();
     word = word.trim().toLowerCase();
@@ -814,29 +829,56 @@ class ListView {
       return String.fromCharCode(s.charCodeAt(0) - 0x60);
     });*/
     
-    // フィルタ用データをソート済みデータから作る
+
     this.filteredData = [];
 
-    for(let i = 0;i < this.sortedData.length;i++) {
-      if (word==="") { // 検索文字列が空のとき
+    if (word === '') { // 検索文字列が空のとき
+      for(let i = 0; i < this.sortedData.length; i++) {
         this.filteredData.push(this.sortedData[i]);
+      }
+    } else {
+      const properties = []; // 検索対象のプロパティ
+
+      if (config.searchTarget == '') {
+        properties.push('desc');
+        properties.push('zipname');
+        properties.push('maker');
+        properties.push('source');
       } else {
-        /*const hiragana = this.data[this.sortedData[i]].descJ.toLowerCase().replace(/[ァ-ン]/g, function(s) {
-          return String.fromCharCode(s.charCodeAt(0) - 0x60);
-        });*/
-        if ((config.language == LANG.JP && this.data[this.sortedData[i]].descJ.toLowerCase().indexOf(word) != -1 ) || 
-          (config.language == LANG.EN && this.data[this.sortedData[i]].desc.toLowerCase().indexOf(word) != -1 ) ||
-          this.data[this.sortedData[i]].zipname.toLowerCase().indexOf(word) != -1 ||
-          this.data[this.sortedData[i]].maker.toLowerCase().indexOf(word) != -1 ||
-          this.data[this.sortedData[i]].source.indexOf(word) != -1
-        ) {
+        properties.push(config.searchTarget);
+      }
+
+      if (config.language === LANG.JP) {
+        for (let i=0; i<properties.length; i++) {
+          if (properties[i] === 'desc') {
+            properties[i] = 'descJ';
+            break;
+          }
+        }
+      }
+
+      for(let i = 0; i < this.sortedData.length; i++) {
+        if (word==="") { 
           this.filteredData.push(this.sortedData[i]);
+        } else {
+
+          /*const hiragana = this.data[this.sortedData[i]].descJ.toLowerCase().replace(/[ァ-ン]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) - 0x60);
+          });*/
+
+          for(let j=0; j < properties.length; j++) {
+            if (this.data[this.sortedData[i]][properties[j]].toLowerCase().indexOf(word)!=-1) {
+              this.filteredData.push(this.sortedData[i]);
+              break;
+            }
+          }
+  
         }
       }
     }
+
     console.log('search:', Date.now() - tick,"ms");
     console.log(this.filteredData.length+ '件')
-
   }
 
   // listviewの設定保存

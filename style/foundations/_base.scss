@@ -31,6 +31,9 @@ input[type="search"]::-webkit-search-results-decoration {
   display: none;
 }
 
+::selection {
+  background: var(--cl-active);
+}
 
 ::-webkit-scrollbar{
   width: 10px;
