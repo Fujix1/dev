@@ -984,8 +984,58 @@ template {
   content: "\e79a";
 }
 
+@font-face {
+  font-family: "fontello";
+  src: url("fonts/fontello.woff2?79088308") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'fontello';
+    src: url('../font/fontello.svg?79088308#fontello') format('svg');
+  }
+}
+*/
+[class^=icon-]:before, [class*=" icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  text-align: center;
+  /* opacity: .8; */
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: 0.2em;
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.icon-ico-ja:before {
+  content: "\e800";
+} /* '' */
+.icon-ico-en:before {
+  content: "\e801";
+} /* '' */
 :root {
-  --ff-base: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans","", san-serif;
+  --ff-base: "Meiryo", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans","", san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
   --font-size: 12px;
 }
@@ -1132,9 +1182,13 @@ input[type=search]::-webkit-search-results-decoration {
 .l-head {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   background-color: var(--cl-l-head-bg);
   color: var(--cl-text--weak);
   padding: 10px;
+}
+.l-head__item:not(:last-of-type) {
+  margin-right: 10px;
 }
 
 .l-main {
@@ -1333,6 +1387,43 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-fujList__cellIcon--clone.m-fujList_cellIcon--nowork:before {
   background-image: url(./pics/ico_nowork_clone.svg);
+}
+
+.m-checkbox {
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  display: block;
+}
+.m-checkbox__language {
+  position: relative;
+  display: none;
+}
+.m-checkbox__language + label {
+  position: relative;
+  font-size: 0;
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+.m-checkbox__language + label:before {
+  content: "\e800";
+  font-size: 22px;
+  line-height: 22px;
+  font-family: "fontello";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+}
+.m-checkbox__language:checked + label:before {
+  content: "\e801";
+}
+.m-checkbox__language:not(:disabled) + label:hover {
+  cursor: pointer;
+  color: var(--cl-theme);
 }
 
 .p-search {

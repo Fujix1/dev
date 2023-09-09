@@ -1,9 +1,11 @@
 @use "packages/normalize.css";
 @use "fonts/microns.scss";
+@use "fonts/fontello";
 @use "foundations/variables";
 @use "foundations/base";
 @use "foundations/layout";
 @use "foundations/m-fujList";
+@use "foundations/m-checkbox";
 @use "foundations/p-search";
 
 .debug {

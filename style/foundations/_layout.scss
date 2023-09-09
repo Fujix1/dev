@@ -11,9 +11,13 @@
 .l-head {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   background-color: var(--cl-l-head-bg);
   color: var(--cl-text--weak);
-  padding: 10px;  
+  padding: 10px;
+  &__item:not(:last-of-type) {
+    margin-right: 10px;
+  }
 }
 
 .l-main {

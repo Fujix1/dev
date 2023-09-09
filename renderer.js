@@ -1,4 +1,5 @@
-//'use strict';
+'use strict';
+
 let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 
@@ -14,7 +15,7 @@ window.addEventListener('DOMContentLoaded', onLoad);
 async function onLoad() {
 
   // 設定読み込みと適用
-  readConfig = await window.retrofireAPI.getStore('config');
+  const readConfig = await window.retrofireAPI.getStore('config');
   if (readConfig.searchWord) {
     config.searchWord = readConfig.searchWord;
     document.getElementById('search').value = readConfig.searchWord;
@@ -139,7 +140,7 @@ async function onLoad() {
   let n = 0;
   for(let i=0; i<mame32j.length;i++) {
     const item = mame32j[i].split("\t");
-    for (j=n; j<record.length; j++) {
+    for (let j=n; j<record.length; j++) {
       if (record[j].zipname === item[0]) {
         record[j].descJ = item[1];
         record[j].kana = item[2];
@@ -534,7 +535,13 @@ class ListView {
     // リサイズオブザーバ
     this.resizeObserver = new window.ResizeObserver( entries =>{
       if (entries[0].target == this.list) {
-        this.onResize();
+        // ステージの高さ
+        const stageHeight = this.list.offsetHeight - this.header.offsetHeight;
+        if (this.lastHeight != stageHeight) {
+          this.lastHeight = stageHeight;
+          this.updateVirtualDoms();
+          this.updateRowDOMs();
+        }
       }
     });
     this.resizeObserver.observe(this.list);
@@ -546,22 +553,12 @@ class ListView {
     this.updateListView();
   }
 
-  // リサイズ処理
-  onResize() {
-    // ステージの高さ
-    const stageHeight = this.list.offsetHeight - this.header.offsetHeight;
-    if (this.lastHeight != stageHeight) {
-      this.lastHeight = stageHeight;
-      this.updateVirtualDoms();
-      this.updateRowDOMs();
-    }
-  }
-  
+ 
   // 仮想要素をリストビューサイズに合わせて追加・削除
   updateVirtualDoms() {
     console.log('updateVirtualDoms');
     const numDOMs = this.ul.childElementCount; // 現在存在する要素数
-    const neededRows = Math.ceil(this.lastHeight / this.rowHeight) + 1; // 必要な要素数
+    let neededRows = Math.ceil(this.lastHeight / this.rowHeight) + 1; // 必要な要素数
 
     // 不足分追加
     if (numDOMs < neededRows) {
@@ -651,14 +648,15 @@ class ListView {
     }
     this.ul.style.height = newHeight+"px";
     
+    // ゼロ件のとき
     if (newItemCount == 0) {
       this.dataIndex = -1;
-    } 
+    }
   }
 
   // 行の仮想DOMをスクロール位置に合わせて再配置
   updateRowDOMs() {
-    console.log('updateRowDOMs')
+    console.log('updateRowDOMs');
 
     // DOM 項目の再配置
     const start = Math.floor(this.list.scrollTop / this.rowHeight);
@@ -701,7 +699,6 @@ class ListView {
   // 表示項目更新
   updateRowTexts(forceUpdate = false) {
     console.log('updateRowTexts');
-
     this.ul.childNodes.forEach(li => {
       this.updateRow(li, forceUpdate);
     });
@@ -732,7 +729,7 @@ class ListView {
               li.children[i].classList.add('m-fujList__cellIcon--nowork');
             } else {
               li.children[i].classList.remove('m-fujList__cellIcon--nowork');  
-            }            
+            }
 
           }
           if (config.language == LANG.JP && this.columns[i].data == 'desc') {
@@ -744,6 +741,7 @@ class ListView {
         }        
       } else {
         li.setAttribute('data-index', "-1");
+        li.classList.remove('m-fujList__listItem--selected');
       }
     }
   }
