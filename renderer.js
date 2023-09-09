@@ -20,10 +20,12 @@ async function onLoad() {
     config.searchWord = readConfig.searchWord;
     document.getElementById('search').value = readConfig.searchWord;
   }
+
   if (readConfig.language) {
     config.language = readConfig.language;
     document.getElementById('language').checked = (readConfig.language == LANG.EN);
   }
+
   if (readConfig.searchTarget) {
     config.searchTarget = readConfig.searchTarget;
     document.querySelector('input[name="searchRadio"][value="'+readConfig.searchTarget+'"]').checked = true;
@@ -35,7 +37,7 @@ async function onLoad() {
       case "F12": 
         config.language = (config.language==LANG.JP)?LANG.EN:LANG.JP;
         document.getElementById('language').checked = (config.language == LANG.EN);
-        listViewMain.updateListView();
+        listViewMain.updateListView(true);
         saveFormConfig();
       break;
       case "Backspace":
@@ -53,7 +55,7 @@ async function onLoad() {
   document.getElementById('language').addEventListener('change', e=>{
     
     config.language = (e.target.checked)?LANG.EN:LANG.JP;
-    listViewMain.updateListView();
+    listViewMain.updateListView(true);
     saveFormConfig();
   })
 
@@ -773,11 +775,11 @@ class ListView {
   }
 
   // ソートと検索と表示更新
-  updateListView() {
+  updateListView(forceUpdate = false) {
     this.sort();
     this.filter();
     this.changeItemCount(this.filteredData.length);
-    this.updateRowTexts(); 
+    this.updateRowTexts(forceUpdate); 
   }
 
   // 検索と表示更新
