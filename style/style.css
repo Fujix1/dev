@@ -1456,7 +1456,6 @@ input[type=search]::-webkit-search-results-decoration {
   text-align: center;
   user-select: none;
   cursor: pointer;
-  padding: 0 3px;
 }
 .p-search__dropbox:hover .p-search__dropboxIcon {
   color: var(--cl-theme);
