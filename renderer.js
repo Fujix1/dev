@@ -80,7 +80,7 @@ async function onLoad() {
 
   document.querySelector('#btn-dialog').addEventListener('click', async()=>{
     // メインプロセスを呼び出し
-    result = await window.retrofireAPI.dialog('');
+    const result = await window.retrofireAPI.dialog('');
     if (result && result.result == true) {
       document.querySelector('#openImage').src = 'data:image/png;base64,'+result.img;
     }
@@ -165,7 +165,7 @@ async function onLoad() {
       {label:'年度', data: "year", order: 3, width: 55, defaultSort: "asc"},
       {label:'マスタ', data: "cloneof", order: 4, width: 100, defaultSort: "asc"},
       {label:'ドライバ', data: "source", order: 5, width: 180, defaultSort: "asc"},
-      {label:'CPU', data: "cpu", order: 6, width: 180, defaultSort: "asc"},
+
       
     ],
     slug: 'main',
