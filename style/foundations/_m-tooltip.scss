@@ -1,0 +1,23 @@
+.m-tooltip {
+  display: block;
+  white-space: nowrap;
+  color: #343434;
+  font-size: 11px;
+  line-height: 24px;
+  background: #fff;
+  z-index: 100;
+  position: absolute;
+  top: 119%;
+  left: 0;
+  border: 1px solid #8f8f8f;
+  padding: 0 8px;
+  box-shadow: 0px 2px 1px 0 rgba(0,0,0,.4);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+  &--show {
+    opacity: 1;
+    transition: opacity 0s;
+  }
+}

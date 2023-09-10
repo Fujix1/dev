@@ -164,7 +164,9 @@ async function onLoad() {
       {label:'メーカー', data: "maker", order:2, width: 160, defaultSort: "asc"},
       {label:'年度', data: "year", order: 3, width: 55, defaultSort: "asc"},
       {label:'マスタ', data: "cloneof", order: 4, width: 100, defaultSort: "asc"},
-      {label:'ドライバ', data: "source", order: 5, width: 180, defaultSort: "asc"}
+      {label:'ドライバ', data: "source", order: 5, width: 180, defaultSort: "asc"},
+      {label:'CPU', data: "cpu", order: 6, width: 180, defaultSort: "asc"},
+      
     ],
     slug: 'main',
     orderByIndex: 1,

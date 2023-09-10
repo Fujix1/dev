@@ -986,7 +986,7 @@ template {
 
 @font-face {
   font-family: "fontello";
-  src: url("fonts/fontello.woff2?79088308") format("woff2");
+  src: url("fonts/fontello.woff2?79088309") format("woff2");
   font-weight: normal;
   font-style: normal;
 }
@@ -1417,13 +1417,38 @@ input[type=search]::-webkit-search-results-decoration {
   top: 0;
   width: 22px;
   height: 22px;
+  color: var(--cl-text);
 }
 .m-checkbox__language:checked + label:before {
   content: "\e801";
 }
-.m-checkbox__language:not(:disabled) + label:hover {
+.m-checkbox__language:not(:disabled) + label:hover:before {
   cursor: pointer;
   color: var(--cl-theme);
+}
+
+.m-tooltip {
+  display: block;
+  white-space: nowrap;
+  color: #343434;
+  font-size: 11px;
+  line-height: 24px;
+  background: #fff;
+  z-index: 100;
+  position: absolute;
+  top: 119%;
+  left: 0;
+  border: 1px solid #8f8f8f;
+  padding: 0 8px;
+  box-shadow: 0px 2px 1px 0 rgba(0, 0, 0, 0.4);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.m-tooltip--show {
+  opacity: 1;
+  transition: opacity 0s;
 }
 
 .p-search {
