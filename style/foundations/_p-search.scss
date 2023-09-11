@@ -77,4 +77,14 @@
       }
     }
   }
+  &__clear {
+    font-family: "microns";
+    font-size: 20px;
+    cursor: pointer;
+    transition: .2s;
+    user-select: none;
+    &:hover {
+      color: var(--cl-theme);
+    }
+  }  
 }

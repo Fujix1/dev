@@ -40,6 +40,7 @@
               </div>
             </div>
             <input class="p-search__input" id="search" type="search" maxlength="20" size="16" value="" spellcheck="false">
+            <div class="p-search__clear" tooltip="クリア(ESC)" id="clear">&#xe75c</div>
           </div>
         </div>        
 
@@ -54,7 +55,8 @@
             <button type="button" class="" id="test2" value="outrun">outrun</button>
             <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button><button type="button" id="btn-reset" tooltip="リセットします">リセット</button>
             <button type="button" id="btn-dialog">ダイアログ</button><button type="button" id="btn-item1">40000</button>
-            <button type="button" id="btn-item2">30</button>&nbsp;</p>
+            <button type="button" id="btn-item2">makeVisible</button>
+          </p>
           <div style="display: flex; width: 100%;">
             <div style="flex-grow: 1;">
               <textarea class="debug" id="debug" readonly></textarea>
@@ -71,6 +73,7 @@
     </div>
 
   </body>
+  <script src="./lib/listview.js"></script>
   <script src="./lib/tooltip.js"></script>
   <script src="./renderer.js"></script>
 </html>

@@ -1323,6 +1323,9 @@ input[type=search]::-webkit-search-results-decoration {
   color: inherit;
   user-select: none;
 }
+.m-fujList__listItem[data-index="-1"] {
+  visibility: hidden;
+}
 .m-fujList__listItem > div {
   color: var(--cl-text--inactive);
 }
@@ -1331,6 +1334,9 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-fujList__listItem:focus {
   background-color: var(--cl-active--sub) !important;
+}
+.m-fujList__listItem:focus-visible {
+  outline: none;
 }
 .m-fujList__listItem--selected {
   background-color: var(--cl-disactive) !important;
@@ -1403,20 +1409,20 @@ input[type=search]::-webkit-search-results-decoration {
   position: relative;
   font-size: 0;
   display: block;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
 }
 .m-checkbox__language + label:before {
   content: "\e800";
-  font-size: 22px;
-  line-height: 22px;
+  font-size: 18px;
+  line-height: 18px;
   font-family: "fontello";
   display: block;
   position: absolute;
   left: 0;
   top: 0;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   color: var(--cl-text);
 }
 .m-checkbox__language:checked + label:before {
@@ -1528,6 +1534,16 @@ input[type=search]::-webkit-search-results-decoration {
   left: 9px;
   top: 50%;
   transform: translateY(-50%);
+}
+.p-search__clear {
+  font-family: "microns";
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+  user-select: none;
+}
+.p-search__clear:hover {
+  color: var(--cl-theme);
 }
 
 .debug {

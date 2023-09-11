@@ -117,6 +117,9 @@
     text-decoration: none;
     color: inherit;
     user-select: none;
+    &[data-index="-1"] {
+      visibility: hidden;
+    }
     &>div {
       color: var(--cl-text--inactive);
     }
@@ -125,6 +128,9 @@
     }
     &:focus {
       background-color: var(--cl-active--sub)!important;
+    }
+    &:focus-visible {
+      outline: none;
     }
     &--selected { // 選択中（フォーカスなし）
       background-color: var(--cl-disactive)!important;
