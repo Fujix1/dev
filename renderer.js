@@ -16,20 +16,23 @@ async function onLoad() {
 
   // 設定読み込みと適用
   const readConfig = await window.retrofireAPI.getStore('config');
-  if (readConfig.searchWord) {
-    config.searchWord = readConfig.searchWord;
-    document.getElementById('search').value = readConfig.searchWord;
+  if (readConfig) {
+    if (readConfig.searchWord) {
+      config.searchWord = readConfig.searchWord;
+      document.getElementById('search').value = readConfig.searchWord;
+    }
+  
+    if (readConfig.language) {
+      config.language = readConfig.language;
+      document.getElementById('language').checked = (readConfig.language == LANG.EN);
+    }
+  
+    if (readConfig.searchTarget) {
+      config.searchTarget = readConfig.searchTarget;
+      document.querySelector('input[name="searchRadio"][value="'+readConfig.searchTarget+'"]').checked = true;
+    }
   }
-
-  if (readConfig.language) {
-    config.language = readConfig.language;
-    document.getElementById('language').checked = (readConfig.language == LANG.EN);
-  }
-
-  if (readConfig.searchTarget) {
-    config.searchTarget = readConfig.searchTarget;
-    document.querySelector('input[name="searchRadio"][value="'+readConfig.searchTarget+'"]').checked = true;
-  }
+  
 
   // キー入力処理
   window.addEventListener('keydown', e => {
