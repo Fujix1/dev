@@ -44,13 +44,13 @@ async function onLoad() {
   window.addEventListener('keydown', e => {
 
     switch (e.key) {
-      case "F12": 
+      case "F12": // 言語切替
         config.language = (config.language==LANG.JP)?LANG.EN:LANG.JP;
         document.getElementById('language').checked = (config.language == LANG.EN);
         listViewMain.updateListView(true);
         saveFormConfig();
       break;
-      case "Backspace":
+      case "Backspace": // 検索ボックスフォーカス
         const search = document.getElementById('search'); 
         if (e.target !== search ) {
           search.focus();
@@ -58,8 +58,14 @@ async function onLoad() {
           e.preventDefault();
         }
       break;
-      case "Escape":
+      case "Escape": // 検索リセット
         clearSearch();
+      break;
+      case "F5": // 起動
+      case "F9":
+        if (listViewMain.zipName !== '') {
+          window.retrofireAPI.executeMAME({ zipName: listViewMain.zipName });
+        }
       break;
     }
 
