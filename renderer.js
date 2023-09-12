@@ -8,6 +8,8 @@ let config = {
   language: LANG.JP, // 言語設定
   searchWord: '',
   searchTarget: '',
+  zipName: '',
+  dataIndex: -1,
 }
 
 // Window Onload
@@ -16,21 +18,24 @@ async function onLoad() {
 
   // 設定読み込みと適用
   const readConfig = await window.retrofireAPI.getStore('config');
-  console.log(readConfig)
   if (readConfig) {
-    if (readConfig.hasOwnProperty("searchWord")) {
+    if (readConfig.hasOwnProperty('searchWord')) {
       config.searchWord = readConfig.searchWord;
       document.getElementById('search').value = readConfig.searchWord;
     }
   
-    if (readConfig.hasOwnProperty("language")) {
+    if (readConfig.hasOwnProperty('language')) {
       config.language = readConfig.language;
       document.getElementById('language').checked = (readConfig.language == LANG.EN);
     }
   
-    if (readConfig.hasOwnProperty("searchTarget")) {
+    if (readConfig.hasOwnProperty('searchTarget')) {
       config.searchTarget = readConfig.searchTarget;
       document.querySelector('input[name="searchRadio"][value="'+readConfig.searchTarget+'"]').checked = true;
+    }
+
+    if (readConfig.hasOwnProperty('zipName')) {
+      config.zipName = readConfig.zipName;
     }
   }
   
@@ -99,8 +104,7 @@ async function onLoad() {
 
   });
   document.querySelector('#btn-item2').addEventListener('click', ()=>{
-    //listViewMain.dataIndex = 33842;
-    console.log(listViewMain.dataIndex)
+    console.log(listViewMain.dataIndex);
     listViewMain.makeVisible();
   });
 
@@ -108,7 +112,6 @@ async function onLoad() {
   document.querySelector("#search").addEventListener('input', e=>{
     if (e.target.getAttribute('IME') !== 'true') {
       config.searchWord = e.target.value;
-      listViewMain.searchWord = e.target.value;
       listViewMain.updateListViewSearch();
       saveFormConfig();
     }
@@ -122,8 +125,8 @@ async function onLoad() {
   // IME 変換確定
   document.querySelector("#search").addEventListener('compositionend', e=>{
     e.target.setAttribute('IME', false);
+    //console.log('compositionend:', e.target.value);
     config.searchWord = e.target.value;
-    listViewMain.searchWord = e.target.value;
     listViewMain.updateListViewSearch();
     saveFormConfig();
   });
@@ -132,10 +135,7 @@ async function onLoad() {
   document.getElementsByName('searchRadio').forEach(item => {
     item.addEventListener('change', e=>{
       config.searchTarget = document.querySelector('input[name="searchRadio"]:checked').value;
-      console.log(listViewMain.searchWord);
-      if (listViewMain.searchWord !== '') {
-        listViewMain.updateListViewSearch();
-      }
+      listViewMain.updateListViewSearch();
       saveFormConfig();
     });
   });
@@ -186,7 +186,7 @@ async function onLoad() {
     orderByIndex: 1,
     sortDirection: "asc",
     index: -1,
-    searchWord: config.searchWord,
+    zipName: config.zipName,
   });
   await listViewMain.init();
   console.log('listview init:', Date.now() - tick,"ms");
@@ -196,7 +196,6 @@ async function onLoad() {
 document.getElementById('clear').addEventListener('click', clearSearch);
 function clearSearch() {
   config.searchWord = "";
-  listViewMain.searchWord = "";
   document.querySelector("#search").value = "";
   listViewMain.updateListViewSearch();
   saveFormConfig();
@@ -205,6 +204,8 @@ function clearSearch() {
 // フォームのconfig送信
 function saveFormConfig() {
   try {
+    config.zipName = listViewMain.zipName;
+    config.dataIndex = listViewMain.dataIndex;
     window.retrofireAPI.setStoreTemp({key: "config", val: config});
     console.log('config sent to main.js');
   } catch (e) {
@@ -212,6 +213,7 @@ function saveFormConfig() {
   }
 }
 
+//
 async function sendByApi(zip) {
   result = await window.retrofireAPI.executeMAME({
     zipName: zip,
