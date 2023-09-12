@@ -1053,7 +1053,7 @@ template {
     --cl-theme--gray: #cecece;
     --cl-active: #2592b3;
     --cl-active--sub: #3c6f80;
-    --cl-disactive: #555;
+    --cl-selected--unfocused: #767a7c;
     --cl-text: #eee;
     --cl-text--inactive: #ccc;
     --cl-listheaderbg: #343436;
@@ -1339,7 +1339,7 @@ input[type=search]::-webkit-search-results-decoration {
   outline: none;
 }
 .m-fujList__listItem--selected {
-  background-color: var(--cl-disactive) !important;
+  background-color: var(--cl-selected--unfocused) !important;
 }
 .m-fujList__listItem--selected > div {
   color: var(--cl-text);

@@ -133,7 +133,7 @@
       outline: none;
     }
     &--selected { // 選択中（フォーカスなし）
-      background-color: var(--cl-disactive)!important;
+      background-color: var(--cl-selected--unfocused)!important;
       &>div {
         color: var(--cl-text);
       }
