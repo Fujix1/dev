@@ -16,18 +16,19 @@ async function onLoad() {
 
   // 設定読み込みと適用
   const readConfig = await window.retrofireAPI.getStore('config');
+  console.log(readConfig)
   if (readConfig) {
-    if (readConfig.searchWord) {
+    if (readConfig.hasOwnProperty("searchWord")) {
       config.searchWord = readConfig.searchWord;
       document.getElementById('search').value = readConfig.searchWord;
     }
   
-    if (readConfig.language) {
+    if (readConfig.hasOwnProperty("language")) {
       config.language = readConfig.language;
       document.getElementById('language').checked = (readConfig.language == LANG.EN);
     }
   
-    if (readConfig.searchTarget) {
+    if (readConfig.hasOwnProperty("searchTarget")) {
       config.searchTarget = readConfig.searchTarget;
       document.querySelector('input[name="searchRadio"][value="'+readConfig.searchTarget+'"]').checked = true;
     }
@@ -107,6 +108,7 @@ async function onLoad() {
   document.querySelector("#search").addEventListener('input', e=>{
     if (e.target.getAttribute('IME') !== 'true') {
       config.searchWord = e.target.value;
+      listViewMain.searchWord = e.target.value;
       listViewMain.updateListViewSearch();
       saveFormConfig();
     }
@@ -120,8 +122,8 @@ async function onLoad() {
   // IME 変換確定
   document.querySelector("#search").addEventListener('compositionend', e=>{
     e.target.setAttribute('IME', false);
-    //console.log('compositionend:', e.target.value);
     config.searchWord = e.target.value;
+    listViewMain.searchWord = e.target.value;
     listViewMain.updateListViewSearch();
     saveFormConfig();
   });
@@ -130,7 +132,10 @@ async function onLoad() {
   document.getElementsByName('searchRadio').forEach(item => {
     item.addEventListener('change', e=>{
       config.searchTarget = document.querySelector('input[name="searchRadio"]:checked').value;
-      listViewMain.updateListViewSearch();
+      console.log(listViewMain.searchWord);
+      if (listViewMain.searchWord !== '') {
+        listViewMain.updateListViewSearch();
+      }
       saveFormConfig();
     });
   });
@@ -181,6 +186,7 @@ async function onLoad() {
     orderByIndex: 1,
     sortDirection: "asc",
     index: -1,
+    searchWord: config.searchWord,
   });
   await listViewMain.init();
   console.log('listview init:', Date.now() - tick,"ms");
@@ -190,6 +196,7 @@ async function onLoad() {
 document.getElementById('clear').addEventListener('click', clearSearch);
 function clearSearch() {
   config.searchWord = "";
+  listViewMain.searchWord = "";
   document.querySelector("#search").value = "";
   listViewMain.updateListViewSearch();
   saveFormConfig();
