@@ -126,23 +126,23 @@
     &>div {
       color: var(--cl-text--inactive);
     }
-    &:not(:focus):nth-child(2n) {
+    &:not(:focus):not(:hover):nth-child(2n):not(.m-fujList__listItem--selectedF) {
       background-color: var(--cl-list-bg-2n);
     }
     &:focus {
-      background-color: var(--cl-active--sub)!important;
+      background-color: var(--cl-active)!important;
     }
     &:focus-visible {
       outline: none;
     }
     &--selected { // 選択中（フォーカスなし）
-      background-color: var(--cl-selected--unfocused)!important;
+      background-color: var(--cl-selected--unfocused);
       &>div {
         color: var(--cl-text);
       }
     }
     &:hover {
-      background-color: var(--cl-active)!important;
+      background-color: var(--cl-active--sub);
       &>div {
         color: var(--cl-text);
       }
