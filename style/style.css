@@ -1233,6 +1233,12 @@ input[type=search]::-webkit-search-results-decoration {
   position: relative;
   width: 100%;
 }
+.m-fujList:focus {
+  opacity: 0.95;
+}
+.m-fujList:focus-visible {
+  outline: none;
+}
 .m-fujList__header {
   display: flex;
   position: sticky;
@@ -1344,7 +1350,7 @@ input[type=search]::-webkit-search-results-decoration {
 .m-fujList__listItem > div {
   color: var(--cl-text--inactive);
 }
-.m-fujList__listItem:not(:focus):not(:hover):nth-child(2n):not(.m-fujList__listItem--selectedF) {
+.m-fujList__listItem:not(:focus):not(:hover):nth-child(2n):not(.m-fujList__listItem--selected) {
   background-color: var(--cl-list-bg-2n);
 }
 .m-fujList__listItem:focus {
@@ -1364,6 +1370,9 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-fujList__listItem:hover > div {
   color: var(--cl-text);
+}
+.m-fujList:focus .m-fujList__listItem--selected {
+  background-color: var(--cl-active) !important;
 }
 .is-header-resizing .m-fujList__listItem, .is-header-dragging .m-fujList__listItem {
   pointer-events: none;

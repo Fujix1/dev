@@ -15,6 +15,12 @@
   &:focus-within {
     //box-shadow: 0px 0px 0px 2px var(--cl-active-sub) inset;
   }
+  &:focus {
+    opacity: .95;
+  }
+  &:focus-visible {
+    outline: none;
+  }
 
   &__header {
     display: flex;
@@ -126,7 +132,7 @@
     &>div {
       color: var(--cl-text--inactive);
     }
-    &:not(:focus):not(:hover):nth-child(2n):not(.m-fujList__listItem--selectedF) {
+    &:not(:focus):not(:hover):nth-child(2n):not(.m-fujList__listItem--selected) {
       background-color: var(--cl-list-bg-2n);
     }
     &:focus {
@@ -145,6 +151,14 @@
       background-color: var(--cl-active--sub);
       &>div {
         color: var(--cl-text);
+      }
+    }
+  }
+
+  &:focus {
+    .m-fujList__listItem {
+      &--selected {
+        background-color: var(--cl-active)!important;
       }
     }
   }
