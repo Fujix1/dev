@@ -1492,17 +1492,20 @@ input[type=search]::-webkit-search-results-decoration {
   text-align: center;
   user-select: none;
   cursor: pointer;
+  transition: color var(--s-transition);
 }
 .p-search__dropbox:hover .p-search__dropboxIcon {
   color: var(--cl-theme);
 }
 .p-search__dropbox:hover .p-search__dropboxStage {
   pointer-events: all;
+  opacity: 1;
   visibility: visible;
 }
 .p-search__dropboxStage {
   pointer-events: none;
-  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--s-transition);
   position: absolute;
   display: flex;
   flex-direction: column;

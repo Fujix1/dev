@@ -26,6 +26,7 @@
       text-align: center;
       user-select: none;
       cursor: pointer;
+      transition: color var(--s-transition);
     }
     &:hover {
       .p-search__dropboxIcon {
@@ -33,12 +34,15 @@
       }
       .p-search__dropboxStage {
         pointer-events: all;
+        opacity: 1;
         visibility: visible;
       }
     }
     &Stage {
       pointer-events: none;
-      visibility: hidden;
+      //visibility: hidden;
+      opacity: 0;
+      transition: opacity var(--s-transition);
       position: absolute;
       display: flex;
       flex-direction: column;
