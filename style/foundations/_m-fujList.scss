@@ -44,6 +44,7 @@
     &.is-resizing,
     &.is-dragging,
     &:hover {
+      transition: background-color var(--s-transition), color var(--s-transition);
       background-color: var(--cl-active);
       color: var(--cl-listheader-text-hover);
     }

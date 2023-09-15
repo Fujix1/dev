@@ -15,7 +15,7 @@
   user-select: none;
   pointer-events: none;
   opacity: 0;
-  transition: opacity .2s;
+  transition: opacity var(--s-transition);
   &--show {
     opacity: 1;
     transition: opacity 0s;

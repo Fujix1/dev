@@ -1,7 +1,7 @@
 .p-search {
   position: relative;
   border-bottom: 1px solid var(--cl-theme--gray);
-  transition: .2s;
+  transition: var(--s-transition);
   display: flex;
   &:focus-within {
     border-bottom: 1px solid var(--cl-theme);
@@ -81,7 +81,7 @@
     font-family: "microns";
     font-size: 20px;
     cursor: pointer;
-    transition: .2s;
+    transition: var(--s-transition);
     user-select: none;
     &:hover {
       color: var(--cl-theme);

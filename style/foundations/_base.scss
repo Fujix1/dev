@@ -45,7 +45,7 @@ input[type="search"]::-webkit-search-results-decoration {
 ::-webkit-scrollbar-thumb{
   background-color: var(--cl-scrollbar-thumb);
   box-sizing: border-box;
-  border-radius: 6px;
+  //border-radius: 6px;
   &:hover {
     background-color: var(--cl-scrollbar-thumb-hover);
   }

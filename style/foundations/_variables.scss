@@ -4,6 +4,8 @@
   --font-size: 12px;
 
   @media (prefers-color-scheme: light) {
+    --s-transition: 0.2s;
+
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
@@ -17,7 +19,7 @@
     --cl-text--weak: #a7a7a7;
   
     --cl-theme: #43bbdf;
-    --cl-theme--gray: #cecece;
+    --cl-theme--gray: #888;
     
     --cl-active: #2592b3;
     --cl-active--sub: #3c6f80;

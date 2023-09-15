@@ -1041,6 +1041,7 @@ template {
 }
 @media (prefers-color-scheme: light) {
   :root {
+    --s-transition: 0.2s;
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
@@ -1050,7 +1051,7 @@ template {
     --cl-text--main: #222;
     --cl-text--weak: #a7a7a7;
     --cl-theme: #43bbdf;
-    --cl-theme--gray: #cecece;
+    --cl-theme--gray: #888;
     --cl-active: #2592b3;
     --cl-active--sub: #3c6f80;
     --cl-selected--unfocused: #767a7c;
@@ -1163,7 +1164,6 @@ input[type=search]::-webkit-search-results-decoration {
 ::-webkit-scrollbar-thumb {
   background-color: var(--cl-scrollbar-thumb);
   box-sizing: border-box;
-  border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--cl-scrollbar-thumb-hover);
@@ -1251,6 +1251,7 @@ input[type=search]::-webkit-search-results-decoration {
   position: relative;
 }
 .m-fujList__headerItem.is-resizing, .m-fujList__headerItem.is-dragging, .m-fujList__headerItem:hover {
+  transition: background-color var(--s-transition), color var(--s-transition);
   background-color: var(--cl-active);
   color: var(--cl-listheader-text-hover);
 }
@@ -1426,6 +1427,7 @@ input[type=search]::-webkit-search-results-decoration {
   top: 0;
   width: 18px;
   height: 18px;
+  transition: color var(--s-transition);
   color: var(--cl-text);
 }
 .m-checkbox__language:checked + label:before {
@@ -1453,7 +1455,7 @@ input[type=search]::-webkit-search-results-decoration {
   user-select: none;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity var(--s-transition);
 }
 .m-tooltip--show {
   opacity: 1;
@@ -1463,7 +1465,7 @@ input[type=search]::-webkit-search-results-decoration {
 .p-search {
   position: relative;
   border-bottom: 1px solid var(--cl-theme--gray);
-  transition: 0.2s;
+  transition: var(--s-transition);
   display: flex;
 }
 .p-search:focus-within {
@@ -1542,7 +1544,7 @@ input[type=search]::-webkit-search-results-decoration {
   font-family: "microns";
   font-size: 20px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: var(--s-transition);
   user-select: none;
 }
 .p-search__clear:hover {
