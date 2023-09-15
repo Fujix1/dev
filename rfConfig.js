@@ -2,9 +2,9 @@
 // 定数
 //-------------------------------------------------------------------
 const CONSTS = {
-  PATH_RESOURCES: './resource.json',
-  PATH_MAME32J: './mame32j.lst'
-}
+  PATH_RESOURCES: "./resource.json",
+  PATH_MAME32J: "./mame32j.lst",
+};
 
 //-------------------------------------------------------------------
 // 状態管理と変数
@@ -24,16 +24,16 @@ const rfConfig = {
  */
 
 const rfProfiles = [
-  { title: 'テスト',
-    exePath: 'd:/mame/mame.exe',
-    workDir: 'd:/mame/',
-    option: '-mouse',
-    optEnabled: false,
-  }
+  { title: "テスト", exePath: "d:/mame/mame.exe", workDir: "d:/mame/", option: "-mouse", optEnabled: false },
 ];
+
+const rfPath = {
+  dats: "./dats",
+};
 
 module.exports = {
   CONSTS,
   rfConfig,
   rfProfiles,
+  rfPath,
 };
