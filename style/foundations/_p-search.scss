@@ -16,6 +16,9 @@
     line-height: 22px;
     color: var(--cl-text);
     flex-grow: 1;
+    &::selection {
+      background-color: var(--cl-input--selection);
+    }
   }
   &__dropbox {
     position: relative;

@@ -23,17 +23,20 @@
     
     --cl-active:  linear-gradient(90deg, #257db3, #25b392); //#2592b3;
     --cl-active--sub: #3c6f80;
-    --cl-selected--unfocused: #767a7c;
+    --cl-selected--unfocused: linear-gradient(90deg, #737e85, #5f6665);;
   
     --cl-text: #eee;
     --cl-text--inactive: #ccc;
     --cl-listheaderbg : #343436;
     --cl-listheadertext: #a4c4dd;
+    --cl-listheader-hover: #3e7383;
     --cl-listheader-text-hover: #eee;
     --cl-listbg : #26282f;
     --cl-listheader-border: #4e5458;
     --cl-listborder: #4e5458;
     --cl-list-bg-2n: transparent;
+
+    --cl-input--selection: #1f89b3;
     /*
     --cl-scrollbar-track: #fff;
     --cl-scrollbar-thumb: #aaa;

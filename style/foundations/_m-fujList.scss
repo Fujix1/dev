@@ -45,7 +45,7 @@
     &.is-dragging,
     &:hover {
       transition: background-color var(--s-transition), color var(--s-transition);
-      background-color: var(--cl-active);
+      background: var(--cl-listheader-hover);
       color: var(--cl-listheader-text-hover);
     }
     &.is-dragging {
