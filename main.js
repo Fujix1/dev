@@ -50,6 +50,7 @@ const createWindow = () => {
   // 保存値レストア
   const pos = store.get("mainWindow.pos") || [MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y];
   const size = store.get("mainWindow.size") || [MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height];
+  const maximized = store.get("mainWindow.maximized") || false;
 
   // ウインドウ生成
   mainWindow = new BrowserWindow({
@@ -73,6 +74,7 @@ const createWindow = () => {
 
   // 準備が整ったら表示
   mainWindow.once("ready-to-show", () => {
+    if (maximized) mainWindow.maximize();
     mainWindow.show();
   });
 
@@ -81,6 +83,7 @@ const createWindow = () => {
     console.log("mainwindow on close");
     store.set("mainWindow.pos", mainWindow.getPosition()); // ウィンドウの座標を記録
     store.set("mainWindow.size", mainWindow.getSize()); // ウィンドウのサイズを記録
+    store.set("mainWindow.maximized", mainWindow.isMaximized());
   });
 
   // ウィンドウ閉じた後
