@@ -1529,7 +1529,7 @@ input[type=search]::-webkit-search-results-decoration {
   position: relative;
 }
 .p-search__dropboxLabel:hover {
-  background-color: var(--cl-active);
+  background: var(--cl-active);
 }
 .p-search__dropboxRadio {
   appearance: none;

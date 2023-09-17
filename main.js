@@ -12,7 +12,7 @@ const store = new Store();
 const { validateBufferMIMEType } = require("validate-image-type");
 const sizeOf = require("image-size");
 
-const { CONSTS, rfConfig, rfProfiles } = require("./rfConfig");
+const { CONSTS, rfConfig, rfProfiles, rfPath } = require("./rfConfig");
 
 //-------------------------------------------------------------------
 // 初期設定
@@ -39,6 +39,7 @@ let mainWindow;
 // ゲーム情報管理
 let recordString;
 let mame32jString;
+let mameinfo;
 
 // 受信した設定
 let settingsToBeStored = {};
@@ -122,6 +123,28 @@ const loadMame32j = () => {
       if (mame32jString.charCodeAt(0) === 0xfeff) {
         // BOM削除
         mame32jString = mame32jString.substring(1);
+      }
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  } else {
+    return false;
+  }
+};
+
+/**
+ * mameinfo.dat を読み込む
+ * @returns {boolean}
+ */
+const loadMameInfo = () => {
+  if (fs.existsSync(rfPath + "/mameinfo.dat")) {
+    try {
+      mameinfo = fs.readFileSync(rfPath + "/mameinfo.dat", "utf8");
+      if (mameinfo.charCodeAt(0) === 0xfeff) {
+        // BOM削除
+        mameinfo = mameinfo.substring(1);
       }
       return true;
     } catch (err) {
