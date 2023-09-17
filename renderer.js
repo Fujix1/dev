@@ -228,6 +228,7 @@ async function onLoad() {
 
   await listViewMain.init();
   console.log("listview init:", Date.now() - tick, "ms");
+  window.retrofireAPI.windowIsReady();
 }
 
 // ウインドウ終了前

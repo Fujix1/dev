@@ -51,7 +51,6 @@ const createWindow = () => {
   // 保存値レストア
   const pos = store.get("mainWindow.pos") || [MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y];
   const size = store.get("mainWindow.size") || [MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height];
-  const maximized = store.get("mainWindow.maximized") || false;
 
   // ウインドウ生成
   mainWindow = new BrowserWindow({
@@ -75,8 +74,8 @@ const createWindow = () => {
 
   // 準備が整ったら表示
   mainWindow.once("ready-to-show", () => {
-    if (maximized) mainWindow.maximize();
-    mainWindow.show();
+    //if (maximized) mainWindow.maximize();
+    //mainWindow.show();
   });
 
   // ウインドウ閉じる直前
@@ -298,6 +297,17 @@ ipcMain.handle("window-reset", async (event, data) => {
   mainWindow.setSize(MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height);
   mainWindow.setPosition(MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y);
   sendDebug("ウインドウリセット");
+  return true;
+});
+
+// 表示準備完了
+ipcMain.handle("window-is-ready", async (event, data) => {
+  console.log(data);
+  console.log("window-is-ready");
+
+  const maximized = store.get("mainWindow.maximized") || false;
+  if (maximized) mainWindow.maximize();
+  mainWindow.show();
   return true;
 });
 
