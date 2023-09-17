@@ -1042,6 +1042,8 @@ template {
 @media (prefers-color-scheme: light) {
   :root {
     --s-transition: 0.2s;
+    --cl-control-bg: #1c1e22;
+    --cl-info-bg: #1c1e22;
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
@@ -1179,6 +1181,48 @@ input[type=search]::-webkit-search-results-decoration {
   flex-direction: column;
   position: relative;
   z-index: 0;
+}
+
+.l-upper {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+}
+
+.l-control {
+  background-color: var(--cl-control-bg);
+}
+
+.l-tree {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 200px;
+}
+.l-tree__upper {
+  min-height: 200px;
+}
+.l-tree__bottom {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.l-stage {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 0;
+  flex-grow: 1;
+}
+
+.l-info {
+  min-width: 320px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  background: var(--cl-info-bg);
+  box-shadow: 0px 0 4px 4px rgba(0, 0, 0, 0.3) inset;
 }
 
 .l-head {
@@ -1556,18 +1600,25 @@ input[type=search]::-webkit-search-results-decoration {
   color: var(--cl-theme);
 }
 
+.p-screenShot {
+  display: block;
+  min-width: 320px;
+  padding: 10px;
+  height: 240px;
+  object-fit: fill;
+  image-rendering: -webkit-optimize-contrast;
+  opacity: 0;
+  visibility: none;
+}
+.p-screenShot[src] {
+  opacity: 1;
+  visibility: visible;
+}
+
 .debug {
   width: 100%;
   height: 100%;
   display: block;
-}
-
-.openImage img {
-  display: block;
-  width: 320px;
-  height: 240px;
-  object-fit: fill;
-  image-rendering: -webkit-optimize-contrast;
 }
 
 .list-view {

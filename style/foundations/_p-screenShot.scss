@@ -1,0 +1,15 @@
+.p-screenShot {
+  display: block;
+  min-width: 320px;
+  padding: 10px;
+  height: 240px;
+  object-fit: fill;
+  image-rendering: -webkit-optimize-contrast;
+  opacity: 0;
+  visibility: none;
+  &[src] {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+

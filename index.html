@@ -10,61 +10,80 @@
   <body>
 
     <div class="l-wrap">
-      <div class="l-head">
-        <div class="l-head__item">
-          <input type="checkbox" id="language" class="m-checkbox m-checkbox__language"><label for="language" tooltip="言語切替 (F12)">言語</label>
+      <div class="l-upper">
+        <div class="l-control">
+          control
         </div>
-
-        <div class="l-head__item">
-          <div class="p-search">
-            <div class="p-search__dropbox">
-              <div class="p-search__dropboxIcon">
-                &#xe744;
-              </div>
-              <div class="p-search__dropboxStage">
-                <label class="p-search__dropboxLabel">
-                  <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="" checked>すべて
-                </label>
-                <label class="p-search__dropboxLabel">
-                  <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="desc">ゲーム名
-                </label>
-                <label class="p-search__dropboxLabel">
-                  <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="zipname">ZIP名
-                </label>
-                <label class="p-search__dropboxLabel">
-                  <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="maker">メーカー
-                </label>
-                <label class="p-search__dropboxLabel">
-                  <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="source">ドライバ
-                </label>
-              </div>
-            </div>
-            <input class="p-search__input" id="search" type="search" maxlength="20" size="16" value="" spellcheck="false">
-            <div class="p-search__clear" tooltip="クリア(ESC)" id="clear">&#xe75c</div>
+        <div class="l-tree">
+          <div class="l-tree__upper">
+            up
           </div>
-        </div>        
-
-      </div>
-      <div class="l-main">
-        <div class="l-list" tabindex="-1">
-          <div class="list-view" tabindex="0">
+          <div class="l-tree__bottom">
+            <textarea class="debug" id="debug" readonly></textarea>
           </div>
         </div>
-        <div class="l-test">
-          <p><button type="button" class="" id="test1" value="mappyj">mappyj</button>
-            <button type="button" class="" id="test2" value="outrun">outrun</button>
-            <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button><button type="button" id="btn-reset" tooltip="リセットします">リセット</button>
-            <button type="button" id="btn-dialog">ダイアログ</button><button type="button" id="btn-item1">40000</button>
-            <button type="button" id="btn-item2">makeVisible</button>
-          </p>
-          <div style="display: flex; width: 100%;">
-            <div style="flex-grow: 1;">
-              <textarea class="debug" id="debug" readonly></textarea>
+        <div class="l-stage">
+          <div class="l-head">
+            <div class="l-head__item">
+              <input type="checkbox" id="language" class="m-checkbox m-checkbox__language"><label for="language"
+                tooltip="言語切替 (F12)">言語</label>
             </div>
-            <div class="openImage">
-              <img id="openImage">
-            </div>  
+          
+            <div class="l-head__item">
+              <div class="p-search">
+                <div class="p-search__dropbox">
+                  <div class="p-search__dropboxIcon">
+                    &#xe744;
+                  </div>
+                  <div class="p-search__dropboxStage">
+                    <label class="p-search__dropboxLabel">
+                      <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="" checked>すべて
+                    </label>
+                    <label class="p-search__dropboxLabel">
+                      <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="desc">ゲーム名
+                    </label>
+                    <label class="p-search__dropboxLabel">
+                      <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="zipname">ZIP名
+                    </label>
+                    <label class="p-search__dropboxLabel">
+                      <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="maker">メーカー
+                    </label>
+                    <label class="p-search__dropboxLabel">
+                      <input type="radio" class="p-search__dropboxRadio" name="searchRadio" value="source">ドライバ
+                    </label>
+                  </div>
+                </div>
+                <input class="p-search__input" id="search" type="search" maxlength="20" size="16" value="" spellcheck="false">
+                <div class="p-search__clear" tooltip="クリア(ESC)" id="clear">&#xe75c</div>
+              </div>
+            </div>
+          
           </div>
+          <div class="l-main">
+            <div class="l-list" tabindex="-1">
+              <div class="list-view" tabindex="0">
+              </div>
+            </div>
+            <div class="l-test">
+              <p><button type="button" class="" id="test1" value="mappyj">mappyj</button>
+                <button type="button" class="" id="test2" value="outrun">outrun</button>
+                <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button><button type="button"
+                  id="btn-reset" tooltip="リセットします">リセット</button>
+                <button type="button" id="btn-dialog">ダイアログ</button><button type="button" id="btn-item1">40000</button>
+                <button type="button" id="btn-item2">makeVisible</button>
+              </p>
+              <div style="display: flex; width: 100%;">
+                <div style="flex-grow: 1;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="l-info">
+          <div class="l-info__img">
+            <img class="p-screenShot" id="openImage">
+          </div>
+          info
         </div>
       </div>
       <div class="l-footer" tooltip="ぼくはまちちゃんX！">

@@ -8,6 +8,7 @@
 @use "foundations/m-checkbox";
 @use "foundations/m-tooltip";
 @use "foundations/p-search";
+@use "foundations/p-screenShot";
 
 .debug {
   width: 100%;
@@ -15,15 +16,7 @@
   display: block;
 }
 
-.openImage {
-  img {
-    display: block;
-    width: 320px;
-    height: 240px;
-    object-fit: fill;
-    image-rendering: -webkit-optimize-contrast;
-  }
-}
+
 
 .list-view {
   width: 100%;

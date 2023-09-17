@@ -89,7 +89,7 @@ async function onLoad() {
     // メインプロセスを呼び出し
     const result = await window.retrofireAPI.dialog("");
     if (result && result.result == true) {
-      document.querySelector("#openImage").src = "data:image/png;base64," + result.img;
+      document.querySelector(".p-screenShot").src = "data:image/png;base64," + result.img;
     }
   });
 
