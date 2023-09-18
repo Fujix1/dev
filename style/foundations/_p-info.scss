@@ -4,14 +4,14 @@
   height: 100%;
   &__screenshot {
     margin: 0;
-    padding: 0;
+    padding: 5px;
   }
   &__img {
     display: block;
     width: 100%;
     min-width: 320px;
-    padding: 10px;
-    height: 240px;
+    aspect-ratio: 4 / 3;
+    padding: 0;
     object-fit: fill;
     image-rendering: -webkit-optimize-contrast;
     opacity: 0;
@@ -29,7 +29,7 @@
   &__text {
     flex-grow: 1;
     margin: 0;
-    padding: 6px;
+    padding: 6px 10px;
     line-height: 1.35;
     overflow-y: auto;
     color: var(--cl-text--inactive);

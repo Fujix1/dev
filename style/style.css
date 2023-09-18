@@ -1219,7 +1219,7 @@ input[type=search]::-webkit-search-results-decoration {
 
 .l-info {
   min-width: 332px;
-  width: 332px;
+  width: 380px;
   flex-grow: 0;
   flex-shrink: 0;
   background: var(--cl-info-bg);
@@ -1638,14 +1638,14 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .p-info__screenshot {
   margin: 0;
-  padding: 0;
+  padding: 5px;
 }
 .p-info__img {
   display: block;
   width: 100%;
   min-width: 320px;
-  padding: 10px;
-  height: 240px;
+  aspect-ratio: 4/3;
+  padding: 0;
   object-fit: fill;
   image-rendering: -webkit-optimize-contrast;
   opacity: 0;
@@ -1659,7 +1659,7 @@ input[type=search]::-webkit-search-results-decoration {
 .p-info__text {
   flex-grow: 1;
   margin: 0;
-  padding: 6px;
+  padding: 6px 10px;
   line-height: 1.35;
   overflow-y: auto;
   color: var(--cl-text--inactive);
