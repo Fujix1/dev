@@ -1,0 +1,41 @@
+.p-info {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  &__screenshot {
+    margin: 0;
+    padding: 0;
+  }
+  &__img {
+    display: block;
+    min-width: 320px;
+    padding: 10px;
+    height: 240px;
+    object-fit: fill;
+    image-rendering: -webkit-optimize-contrast;
+    opacity: 0;
+    visibility: none;
+    box-sizing: border-box;
+  
+    &[src] {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  &__article {
+
+  }
+  &__text {
+    flex-grow: 1;
+    margin: 0;
+    padding: 6px;
+    line-height: 1.35;
+    overflow-y: auto;
+    color: var(--cl-text--inactive);
+    &::selection {
+      color: var(--cl-text);
+      background-color: #555;
+    }
+  }
+}
+

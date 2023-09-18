@@ -2,6 +2,7 @@
 
 let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
+const mameinfo = {}; // mameinfo.dat 情報
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -89,7 +90,7 @@ async function onLoad() {
     // メインプロセスを呼び出し
     const result = await window.retrofireAPI.dialog("");
     if (result && result.result == true) {
-      document.querySelector(".p-screenShot").src = "data:image/png;base64," + result.img;
+      document.querySelector(".p-info__img").src = "data:image/png;base64," + result.img;
     }
   });
 
@@ -157,6 +158,7 @@ async function onLoad() {
   console.log(Date.now() - tick);
   console.log("resources.json:", record.length);
 
+  // mame32j読み込み
   var tick = Date.now();
   let mame32j = await window.retrofireAPI.getMame32j();
   mame32j = mame32j.split("\r\n");
@@ -174,6 +176,30 @@ async function onLoad() {
     }
   }
   console.log("mame32j:", Date.now() - tick, "ms");
+
+  // mameinfo.dat読み込み
+  var tick = Date.now();
+  const fileContents = await window.retrofireAPI.getMameInfo();
+  if (fileContents) {
+    let info = "";
+    let st = "";
+
+    fileContents.split(/\r?\n/).forEach((line) => {
+      if (line.startsWith("$info=")) {
+        info = line.substr(6);
+      } else if (line.startsWith("$mame")) {
+        st = "";
+      } else if (line.startsWith("$end")) {
+        st = st.replace(/\n\n\n/g, "<br><br>");
+        st = st.replace(/\n\n/g, "<br>");
+        mameinfo[String(info)] = st;
+      } else {
+        st += line + "\n";
+      }
+    });
+  }
+
+  console.log("mameinfo:", Date.now() - tick, "ms");
 
   // リストビュー初期化
   var tick = Date.now();
@@ -224,11 +250,20 @@ async function onLoad() {
     index: -1,
     searchWord: config.searchWord,
     searchTarget: config.searchTarget,
+    onSelect: itemSelectHandler,
   });
 
   await listViewMain.init();
   console.log("listview init:", Date.now() - tick, "ms");
   window.retrofireAPI.windowIsReady();
+}
+
+function itemSelectHandler(dataIndex, zipName) {
+  if (mameinfo.hasOwnProperty(zipName)) {
+    document.querySelector("#info").innerHTML = mameinfo[zipName];
+  } else {
+    document.querySelector("#info").innerHTML = "";
+  }
 }
 
 // ウインドウ終了前

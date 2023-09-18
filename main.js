@@ -97,64 +97,27 @@ const createWindow = () => {
 };
 
 /**
- * resource.json を読み込む
- * @returns {boolean} - 読み込み完了
+ * 汎用ファイル読み込み
+ * @param {*} path
  */
-const loadResource = () => {
-  if (fs.existsSync(CONSTS.PATH_RESOURCES)) {
+const loadFile = (path) => {
+  console.log("loadFile:", path);
+  var tick = Date.now();
+  if (fs.existsSync(path)) {
     try {
-      recordString = fs.readFileSync(CONSTS.PATH_RESOURCES, "utf8");
-      return true;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
-  } else {
-    return false;
-  }
-};
-
-/**
- * mame32j.lst を読み込む
- * @returns {boolean}
- */
-const loadMame32j = () => {
-  if (fs.existsSync(CONSTS.PATH_MAME32J)) {
-    try {
-      mame32jString = fs.readFileSync(CONSTS.PATH_MAME32J, "utf8");
-      if (mame32jString.charCodeAt(0) === 0xfeff) {
+      let st = fs.readFileSync(path, "utf8");
+      if (st.charCodeAt(0) === 0xfeff) {
         // BOM削除
-        mame32jString = mame32jString.substring(1);
+        st = st.substring(1);
       }
-      return true;
+      console.log(Date.now() - tick, "ms");
+      return { result: true, data: st };
     } catch (err) {
       console.log(err);
-      return false;
+      return { result: false };
     }
   } else {
-    return false;
-  }
-};
-
-/**
- * mameinfo.dat を読み込む
- * @returns {boolean}
- */
-const loadMameInfo = () => {
-  if (fs.existsSync(rfPath + "/mameinfo.dat")) {
-    try {
-      mameinfo = fs.readFileSync(rfPath + "/mameinfo.dat", "utf8");
-      if (mameinfo.charCodeAt(0) === 0xfeff) {
-        // BOM削除
-        mameinfo = mameinfo.substring(1);
-      }
-      return true;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
-  } else {
-    return false;
+    return { result: false };
   }
 };
 
@@ -164,16 +127,7 @@ const loadMameInfo = () => {
 
 // 初期化が完了
 app.whenReady().then(async () => {
-  var tick = Date.now();
-  loadResource();
-  console.log("loadResource:", Date.now() - tick, "ms");
-
-  var tick = Date.now();
-  loadMame32j();
-  console.log("loadMame32j:", Date.now() - tick, "ms");
-
   createWindow();
-
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -311,6 +265,7 @@ ipcMain.handle("window-is-ready", async (event, data) => {
   return true;
 });
 
+// ファイルオープンダイアログ処理
 ipcMain.handle("open-dialog", async (event, data) => {
   const result = dialog.showOpenDialogSync(mainWindow, {
     title: "ｶﾞｿﾞｳｦｾﾝﾀｸｾﾖ",
@@ -325,12 +280,32 @@ ipcMain.handle("open-dialog", async (event, data) => {
 
 // ゲーム情報を返す
 ipcMain.handle("get-record", async (event, data) => {
-  return recordString;
+  const res = loadFile(CONSTS.PATH_RESOURCES);
+  if (res.result) {
+    return res.data;
+  } else {
+    return;
+  }
 });
 
 // mame32j.lstを返す
 ipcMain.handle("get-mame32j", async (event, data) => {
-  return mame32jString;
+  const res = loadFile(CONSTS.PATH_MAME32J);
+  if (res.result) {
+    return res.data;
+  } else {
+    return;
+  }
+});
+
+// mameinfo.datを返す
+ipcMain.handle("get-mameinfo", async (event, data) => {
+  const res = loadFile(rfPath.dats + "/mameinfo.dat");
+  if (res.result) {
+    return res.data;
+  } else {
+    return;
+  }
 });
 
 /**
