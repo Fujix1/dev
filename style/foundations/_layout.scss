@@ -83,3 +83,33 @@
   color: #fff;
   min-height: 30px;
 }
+
+.l-devider {
+  position: relative;
+  &:hover {
+    transition-delay: .0.5s;
+    background: var(--cl-theme);
+  }
+  &__v {
+    width: 5px;
+    cursor: e-resize;
+    margin-left: -2px;
+    margin-right: -2px;
+    transition: background var(--s-transition);
+    &:after {
+      content: '';
+      position: absolute;
+      display: block;
+      height: 100%;
+      width: 1px;
+      top: 0;
+      left: 2px;
+      background: var(--cl-listborder);
+      z-index: -1;
+    }
+  }
+  &__h {
+    height: 5px;
+    cursor: s-resize;
+  }
+}

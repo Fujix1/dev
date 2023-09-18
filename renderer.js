@@ -3,6 +3,7 @@
 let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
+const history = {}; // history.dat 情報
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -179,7 +180,7 @@ async function onLoad() {
 
   // mameinfo.dat読み込み
   var tick = Date.now();
-  const fileContents = await window.retrofireAPI.getMameInfo();
+  let fileContents = await window.retrofireAPI.getMameInfo();
   if (fileContents) {
     let info = "";
     let st = "";
@@ -198,8 +199,30 @@ async function onLoad() {
       }
     });
   }
+  fileContents = "";
 
-  console.log("mameinfo:", Date.now() - tick, "ms");
+  // history.dat読み込み
+  var tick = Date.now();
+  fileContents = await window.retrofireAPI.getHistory();
+  if (fileContents) {
+    let info = "";
+    let st = "";
+
+    fileContents.split(/\r?\n/).forEach((line) => {
+      if (line.startsWith("$info=")) {
+        info = line.substr(6);
+      } else if (line.startsWith("$bio")) {
+        st = "";
+      } else if (line.startsWith("$end")) {
+        st = st.replace(/\n/g, "<br>");
+        history[String(info)] = st;
+      } else {
+        st += line + "\n";
+      }
+    });
+  }
+
+  console.log("history:", Date.now() - tick, "ms");
 
   // リストビュー初期化
   var tick = Date.now();
@@ -258,12 +281,38 @@ async function onLoad() {
   window.retrofireAPI.windowIsReady();
 }
 
-function itemSelectHandler(dataIndex, zipName) {
-  if (mameinfo.hasOwnProperty(zipName)) {
-    document.querySelector("#info").innerHTML = mameinfo[zipName];
-  } else {
+async function itemSelectHandler(dataIndex, zipName) {
+  if (dataIndex === -1) {
     document.querySelector("#info").innerHTML = "";
+    return;
   }
+
+  // dat 情報表示
+  let st = "";
+  if (history.hasOwnProperty(zipName)) {
+    st += history[zipName];
+  } else {
+    // クローンのときは親を見る
+    const masterId = this.data[dataIndex].masterid;
+    if (masterId !== -1 && history.hasOwnProperty(this.data[masterId].zipname)) {
+      st += history[this.data[masterId].zipname];
+    }
+  }
+  if (st !== "") {
+    st += "<br>";
+  }
+
+  if (mameinfo.hasOwnProperty(zipName)) {
+    st += mameinfo[zipName];
+  } else {
+    // クローンのときは親を見る
+    const masterId = this.data[dataIndex].masterid;
+    if (masterId !== -1 && mameinfo.hasOwnProperty(this.data[masterId].zipname)) {
+      st += mameinfo[this.data[masterId].zipname];
+    }
+  }
+
+  document.querySelector("#info").innerHTML = st;
 }
 
 // ウインドウ終了前

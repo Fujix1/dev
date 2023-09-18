@@ -298,6 +298,16 @@ ipcMain.handle("get-mame32j", async (event, data) => {
   }
 });
 
+// history.datを返す
+ipcMain.handle("get-history", async (event, data) => {
+  const res = loadFile(rfPath.dats + "/history.dat");
+  if (res.result) {
+    return res.data;
+  } else {
+    return;
+  }
+});
+
 // mameinfo.datを返す
 ipcMain.handle("get-mameinfo", async (event, data) => {
   const res = loadFile(rfPath.dats + "/mameinfo.dat");
