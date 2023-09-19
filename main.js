@@ -263,7 +263,7 @@ ipcMain.handle("window-reset", async (event, data) => {
 
 // スクリーンショット開く
 ipcMain.handle("get-screenshot", async (event, data) => {
-  console.log("get-screenshot", rfPath.snap + data + ".png");
+  //console.log("get-screenshot", rfPath.snap + data + ".png");
   return openLocalImage(rfPath.snap + data + ".png");
 });
 
