@@ -4,6 +4,7 @@ let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
+let screenshotZip = ""; // 表示中のスクリーンショットの zip
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -288,15 +289,20 @@ async function itemSelectHandler(dataIndex, zipName) {
     return;
   }
 
+  const masterId = parseInt(this.data[dataIndex].masterid);
+  let masterZip = "";
+  if (masterId !== -1) {
+    masterZip = this.data[masterId].zipname;
+  }
+
   // dat 情報表示
   let st = "";
   if (history.hasOwnProperty(zipName)) {
     st += history[zipName];
   } else {
     // クローンのときは親を見る
-    const masterId = this.data[dataIndex].masterid;
-    if (masterId !== -1 && history.hasOwnProperty(this.data[masterId].zipname)) {
-      st += history[this.data[masterId].zipname];
+    if (masterId !== -1 && history.hasOwnProperty(masterZip)) {
+      st += history[masterZip];
     }
   }
   if (st !== "") {
@@ -315,7 +321,24 @@ async function itemSelectHandler(dataIndex, zipName) {
   document.querySelector("#info").innerHTML = st;
 
   // スクリーンショット
-  window.retrofireAPI.getScreenshot(zipName);
+  let result;
+  if (screenshotZip !== zipName) {
+    result = await window.retrofireAPI.getScreenshot(zipName);
+    screenshotZip = zipName;
+
+    // 子セットで親を表示してないとき
+    if (result.result === false && masterId !== -1 && screenshotZip !== masterZip) {
+      result = await window.retrofireAPI.getScreenshot(masterZip);
+      screenshotZip = masterZip;
+    }
+    if (result.result === true) {
+      document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
+      screenshotZip = zipName;
+    } else {
+      screenshotZip = "";
+      document.querySelector(".p-info__img").removeAttribute("src");
+    }
+  }
 }
 
 // ウインドウ終了前
