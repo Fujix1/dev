@@ -86,9 +86,15 @@
 
 .l-devider {
   position: relative;
+  z-index: 1;
   &:hover {
-    transition-delay: .0.5s;
+    //transition-delay: .5s;
     background: var(--cl-theme);
+    &.l-devider__v:after {
+      transition: opacity  var(--s-transition);
+      //transition-delay: .5s;
+      opacity: 0;
+    }
   }
   &__v {
     width: 5px;
