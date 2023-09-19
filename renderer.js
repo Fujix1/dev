@@ -281,6 +281,7 @@ async function onLoad() {
   window.retrofireAPI.windowIsReady();
 }
 
+// 項目選択時の処理
 async function itemSelectHandler(dataIndex, zipName) {
   if (dataIndex === -1) {
     document.querySelector("#info").innerHTML = "";
@@ -311,8 +312,10 @@ async function itemSelectHandler(dataIndex, zipName) {
       st += mameinfo[this.data[masterId].zipname];
     }
   }
-
   document.querySelector("#info").innerHTML = st;
+
+  // スクリーンショット
+  window.retrofireAPI.getScreenshot(zipName);
 }
 
 // ウインドウ終了前
