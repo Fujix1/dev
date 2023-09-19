@@ -208,6 +208,13 @@ async function openLocalImage(path) {
   let img;
   let dimensions;
 
+  if (!fs.existsSync(path)) {
+    return {
+      result: false,
+      error: "NO FILE"
+    };
+  } 
+
   try {
     img = fs.readFileSync(path); // 開く
     const validate = await validateBufferMIMEType(img, { allowMimeTypes: ["image/jpeg", "image/gif", "image/png"] }); // 画像ファイル検証
