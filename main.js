@@ -256,8 +256,8 @@ ipcMain.handle("window-reset", async (event, data) => {
 
 // スクリーンショット開く
 ipcMain.handle("get-screenshot", async (event, data) => {
-  console.log("get-screenshot:", data);
-  //const result = await openLocalImage(rfPath.snap + )
+  console.log("get-screenshot", rfPath.snap + data + ".png");
+  return openLocalImage(rfPath.snap + data + ".png");
 });
 
 // 表示準備完了
