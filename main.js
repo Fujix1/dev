@@ -209,11 +209,8 @@ async function openLocalImage(path) {
   let dimensions;
 
   if (!fs.existsSync(path)) {
-    return {
-      result: false,
-      error: "NO FILE"
-    };
-  } 
+    return { result: false };
+  }
 
   try {
     img = fs.readFileSync(path); // 開く

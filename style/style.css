@@ -1671,23 +1671,30 @@ input[type=search]::-webkit-search-results-decoration {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-width: 320px;
 }
 .p-info__screenshot {
   margin: 0;
-  padding: 0;
+  padding: 0px;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  justify-content: center;
 }
 .p-info__img {
   display: block;
-  width: 100%;
-  min-width: 320px;
-  aspect-ratio: 4/3;
-  padding: 0;
-  -o-object-fit: fill;
-     object-fit: fill;
+  max-width: 100%;
+  max-height: 100%;
+  border: none;
+  object-fit: fill;
   image-rendering: -webkit-optimize-contrast;
   opacity: 0;
   visibility: none;
   box-sizing: border-box;
+  -webkit-user-drag: none;
 }
 .p-info__img[src] {
   opacity: 1;
@@ -1696,7 +1703,7 @@ input[type=search]::-webkit-search-results-decoration {
 .p-info__text {
   flex-grow: 1;
   margin: 0;
-  padding: 10px;
+  padding: 10px 10px;
   line-height: 1.35;
   overflow-y: auto;
   color: var(--cl-text--inactive);

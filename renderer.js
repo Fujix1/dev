@@ -4,13 +4,14 @@ let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
-let screenshotZip = ""; // 表示中のスクリーンショットの zip
+const screenshot = { index: -1, zip: "", width: 0, height: 0 };
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
   language: LANG.JP, // 言語設定
   searchWord: "", // 検索文字列
   searchTarget: "", // 検索対象
+  screenshotFit: true, // スクリーンショットのフィット表示
 };
 
 // Window Onload
@@ -33,6 +34,10 @@ async function onLoad() {
     if (readConfig.hasOwnProperty("searchTarget")) {
       config.searchTarget = readConfig.searchTarget;
       document.querySelector('input[name="searchRadio"][value="' + readConfig.searchTarget + '"]').checked = true;
+    }
+
+    if (readConfig.hasOwnProperty("screenshotFit")) {
+      config.screenshotFit = readConfig.screenshotFit;
     }
   }
 
@@ -188,13 +193,15 @@ async function onLoad() {
 
     fileContents.split(/\r?\n/).forEach((line) => {
       if (line.startsWith("$info=")) {
-        info = line.substr(6);
+        info = line.substr(6).split(",");
       } else if (line.startsWith("$mame")) {
         st = "";
       } else if (line.startsWith("$end")) {
         st = st.replace(/\n\n\n/g, "<br><br>");
         st = st.replace(/\n\n/g, "<br>");
-        mameinfo[String(info)] = st;
+        info.forEach((item) => {
+          mameinfo[String(item).trim()] = st;
+        });
       } else {
         st += line + "\n";
       }
@@ -206,17 +213,19 @@ async function onLoad() {
   var tick = Date.now();
   fileContents = await window.retrofireAPI.getHistory();
   if (fileContents) {
-    let info = "";
+    let info = [];
     let st = "";
 
     fileContents.split(/\r?\n/).forEach((line) => {
       if (line.startsWith("$info=")) {
-        info = line.substr(6);
+        info = line.substr(6).split(",");
       } else if (line.startsWith("$bio")) {
         st = "";
       } else if (line.startsWith("$end")) {
         st = st.replace(/\n/g, "<br>");
-        history[String(info)] = st;
+        info.forEach((item) => {
+          history[String(item).trim()] = st;
+        });
       } else {
         st += line + "\n";
       }
@@ -284,12 +293,20 @@ async function onLoad() {
 
 // 項目選択時の処理
 async function itemSelectHandler(dataIndex, zipName) {
+  // 項目なし
   if (dataIndex === -1) {
     document.querySelector("#info").innerHTML = "";
+    screenshot.zip = "";
+    screenshot.width = 0;
+    screenshot.height = 0;
+    screenshot.index = -1;
+    document.querySelector(".p-info__img").removeAttribute("src");
     return;
   }
 
   const masterId = parseInt(this.data[dataIndex].masterid);
+  const isMaster = this.data[dataIndex].master === -1;
+
   let masterZip = "";
   if (masterId !== -1) {
     masterZip = this.data[masterId].zipname;
@@ -301,7 +318,7 @@ async function itemSelectHandler(dataIndex, zipName) {
     st += history[zipName];
   } else {
     // クローンのときは親を見る
-    if (masterId !== -1 && history.hasOwnProperty(masterZip)) {
+    if (!isMaster && history.hasOwnProperty(masterZip)) {
       st += history[masterZip];
     }
   }
@@ -314,7 +331,7 @@ async function itemSelectHandler(dataIndex, zipName) {
   } else {
     // クローンのときは親を見る
     const masterId = this.data[dataIndex].masterid;
-    if (masterId !== -1 && mameinfo.hasOwnProperty(this.data[masterId].zipname)) {
+    if (!isMaster && mameinfo.hasOwnProperty(this.data[masterId].zipname)) {
       st += mameinfo[this.data[masterId].zipname];
     }
   }
@@ -322,21 +339,35 @@ async function itemSelectHandler(dataIndex, zipName) {
 
   // スクリーンショット
   let result;
-  if (screenshotZip !== zipName) {
-    result = await window.retrofireAPI.getScreenshot(zipName);
-    screenshotZip = zipName;
 
-    // 子セットで親を表示してないとき
-    if (result.result === false && masterId !== -1 && screenshotZip !== masterZip) {
-      result = await window.retrofireAPI.getScreenshot(masterZip);
-      screenshotZip = masterZip;
-    }
-    if (result.result === true) {
+  if (screenshot.zip !== zipName) {
+    result = await window.retrofireAPI.getScreenshot(zipName);
+    if (result.result) {
+      screenshot.zip = zipName;
+      screenshot.width = parseInt(result.width);
+      screenshot.height = parseInt(result.height);
+      screenshot.index = dataIndex;
       document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
-      screenshotZip = zipName;
+      setScreenshotAspect();
     } else {
-      screenshotZip = "";
-      document.querySelector(".p-info__img").removeAttribute("src");
+      // 親セットのショット確認
+      if (screenshot.zip !== masterZip) {
+        result = await window.retrofireAPI.getScreenshot(masterZip);
+        if (result.result) {
+          document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
+          screenshot.zip = masterZip;
+          screenshot.width = parseInt(result.width);
+          screenshot.height = parseInt(result.height);
+          screenshot.index = masterId;
+          setScreenshotAspect();
+        } else {
+          screenshot.zip = "";
+          screenshot.width = 0;
+          screenshot.height = 0;
+          screenshot.index = -1;
+          document.querySelector(".p-info__img").removeAttribute("src");
+        }
+      }
     }
   }
 }
@@ -363,6 +394,121 @@ function saveFormConfig() {
     console.log("フォーム設定 main.js に送信");
   } catch (e) {
     console.log(e);
+  }
+}
+
+// スクリーンショットフィット切り替え
+document.querySelector(".p-info__screenshot").addEventListener("click", (e) => {
+  config.screenshotFit = !config.screenshotFit;
+  setScreenshotAspect();
+  console.log(config.screenshotFit);
+});
+
+function setScreenshotAspect() {
+  if (screenshot.index === -1) return;
+  if (config.screenshotFit) {
+    let aspectX, aspectY;
+    if (record[screenshot.index].vertical) {
+      aspectX = "3";
+      aspectY = "4";
+    } else {
+      aspectX = "4";
+      aspectY = "3";
+    }
+
+    // 特殊画面比率
+    // 横3画面と2画面 (ギャップ対応)
+    const OrgResX = record[screenshot.index].resx;
+    const OrgResY = record[screenshot.index].resy;
+    const NumScreens = record[screenshot.index].numscreens;
+
+    if (
+      NumScreens === 3 &&
+      screenshot.height === OrgResX &&
+      (screenshot.width === OrgResX * 3 || screenshot.width === OrgResX * 3 + 4)
+    ) {
+      aspectX = "12";
+      aspectY = "3";
+    } else if (
+      NumScreens === 2 &&
+      screenshot.height === OrgResY &&
+      (screenshot.width === OrgResX * 2 ||
+        screenshot.width === OrgResX * 2 + 2 ||
+        screenshot.width === OrgResX * 2 + 3 ||
+        screenshot.width === OrgResX * 4 + 4)
+    ) {
+      aspectX = "8";
+      aspectY = "3";
+    } else if (
+      NumScreens === 2 &&
+      screenshot.width === OrgResX &&
+      (screenshot.height === OrgResY * 2 || screenshot.height === OrgResY * 2 + 2)
+    ) {
+      // 縦2画面
+      aspectX = "2";
+      aspectY = "3";
+    } else if (
+      NumScreens === 3 &&
+      screenshot.width === 512 &&
+      (screenshot.height === 704 || screenshot.height === 368)
+    ) {
+      // 対家ﾏﾇｶﾝ
+      aspectX = "28";
+      aspectY = "33";
+    } else if (
+      // 2画面横汎用
+      NumScreens === 2 &&
+      screenshot.width >= 620 &&
+      screenshot.width <= 1156 &&
+      screenshot.height >= 220 &&
+      screenshot.height <= 256
+    ) {
+      aspectX = "8";
+      aspectY = "3";
+    } else if (
+      // 3画面横汎用
+      NumScreens === 3 &&
+      screenshot.width >= 620 &&
+      screenshot.width <= 1156 &&
+      screenshot.height >= 220 &&
+      screenshot.height <= 256
+    ) {
+      aspectX = "4";
+      aspectY = "1";
+    } else if (NumScreens === 3 && screenshot.width === 1544 && screenshot.height === 384) {
+      // racedrivpan
+      aspectX = "12";
+      aspectY = "3";
+    } else if (screenshot.width === 512 && screenshot.height === 128) {
+      // pinball
+      aspectX = "4";
+      aspectY = "1";
+    } else if (screenshot.width === 950 && screenshot.height === 1243) {
+      // game watch
+      aspectX = "950";
+      aspectY = "1243";
+    } else if (screenshot.width === 906 && screenshot.height === 1197) {
+      // game watch
+      aspectX = "906";
+      aspectY = "1197";
+    } else if (NumScreens === 2 && screenshot.width === 642 && screenshot.height === 224) {
+      aspectX = "8";
+      aspectY = "3";
+    } else if (NumScreens === 2 && screenshot.width === 320 && screenshot.height === 416) {
+      aspectX = "4";
+      aspectY = "6";
+    }
+
+    document.querySelector(".p-info__img").style.aspectRatio = aspectX + "/" + aspectY;
+    if (aspectX > aspectY) {
+      document.querySelector(".p-info__img").style.width = "100%";
+      document.querySelector(".p-info__img").style.height = "";
+    } else {
+      document.querySelector(".p-info__img").style.width = "";
+      document.querySelector(".p-info__img").style.height = "100%";
+    }
+  } else {
+    document.querySelector(".p-info__img").removeAttribute("style");
   }
 }
 
