@@ -421,7 +421,6 @@ function setScreenshotAspect() {
     const OrgResX = record[screenshot.index].resx;
     const OrgResY = record[screenshot.index].resy;
     const NumScreens = record[screenshot.index].numscreens;
-    console.log(NumScreens, screenshot.width, screenshot.height, OrgResX, OrgResY);
 
     if (
       NumScreens === 3 &&
