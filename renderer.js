@@ -463,8 +463,14 @@ function setScreenshotAspect() {
       screenshot.height >= 220 &&
       screenshot.height <= 256
     ) {
-      aspectX = "8";
-      aspectY = "3";
+    } else if (
+      // kbm
+      NumScreens === 2 &&
+      screenshot.width == 772 &&
+      screenshot.height == 512
+    ) {
+      aspectX = "6";
+      aspectY = "4";
     } else if (
       // 3画面横汎用
       NumScreens === 3 &&
