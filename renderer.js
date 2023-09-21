@@ -14,7 +14,31 @@ let config = {
   screenshotFit: true, // スクリーンショットのフィット表示
 };
 
-class MenuItem {}
+// アクションオブジェクト
+class Action {
+  constructor(args) {
+    this.caption = args.caption;
+    this.checked = false;
+    this.enabled = true;
+    this.imageIndex = -1;
+    this.onExecute = args.onExecute;
+    this.onUpdate = args.onUpdate;
+  }
+  execute() {
+    this.onExecute(this);
+  }
+  update() {
+    this.onUpdate(this);
+  }
+}
+
+const myAction = new Action({
+  caption: "ぼくはまちちゃん",
+  onExecute: (self) => {
+    console.log(self);
+  },
+  onUpdate: (self) => {},
+});
 
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
