@@ -214,7 +214,9 @@ async function openLocalImage(path) {
 
   try {
     img = fs.readFileSync(path); // 開く
-    const validate = await validateBufferMIMEType(img, { allowMimeTypes: ["image/jpeg", "image/gif", "image/png"] }); // 画像ファイル検証
+    const validate = await validateBufferMIMEType(img, {
+      allowMimeTypes: ["image/jpeg", "image/gif", "image/png", "image/webp"],
+    }); // 画像ファイル検証
     if (validate.ok) {
       dimensions = sizeOf(img);
       enc = img.toString("base64"); // base64
@@ -260,8 +262,12 @@ ipcMain.handle("window-reset", async (event, data) => {
 
 // スクリーンショット開く
 ipcMain.handle("get-screenshot", async (event, data) => {
-  //console.log("get-screenshot", rfPath.snap + data + ".png");
-  return openLocalImage(rfPath.snap + data + ".png");
+  let res = await openLocalImage(rfPath.snap + data + ".png");
+  if (res.result === true) {
+    return res;
+  } else {
+    return await openLocalImage(rfPath.snap + data + "/0000.png");
+  }
 });
 
 // 表示準備完了

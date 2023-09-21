@@ -19,8 +19,16 @@ textarea {
   font-size: 12px;
   line-height: 1.2;
   &.debug {
-    background-color: #222;
-    color: #f0f0f0;
+    background-color: var(--cl-debug--bg);
+    color: var(--cl-debug--text);
+    min-height: 100px;
+    resize: none;
+    appearance: none;
+    border: none;
+    &::selection {
+      background-color: var(--cl-input--selection);
+      color: var(--cl-text);
+    }
   }
 }
 

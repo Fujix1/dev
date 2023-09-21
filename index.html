@@ -19,10 +19,10 @@
             up
           </div>
           <div class="l-tree__bottom">
-            <textarea class="debug" id="debug" readonly></textarea>
+           
           </div>
         </div>
-        <div class="l-devider l-devider__v" target1="l-tree" target2="l-stage"></div>
+        <div class="l-divider l-divider__v" target1="l-tree" target2="l-stage"></div>
         <div class="l-stage">
           <div class="l-head">
             <div class="l-head__item">
@@ -61,26 +61,28 @@
           
           </div>
           <div class="l-main">
-            <div class="l-list" tabindex="-1">
-              <div class="list-view" tabindex="0">
-              </div>
-            </div>
-            <div class="l-test">
-              <p><button type="button" class="" id="test1" value="mappyj">mappyj</button>
-                <button type="button" class="" id="test2" value="outrun">outrun</button>
-                <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button><button type="button"
-                  id="btn-reset" tooltip="リセットします">リセット</button>
-                <button type="button" id="btn-dialog">ダイアログ</button><button type="button" id="btn-item1">40000</button>
-                <button type="button" id="btn-item2">makeVisible</button>
-              </p>
-              <div style="display: flex; width: 100%;">
-                <div style="flex-grow: 1;">
+            <div class="l-main__upper">
+              <div class="l-list" tabindex="-1">
+                <div class="list-view" tabindex="0">
                 </div>
               </div>
+              <div class="l-test">
+                <p><button type="button" class="" id="test1" value="mappyj">mappyj</button>
+                  <button type="button" class="" id="test2" value="outrun">outrun</button>
+                  <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button><button type="button"
+                    id="btn-reset" tooltip="リセットします">リセット</button>
+                  <button type="button" id="btn-dialog">ダイアログ</button>
+                  <button type="button" id="btn-item2">makeVisible</button>
+                </p>
+              </div>
+            </div>
+            <div class="l-divider l-divider__h" target1="l-main__upper" target2="l-main__bottom"></div>
+            <div class="l-main__bottom">
+              <textarea class="debug" id="debug" readonly></textarea>
             </div>
           </div>
         </div>
-        <div class="l-devider l-devider__v" target1="l-stage" target2="l-info"></div>
+        <div class="l-divider l-divider__v" target1="l-stage" target2="l-info"></div>
         <div class="l-info">
           <div class="p-info">
             <figure class="p-info__screenshot">

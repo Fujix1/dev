@@ -14,6 +14,8 @@ let config = {
   screenshotFit: true, // スクリーンショットのフィット表示
 };
 
+class MenuItem {}
+
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
 
@@ -101,7 +103,6 @@ async function onLoad() {
     }
   });
 
-  document.querySelector("#btn-item1").addEventListener("click", () => {});
   document.querySelector("#btn-item2").addEventListener("click", () => {
     console.log(listViewMain.dataIndex);
     listViewMain.makeVisible();
@@ -401,7 +402,6 @@ function saveFormConfig() {
 document.querySelector(".p-info__screenshot").addEventListener("click", (e) => {
   config.screenshotFit = !config.screenshotFit;
   setScreenshotAspect();
-  console.log(config.screenshotFit);
 });
 
 function setScreenshotAspect() {
