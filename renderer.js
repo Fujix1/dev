@@ -23,6 +23,7 @@ class Action {
     this.imageIndex = -1;
     this.onExecute = args.onExecute;
     this.onUpdate = args.onUpdate;
+    this.target = args.target;
   }
   execute() {
     this.onExecute(this);
@@ -37,8 +38,10 @@ const myAction = new Action({
   onExecute: (self) => {
     console.log(self);
   },
-  onUpdate: (self) => {},
+  //onUpdate: (self) => {},
 });
+
+myAction.execute();
 
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
