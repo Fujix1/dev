@@ -94,6 +94,11 @@ const createWindow = () => {
       store.set(key, value);
     }
   });
+
+  //
+  mainWindow.on("blur", async () => {
+    mainWindow.webContents.send("blur");
+  });
 };
 
 /**

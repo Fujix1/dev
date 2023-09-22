@@ -29,7 +29,7 @@ const rfProfiles = [
 
 const rfPath = {
   dats: "./dats",
-  snap: "C:\\Users\\tfuji\\Desktop\\mame\\snap\\",
+  snap: "d:\\mame\\snap\\",
 };
 
 module.exports = {

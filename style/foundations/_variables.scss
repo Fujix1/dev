@@ -14,7 +14,7 @@
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
 
-    --cl-ui-boxshadow: 2px 2px 3px 1px rgba(0,0,0,.3);
+    --cl-ui-boxshadow: 1px 1px 2px 3px rgba(0,0,0,.4);
 
     --cl-l-head-bg: #26282f;
 
@@ -44,6 +44,11 @@
 
     --cl-debug--bg: #13171a;
     --cl-debug--text: #ccc;
+
+    --cl-popup--text: #eee;
+    --cl-popup--text-desabled: #888;
+    --cl-popup--bg: #444;
+    --cl-popup--hr: #888;
     /*
     --cl-scrollbar-track: #fff;
     --cl-scrollbar-thumb: #aaa;

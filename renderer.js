@@ -14,34 +14,64 @@ let config = {
   screenshotFit: true, // スクリーンショットのフィット表示
 };
 
-// アクションオブジェクト
-class Action {
-  constructor(args) {
-    this.caption = args.caption;
-    this.checked = false;
-    this.enabled = true;
-    this.imageIndex = -1;
-    this.onExecute = args.onExecute;
-    this.onUpdate = args.onUpdate;
-    this.target = args.target;
-  }
-  execute() {
-    this.onExecute(this);
-  }
-  update() {
-    this.onUpdate(this);
-  }
-}
-
-const myAction = new Action({
-  caption: "ぼくはまちちゃん",
+// --------------------------------------------------------------------------------
+const actCut = new Action({
+  caption: "切り取り",
+  control: true,
+  keycode: "x",
+  enabled: true,
   onExecute: (self) => {
-    console.log(self);
+    const target = self.caller.target;
+    navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
+    target.value = target.value.substr(0, target.selectionStart) + target.value.substr(target.selectionEnd);
+    target.dispatchEvent(new Event("cut"));
   },
-  //onUpdate: (self) => {},
+  onUpdate: (self) => {
+    const target = self.caller.target;
+    self.enabled = target.selectionEnd - target.selectionStart > 0;
+  },
 });
 
-myAction.execute();
+const actCopy = new Action({
+  caption: "コピー",
+  control: true,
+  keycode: "c",
+  onExecute: (self) => {
+    console.log(self.caption, "onExecute");
+    const target = self.caller.target;
+    navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
+    target.dispatchEvent(new Event("copy"));
+  },
+  onUpdate: (self) => {
+    console.log(self.caption, "onUpdate");
+    const target = self.caller.target;
+    self.enabled = target.selectionEnd - target.selectionStart > 0;
+  },
+});
+
+const actPaste = new Action({
+  caption: "貼り付け",
+  control: true,
+  keycode: "v",
+  checked: false,
+  onExecute: async (self) => {
+    const st = await navigator.clipboard.readText();
+    const target = self.caller.target;
+    target.value = target.value.substr(0, target.selectionStart) + st + target.value.substr(target.selectionEnd);
+    target.dispatchEvent(new Event("paste"));
+  },
+  onUpdate: async (self) => {
+    const st = await navigator.clipboard.readText();
+    self.enabled = st !== "";
+  },
+});
+
+const pmEdit = new PopupMenu([actCut, actCopy, "---", actPaste]);
+
+document.querySelector("#search").addEventListener("contextmenu", (e) => {
+  e.stopPropagation(); // 大事
+  pmEdit.show(e);
+});
 
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
@@ -140,6 +170,13 @@ async function onLoad() {
     if (e.target.getAttribute("IME") !== "true") {
       listViewMain.updateListViewSearch({ searchWord: e.target.value });
     }
+  });
+
+  document.querySelector("#search").addEventListener("cut", (e) => {
+    listViewMain.updateListViewSearch({ searchWord: e.target.value });
+  });
+  document.querySelector("#search").addEventListener("paste", (e) => {
+    listViewMain.updateListViewSearch({ searchWord: e.target.value });
   });
 
   document.querySelector("#search").addEventListener("keydown", (e) => {
@@ -567,4 +604,13 @@ window.retrofireAPI.onDebugMessage((_event, text) => {
   const debug = document.querySelector("#debug");
   debug.value = debug.value + text + "\n";
   debug.scrollTop = debug.scrollHeight;
+});
+
+window.retrofireAPI.onBlur((_event, text) => {
+  console.log("onBlur");
+  // ポップアップ閉じる
+  document.querySelectorAll(".m-popup").forEach((element) => {
+    element.classList.remove("is-open");
+  });
+  document.body.classList.remove("is-menu-open");
 });
