@@ -22,6 +22,9 @@
     pointer-events: initial;
     opacity: 1;
   }
+  &:focus-visible {
+    //outline: none;
+  }
 
   &__item {
     display: flex;
@@ -37,6 +40,9 @@
     border-radius: 4px;
     &:focus-visible {
       outline: none;
+    }
+    &:focus {
+      background: var(--cl-popup--bg-hover);
     }
     
     &--disabled {
