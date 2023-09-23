@@ -5,6 +5,7 @@ let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
 const screenshot = { index: -1, zip: "", width: 0, height: 0 };
+let zipName = "";
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -66,13 +67,40 @@ const actPaste = new Action({
   },
 });
 
-const pmEdit = new PopupMenu([actCut, actCopy, "---", actPaste]);
+// 編集用ポップアップメニュー
+const pmEdit = new PopupMenu([actCut, actCopy, actPaste]);
 
 document.querySelector("#search").addEventListener("contextmenu", (e) => {
   e.stopPropagation(); // 大事
   pmEdit.show(e);
 });
 
+//------------------------------------------------------------
+const actRun = new Action({
+  caption: "起動",
+  keycode: "F5",
+  iconFont: "microns",
+  iconChar: "e71c",
+  onExecute: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    await window.retrofireAPI.executeMAME({
+      zipName: zipName,
+    });
+  },
+  onUpdate: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    self.enabled = zipName !== "";
+    self.caption = zipName !== "" ? "「" + zipName + "」を起動" : "起動";
+  },
+});
+
+const pmMainList = new PopupMenu([actRun, "---"]);
+document.querySelector(".list-view").addEventListener("contextmenu", (e) => {
+  e.stopPropagation(); // 大事
+  pmMainList.show(e);
+});
+
+//---------------------------------------------------------------------------
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
 
@@ -118,13 +146,12 @@ async function onLoad() {
       case "Escape": // 検索リセット
         clearSearch();
         break;
-      case "F5": // 起動
-      case "F9":
-        if (listViewMain.zipName !== "") {
-          window.retrofireAPI.executeMAME({ zipName: listViewMain.zipName });
-        }
-        break;
     }
+  });
+
+  // ウィンドウリサイズ
+  window.addEventListener("resize", (e) => {
+    PopupMenu.close(); // ポップアップ閉じる
   });
 
   // 言語切替
@@ -137,13 +164,13 @@ async function onLoad() {
   document.querySelector("#debug").value = "";
 
   document.querySelector("#test1").addEventListener("click", () => {
-    sendByApi(document.querySelector("#test1").value);
+    executeMAME({ zipName: document.querySelector("#test1").value });
   });
   document.querySelector("#test2").addEventListener("click", () => {
-    sendByApi(document.querySelector("#test2").value);
+    executeMAME({ zipName: document.querySelector("#test2").value });
   });
   document.querySelector("#test3").addEventListener("click", () => {
-    sendByApiSoft(document.querySelector("#test3").value);
+    executeMAME({ zipName: document.querySelector("#test3").value, softName: "ys2" });
   });
 
   document.querySelector("#btn-reset").addEventListener("click", async () => {
@@ -582,18 +609,10 @@ function setScreenshotAspect() {
   }
 }
 
-//
-async function sendByApi(zip) {
-  result = await window.retrofireAPI.executeMAME({
-    zipName: zip,
-  });
-}
-
-async function sendByApiSoft(zip) {
-  result = await window.retrofireAPI.executeMAME({
-    zipName: zip,
-    softName: "ys2",
-  });
+// 起動
+async function executeMAME(args) {
+  console.log("executeMAME", args);
+  const result = await window.retrofireAPI.executeMAME(args);
 }
 
 //------------------------------------
@@ -609,8 +628,5 @@ window.retrofireAPI.onDebugMessage((_event, text) => {
 window.retrofireAPI.onBlur((_event, text) => {
   console.log("onBlur");
   // ポップアップ閉じる
-  document.querySelectorAll(".m-popup").forEach((element) => {
-    element.classList.remove("is-open");
-  });
-  document.body.classList.remove("is-menu-open");
+  PopupMenu.close();
 });

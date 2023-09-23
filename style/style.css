@@ -1074,6 +1074,7 @@ template {
     --cl-popup--text-desabled: #888;
     --cl-popup--bg: #444;
     --cl-popup--hr: #888;
+    --cl-popup--bg-hover: #222;
     /*
         --cl-scrollbar-track: #fff;
         --cl-scrollbar-thumb: #aaa;
@@ -1606,7 +1607,6 @@ input[type=search]::-webkit-search-results-decoration {
   user-select: none;
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--s-transition);
 }
 .m-popup.is-open {
   pointer-events: initial;
@@ -1632,7 +1632,7 @@ input[type=search]::-webkit-search-results-decoration {
   color: var(--cl-popup--text-desabled);
 }
 .m-popup__item:not(.m-popup__item--disabled):hover {
-  background: var(--cl-active);
+  background: var(--cl-popup--bg-hover);
   cursor: pointer;
 }
 .m-popup__itemCaption {
@@ -1640,6 +1640,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-popup__itemShortcut {
   margin-left: 2em;
+  text-align: right;
 }
 .m-popup__item--checked:before {
   content: "\e718";
@@ -1651,6 +1652,11 @@ input[type=search]::-webkit-search-results-decoration {
   left: 9px;
   top: 50%;
   transform: translateY(-50%);
+}
+.m-popup__itemIcon {
+  position: absolute;
+  font-size: 110%;
+  left: 13px;
 }
 .m-popup__hr {
   width: calc(100% + 8px);
@@ -1706,13 +1712,12 @@ input[type=search]::-webkit-search-results-decoration {
 .p-search__dropboxStage {
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--s-transition);
   position: absolute;
   display: flex;
   flex-direction: column;
   z-index: 100;
-  background-color: var(--cl-listheaderbg);
-  border: 3px solid var(--cl-listheaderbg);
+  background-color: var(--cl-popup--bg);
+  border: 4px solid var(--cl-popup--bg);
   box-shadow: var(--cl-ui-boxshadow);
   border-radius: 5px;
 }
@@ -1729,7 +1734,7 @@ input[type=search]::-webkit-search-results-decoration {
   border-radius: 3px;
 }
 .p-search__dropboxLabel:hover {
-  background: var(--cl-active);
+  background: var(--cl-popup--bg-hover);
 }
 .p-search__dropboxRadio {
   appearance: none;

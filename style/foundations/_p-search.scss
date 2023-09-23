@@ -45,13 +45,13 @@
       pointer-events: none;
       //visibility: hidden;
       opacity: 0;
-      transition: opacity var(--s-transition);
+      //transition: opacity var(--s-transition);
       position: absolute;
       display: flex;
       flex-direction: column;
       z-index: 100;
-      background-color: var(--cl-listheaderbg);
-      border: 3px solid var(--cl-listheaderbg);
+      background-color: var(--cl-popup--bg);
+      border: 4px solid var(--cl-popup--bg);
       box-shadow: var(--cl-ui-boxshadow);
       border-radius: 5px;
     }
@@ -67,7 +67,7 @@
       position: relative;
       border-radius: 3px;
       &:hover {
-        background: var(--cl-active);
+        background: var(--cl-popup--bg-hover);
       }
     }
     &Radio {

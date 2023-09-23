@@ -75,7 +75,7 @@ const createWindow = () => {
   // 準備が整ったら表示
   mainWindow.once("ready-to-show", () => {
     //if (maximized) mainWindow.maximize();
-    //mainWindow.show();
+    mainWindow.show();
   });
 
   // ウインドウ閉じる直前
