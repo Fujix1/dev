@@ -39,13 +39,11 @@ const actCopy = new Action({
   control: true,
   keycode: "c",
   onExecute: (self) => {
-    console.log(self.caption, "onExecute");
     const target = self.caller.target;
     navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
     target.dispatchEvent(new Event("copy"));
   },
   onUpdate: (self) => {
-    console.log(self.caption, "onUpdate");
     const target = self.caller.target;
     self.enabled = target.selectionEnd - target.selectionStart > 0;
   },
