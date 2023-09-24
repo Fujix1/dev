@@ -144,36 +144,18 @@ async function onLoad() {
           break;
         case "ArrowUp": {
           if (popup.index === -1) {
-            popup.index = popup.length - 1;
+            popup.view(popup.length - 1);
           } else {
-            popup.index = mod(popup.index - 1, popup.length);
+            popup.view(mod(popup.index - 1, popup.length));
           }
-          popup.actions.forEach((action) => {
-            if (action !== "---") {
-              if (action.index == popup.index) {
-                action.li.classList.add("is-selected");
-              } else {
-                action.li.classList.remove("is-selected");
-              }
-            }
-          });
           break;
         }
         case "ArrowDown": {
           if (popup.index === -1) {
-            popup.index = 0;
+            popup.view(0);
           } else {
-            popup.index = mod(popup.index + 1, popup.length);
+            popup.view(mod(popup.index + 1, popup.length));
           }
-          popup.actions.forEach((action) => {
-            if (action !== "---") {
-              if (action.index == popup.index) {
-                action.li.classList.add("is-selected");
-              } else {
-                action.li.classList.remove("is-selected");
-              }
-            }
-          });
           break;
         }
 
