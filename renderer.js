@@ -6,6 +6,7 @@ const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
 const screenshot = { index: -1, zip: "", width: 0, height: 0 };
 let zipName = "";
+let currentPopup;
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -130,13 +131,54 @@ async function onLoad() {
 
   // キー入力処理
   window.addEventListener("keydown", (e) => {
-    // ポップアップメニュー あり
+    // ポップアップメニュー のキー処理
     if (document.body.classList.contains("is-popupmenu-open")) {
+      const popup = currentPopup;
       switch (e.key) {
-        case "ArrowUp":
+        case "Enter":
+          if (popup.index !== -1) {
+            popup.actions.forEach((action) => {
+              if (action.index == popup.index) {
+                action.execute();
+              }
+            });
+          }
           break;
-        case "ArrowDown":
+        case "ArrowUp": {
+          if (popup.index === -1) {
+            popup.index = popup.length - 1;
+          } else {
+            popup.index = mod(popup.index - 1, popup.length);
+          }
+          popup.actions.forEach((action) => {
+            if (action !== "---") {
+              if (action.index == popup.index) {
+                action.li.classList.add("is-selected");
+              } else {
+                action.li.classList.remove("is-selected");
+              }
+            }
+          });
           break;
+        }
+        case "ArrowDown": {
+          if (popup.index === -1) {
+            popup.index = 0;
+          } else {
+            popup.index = mod(popup.index + 1, popup.length);
+          }
+          popup.actions.forEach((action) => {
+            if (action !== "---") {
+              if (action.index == popup.index) {
+                action.li.classList.add("is-selected");
+              } else {
+                action.li.classList.remove("is-selected");
+              }
+            }
+          });
+          break;
+        }
+
         case "Escape":
           PopupMenu.close();
           break;
@@ -650,3 +692,8 @@ window.retrofireAPI.onBlur((_event, text) => {
   // ポップアップ閉じる
   PopupMenu.close();
 });
+
+// -------------------------------------
+function mod(i, j) {
+  return i % j < 0 ? (i % j) + 0 + (j < 0 ? -j : j) : (i % j) + 0;
+}
