@@ -1628,6 +1628,9 @@ input[type=search]::-webkit-search-results-decoration {
 .m-popup__item:focus-visible {
   outline: none;
 }
+.m-popup__item:focus {
+  background: var(--cl-popup--bg-hover);
+}
 .m-popup__item--disabled {
   color: var(--cl-popup--text-desabled);
 }
