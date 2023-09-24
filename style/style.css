@@ -1632,8 +1632,10 @@ input[type=search]::-webkit-search-results-decoration {
   color: var(--cl-popup--text-desabled);
 }
 .m-popup__item:not(.m-popup__item--disabled):hover {
-  background: var(--cl-popup--bg-hover);
   cursor: pointer;
+}
+.m-popup__item:not(.m-popup__item--disabled).is-selected {
+  background: var(--cl-popup--bg-hover);
 }
 .m-popup__itemCaption {
   flex-shrink: 1;

@@ -17,7 +17,7 @@
   user-select: none;
   pointer-events: none;
   opacity: 0;
-  //ransition: opacity var(--s-transition);
+  //transition: opacity var(--s-transition);
   &.is-open {
     pointer-events: initial;
     opacity: 1;
@@ -44,8 +44,11 @@
     }
     &:not(.m-popup__item--disabled) {
       &:hover {
-        background: var(--cl-popup--bg-hover);
+        //background: var(--cl-popup--bg-hover);
         cursor: pointer;
+      }
+      &.is-selected {
+        background: var(--cl-popup--bg-hover);
       }
     }
     &Caption {

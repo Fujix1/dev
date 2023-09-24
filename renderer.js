@@ -130,6 +130,21 @@ async function onLoad() {
 
   // キー入力処理
   window.addEventListener("keydown", (e) => {
+    // ポップアップメニュー あり
+    if (document.body.classList.contains("is-popupmenu-open")) {
+      switch (e.key) {
+        case "ArrowUp":
+          break;
+        case "ArrowDown":
+          break;
+        case "Escape":
+          PopupMenu.close();
+          break;
+      }
+      return;
+    }
+
+    // 平時
     switch (e.key) {
       case "F12": // 言語切替
         config.language = config.language == LANG.JP ? LANG.EN : LANG.JP;
@@ -198,7 +213,6 @@ async function onLoad() {
       listViewMain.updateListViewSearch({ searchWord: e.target.value });
     }
   });
-
   document.querySelector("#search").addEventListener("cut", (e) => {
     listViewMain.updateListViewSearch({ searchWord: e.target.value });
   });
@@ -207,6 +221,12 @@ async function onLoad() {
   });
 
   document.querySelector("#search").addEventListener("keydown", (e) => {
+    // ポップアップメニュー あり
+    if (document.body.classList.contains("is-popupmenu-open")) {
+      e.preventDefault();
+      return;
+    }
+
     if (e.code === "Tab") {
       listViewMain.setFocusOnItem();
       e.preventDefault();
