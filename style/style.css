@@ -1772,6 +1772,9 @@ input[type=search]::-webkit-search-results-decoration {
   height: 100%;
   min-width: 320px;
 }
+.p-info > *:focus-visible {
+  outline: none;
+}
 .p-info__screenshot {
   margin: 0;
   padding: 0px;

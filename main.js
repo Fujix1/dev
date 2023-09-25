@@ -5,7 +5,7 @@ const child_process = require("node:child_process");
 const path = require("node:path");
 const fs = require("node:fs");
 
-const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, shell, roleList, MenuItem } = require("electron");
 const Store = require("electron-store");
 const store = new Store();
 
@@ -18,6 +18,9 @@ const { CONSTS, rfConfig, rfProfiles, rfPath } = require("./rfConfig");
 // 初期設定
 //-------------------------------------------------------------------
 app.disableHardwareAcceleration();
+
+console.log(roleList);
+//const wc = new WebContents();
 
 //-------------------------------------------------------------------
 // 定数
@@ -258,10 +261,14 @@ function sendDebug(text) {
 // ipc通信
 //------------------------------------
 ipcMain.handle("window-reset", async (event, data) => {
-  console.log(data);
+  /*  console.log(data);
   mainWindow.setSize(MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height);
   mainWindow.setPosition(MAIN_FORM_DEFAULT.x, MAIN_FORM_DEFAULT.y);
   sendDebug("ウインドウリセット");
+  */
+  console.log(getFocusedWindow());
+  const mi = new MenuItem({ role: "copy" });
+  console.log(mi.click());
   return true;
 });
 

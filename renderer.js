@@ -6,7 +6,6 @@ const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
 const screenshot = { index: -1, zip: "", width: 0, height: 0 };
 let zipName = "";
-let currentPopup;
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -19,9 +18,6 @@ let config = {
 // --------------------------------------------------------------------------------
 const actCut = new Action({
   caption: "切り取り",
-  control: true,
-  keycode: "x",
-  enabled: true,
   onExecute: (self) => {
     const target = self.caller.target;
     navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
@@ -36,24 +32,19 @@ const actCut = new Action({
 
 const actCopy = new Action({
   caption: "コピー",
-  control: true,
-  keycode: "c",
   onExecute: (self) => {
     const target = self.caller.target;
-    navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
+    navigator.clipboard.writeText(document.getSelection());
     target.dispatchEvent(new Event("copy"));
   },
   onUpdate: (self) => {
     const target = self.caller.target;
-    self.enabled = target.selectionEnd - target.selectionStart > 0;
+    self.enabled = String(document.getSelection()).length > 0;
   },
 });
 
 const actPaste = new Action({
   caption: "貼り付け",
-  control: true,
-  keycode: "v",
-  checked: false,
   onExecute: async (self) => {
     const st = await navigator.clipboard.readText();
     const target = self.caller.target;
@@ -68,10 +59,17 @@ const actPaste = new Action({
 
 // 編集用ポップアップメニュー
 const pmEdit = new PopupMenu([actCut, actCopy, actPaste]);
-
 document.querySelector("#search").addEventListener("contextmenu", (e) => {
-  e.stopPropagation(); // 大事
+  e.stopPropagation();
+  e.preventDefault();
   pmEdit.show(e);
+});
+
+const pmInfo = new PopupMenu([actCopy]);
+document.querySelector("#info").addEventListener("contextmenu", (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  pmInfo.show(e);
 });
 
 //------------------------------------------------------------
@@ -95,8 +93,29 @@ const actRun = new Action({
 
 const pmMainList = new PopupMenu([actRun, "---"]);
 document.querySelector(".list-view").addEventListener("contextmenu", (e) => {
-  e.stopPropagation(); // 大事
+  e.stopPropagation();
+  e.preventDefault();
   pmMainList.show(e);
+});
+
+//------------------------------------------------------------
+const actKeepAspect = new Action({
+  caption: "アスペクト比を保持",
+  onExecute: async (self) => {
+    config.screenshotFit = !config.screenshotFit;
+    setScreenshotAspect();
+  },
+  onUpdate: async (self) => {
+    self.checked = config.screenshotFit;
+  },
+});
+
+const pmScreenshot = new PopupMenu([actKeepAspect]);
+document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e) => {
+  console.log("contextmenu");
+  e.stopPropagation();
+  e.preventDefault();
+  pmScreenshot.show(e);
 });
 
 //---------------------------------------------------------------------------
@@ -131,7 +150,7 @@ async function onLoad() {
   window.addEventListener("keydown", (e) => {
     // ポップアップメニュー のキー処理
     if (document.body.classList.contains("is-popupmenu-open")) {
-      const popup = currentPopup;
+      const popup = PopupMenu.currentInstance;
       switch (e.key) {
         case "Enter":
           if (popup.index !== -1) {
@@ -241,20 +260,17 @@ async function onLoad() {
   document.querySelector("#search").addEventListener("paste", (e) => {
     listViewMain.updateListViewSearch({ searchWord: e.target.value });
   });
-
   document.querySelector("#search").addEventListener("keydown", (e) => {
     // ポップアップメニュー あり
     if (document.body.classList.contains("is-popupmenu-open")) {
       e.preventDefault();
       return;
     }
-
     if (e.code === "Tab") {
       listViewMain.setFocusOnItem();
       e.preventDefault();
       return;
     }
-
     if (e.target.getAttribute("IME") == "true") {
     } else {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
@@ -264,7 +280,6 @@ async function onLoad() {
       }
     }
   });
-
   document.querySelector("#search").addEventListener("focus", (e) => {
     e.target.select();
   });
