@@ -14,7 +14,7 @@
         <div class="l-control">
           control
         </div>
-        <div class="l-tree">
+        <div class="l-tree" style="min-width: 160px;max-width: 280px;">
           <div class="l-tree__upper">
             up
           </div>
@@ -22,7 +22,7 @@
            
           </div>
         </div>
-        <div class="l-splitter l-splitter__v" anchor=".l-tree"></div>
+        <div class="l-splitter l-splitter__v" splitter-id ="tree" anchor=".l-tree"></div>
         <div class="l-stage">
           <div class="l-head">
             <div class="l-head__item">
@@ -76,14 +76,14 @@
                 </p>
               </div>
             </div>
-            <div class="l-splitter l-splitter__h" anchor=".l-main__bottom"></div>
+            <div class="l-splitter l-splitter__h" splitter-id="bottom" anchor=".l-main__bottom"></div>
             <div class="l-main__bottom">
               <textarea class="debug" id="debug" readonly></textarea>
             </div>
           </div>
         </div>
-        <div class="l-splitter l-splitter__v" anchor=".l-info"></div>
-        <div class="l-info" min-width="240" max-width="640">
+        <div class="l-splitter l-splitter__v" splitter-id = "info" anchor=".l-info" ></div>
+        <div class="l-info" style="min-width: 240px; max-width: 640px;">
           <div class="p-info">
             <figure class="p-info__screenshot">
               <img class="p-info__img" id="openImage">
