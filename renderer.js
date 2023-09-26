@@ -611,6 +611,8 @@ function setScreenshotAspect() {
       screenshot.height >= 220 &&
       screenshot.height <= 256
     ) {
+      aspectX = "8";
+      aspectY = "3";
     } else if (
       // kbm
       NumScreens === 2 &&
