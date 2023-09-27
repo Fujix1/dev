@@ -15,11 +15,12 @@ let config = {
   screenshotFit: true, // スクリーンショットのフィット表示
   splitter: [
     // スプリッタの幅高初期値
-    { id: "info", px: 320 },
-    { id: "tree", px: 200 },
-    { id: "bottom", px: 100 },
+    { id: "info", dimension: "320px" },
+    { id: "tree", dimension: "200px" },
+    { id: "bottom", dimension: "100px" },
   ],
 };
+const root = document.querySelector(":root");
 
 // --------------------------------------------------------------------------------
 const actCut = new Action({
@@ -146,9 +147,18 @@ async function onLoad() {
       config.searchTarget = readConfig.searchTarget;
       document.querySelector('input[name="searchRadio"][value="' + readConfig.searchTarget + '"]').checked = true;
     }
-
+    // スクリーンショット設定
     if (readConfig.hasOwnProperty("screenshotFit")) {
       config.screenshotFit = readConfig.screenshotFit;
+    }
+    // スプリッター設定
+    if (readConfig.hasOwnProperty("splitter")) {
+      readConfig.splitter.forEach((item) => {
+        if (item.dimension !== "") {
+          config.splitter[item.id] = item.dimension;
+          root.style.setProperty("--splitter-" + item.id + "-dimension", item.dimension);
+        }
+      });
     }
   }
 
@@ -542,16 +552,25 @@ function clearSearch() {
 
 // フォームの config 送信
 function saveFormConfig() {
-  console.log("saveFormConfig: config.zipName", config.zipName);
   try {
     config.searchWord = document.querySelector("#search").value.trim();
-    window.retrofireAPI.setStoreTemp({ key: "config", val: config });
+    config.splitter = [];
+    document.querySelectorAll(".l-splitter").forEach((item) => {
+      const id = item.getAttribute("splitter-id");
+      const dimension = root.style.getPropertyValue("--splitter-" + id + "-dimension");
+      if (dimension !== undefined) {
+        config.splitter.push({ id: id, dimension: dimension });
+      }
+    });
+
+    config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
     console.log("フォーム設定 main.js に送信");
   } catch (e) {
     console.log(e);
   }
 }
 
+//------------------------------------------------------------------------------
 // スクリーンショットフィット切り替え
 document.querySelector(".p-info__screenshot").addEventListener("click", (e) => {
   config.screenshotFit = !config.screenshotFit;
