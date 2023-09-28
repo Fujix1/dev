@@ -19,9 +19,6 @@ const { CONSTS, rfConfig, rfProfiles, rfPath } = require("./rfConfig");
 //-------------------------------------------------------------------
 app.disableHardwareAcceleration();
 
-console.log(roleList);
-//const wc = new WebContents();
-
 //-------------------------------------------------------------------
 // 定数
 //-------------------------------------------------------------------
@@ -98,9 +95,14 @@ const createWindow = () => {
     }
   });
 
-  //
+  // フォーカスロスト
   mainWindow.on("blur", async () => {
     mainWindow.webContents.send("blur");
+  });
+
+  // フォーカス
+  mainWindow.on("focus", async () => {
+    mainWindow.webContents.send("focus");
   });
 };
 
@@ -223,7 +225,7 @@ async function openLocalImage(path) {
   try {
     img = fs.readFileSync(path); // 開く
     const validate = await validateBufferMIMEType(img, {
-      allowMimeTypes: ["image/jpeg", "image/gif", "image/png", "image/webp"],
+      allowMimeTypes: ["image/jpeg", "image/gif", "image/png", "image/webp", "image/avif"],
     }); // 画像ファイル検証
     if (validate.ok) {
       dimensions = sizeOf(img);
@@ -246,6 +248,7 @@ async function openLocalImage(path) {
       type: dimensions.type,
       width: Number(dimensions.width),
       height: Number(dimensions.height),
+      infolder: false, // 不定
     };
   }
 }
@@ -274,12 +277,17 @@ ipcMain.handle("window-reset", async (event, data) => {
 
 // スクリーンショット開く
 ipcMain.handle("get-screenshot", async (event, data) => {
+  //console.log(data);
   let res = await openLocalImage(rfPath.snap + data + ".png");
   if (res.result === true) {
-    return res;
+    res.infolder = false;
   } else {
-    return await openLocalImage(rfPath.snap + data + "/0000.png");
+    res = await openLocalImage(rfPath.snap + data + "/0000.png");
+    if (res.result === true) {
+      res.infolder = true;
+    }
   }
+  return res;
 });
 
 // 表示準備完了

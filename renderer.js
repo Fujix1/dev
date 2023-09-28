@@ -4,7 +4,7 @@ let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
-const screenshot = { index: -1, zip: "", width: 0, height: 0 };
+const screenShot = new ScreenShot();
 let zipName = "";
 
 const LANG = { JP: 0, EN: 1 };
@@ -12,7 +12,7 @@ let config = {
   language: LANG.JP, // 言語設定
   searchWord: "", // 検索文字列
   searchTarget: "", // 検索対象
-  screenshotFit: true, // スクリーンショットのフィット表示
+  keepAspect: true, // スクリーンショットアスペクト比
   splitter: [
     // スプリッタの幅高初期値
     { id: "info", dimension: "320px" },
@@ -20,6 +20,7 @@ let config = {
     { id: "bottom", dimension: "100px" },
   ],
 };
+
 const root = document.querySelector(":root");
 
 // --------------------------------------------------------------------------------
@@ -109,11 +110,11 @@ document.querySelector(".list-view").addEventListener("contextmenu", (e) => {
 const actKeepAspect = new Action({
   caption: "アスペクト比を保持",
   onExecute: async (self) => {
-    config.screenshotFit = !config.screenshotFit;
-    setScreenshotAspect();
+    screenShot.keepAspect = !screenShot.keepAspect;
+    screenShot.setAspect();
   },
   onUpdate: async (self) => {
-    self.checked = config.screenshotFit;
+    self.checked = screenShot.keepAspect;
   },
 });
 
@@ -148,8 +149,8 @@ async function onLoad() {
       document.querySelector('input[name="searchRadio"][value="' + readConfig.searchTarget + '"]').checked = true;
     }
     // スクリーンショット設定
-    if (readConfig.hasOwnProperty("screenshotFit")) {
-      config.screenshotFit = readConfig.screenshotFit;
+    if (readConfig.hasOwnProperty("keepAspect")) {
+      screenShot.keepAspect = readConfig.keepAspect;
     }
     // スプリッター設定
     if (readConfig.hasOwnProperty("splitter")) {
@@ -463,11 +464,7 @@ async function itemSelectHandler(dataIndex, zipName) {
   // 項目なし
   if (dataIndex === -1) {
     document.querySelector("#info").innerHTML = "";
-    screenshot.zip = "";
-    screenshot.width = 0;
-    screenshot.height = 0;
-    screenshot.index = -1;
-    document.querySelector(".p-info__img").removeAttribute("src");
+    screenShot.show("");
     return;
   }
 
@@ -506,43 +503,7 @@ async function itemSelectHandler(dataIndex, zipName) {
     document.querySelector("#info").innerHTML = st;
   });
 
-  // スクリーンショット
-  let result;
-
-  if (screenshot.zip !== zipName) {
-    result = await window.retrofireAPI.getScreenshot(zipName);
-    if (result.result) {
-      window.requestAnimationFrame(() => {
-        screenshot.zip = zipName;
-        screenshot.width = parseInt(result.width);
-        screenshot.height = parseInt(result.height);
-        screenshot.index = dataIndex;
-        document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
-        setScreenshotAspect();
-      });
-    } else {
-      // 親セットのショット確認
-      if (screenshot.zip !== masterZip) {
-        result = await window.retrofireAPI.getScreenshot(masterZip);
-        if (result.result) {
-          window.requestAnimationFrame(() => {
-            document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
-            screenshot.zip = masterZip;
-            screenshot.width = parseInt(result.width);
-            screenshot.height = parseInt(result.height);
-            screenshot.index = masterId;
-            setScreenshotAspect();
-          });
-        } else {
-          screenshot.zip = "";
-          screenshot.width = 0;
-          screenshot.height = 0;
-          screenshot.index = -1;
-          document.querySelector(".p-info__img").removeAttribute("src");
-        }
-      }
-    }
-  }
+  screenShot.show(zipName);
 }
 
 // ウインドウ終了前
@@ -561,7 +522,10 @@ function clearSearch() {
 // フォームの config 送信
 function saveFormConfig() {
   try {
+    // 検索文字列
     config.searchWord = document.querySelector("#search").value.trim();
+
+    // スプリッター設定
     config.splitter = [];
     document.querySelectorAll(".l-splitter").forEach((item) => {
       const id = item.getAttribute("splitter-id");
@@ -570,6 +534,9 @@ function saveFormConfig() {
         config.splitter.push({ id: id, dimension: dimension });
       }
     });
+
+    // スクリーンショットアスペクト比
+    config.keepAspect = screenShot.keepAspect;
 
     config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
     console.log("フォーム設定 main.js に送信");
@@ -581,125 +548,9 @@ function saveFormConfig() {
 //------------------------------------------------------------------------------
 // スクリーンショットフィット切り替え
 document.querySelector(".p-info__screenshot").addEventListener("click", (e) => {
-  config.screenshotFit = !config.screenshotFit;
-  setScreenshotAspect();
+  screenShot.keepAspect = !screenShot.keepAspect;
+  screenShot.setAspect();
 });
-
-function setScreenshotAspect() {
-  if (screenshot.index === -1) return;
-  if (config.screenshotFit) {
-    let aspectX, aspectY;
-    if (record[screenshot.index].vertical) {
-      aspectX = "3";
-      aspectY = "4";
-    } else {
-      aspectX = "4";
-      aspectY = "3";
-    }
-
-    // 特殊画面比率
-    // 横3画面と2画面 (ギャップ対応)
-    const OrgResX = record[screenshot.index].resx;
-    const OrgResY = record[screenshot.index].resy;
-    const NumScreens = record[screenshot.index].numscreens;
-
-    if (
-      NumScreens === 3 &&
-      screenshot.height === OrgResX &&
-      (screenshot.width === OrgResX * 3 || screenshot.width === OrgResX * 3 + 4)
-    ) {
-      aspectX = "12";
-      aspectY = "3";
-    } else if (
-      NumScreens === 2 &&
-      screenshot.height === OrgResY &&
-      (screenshot.width === OrgResX * 2 ||
-        screenshot.width === OrgResX * 2 + 2 ||
-        screenshot.width === OrgResX * 2 + 3 ||
-        screenshot.width === OrgResX * 4 + 4)
-    ) {
-      aspectX = "8";
-      aspectY = "3";
-    } else if (
-      NumScreens === 2 &&
-      screenshot.width === OrgResX &&
-      (screenshot.height === OrgResY * 2 || screenshot.height === OrgResY * 2 + 2)
-    ) {
-      // 縦2画面
-      aspectX = "2";
-      aspectY = "3";
-    } else if (
-      NumScreens === 3 &&
-      screenshot.width === 512 &&
-      (screenshot.height === 704 || screenshot.height === 368)
-    ) {
-      // 対家ﾏﾇｶﾝ
-      aspectX = "28";
-      aspectY = "33";
-    } else if (
-      // 2画面横汎用
-      NumScreens === 2 &&
-      screenshot.width >= 620 &&
-      screenshot.width <= 1156 &&
-      screenshot.height >= 220 &&
-      screenshot.height <= 256
-    ) {
-      aspectX = "8";
-      aspectY = "3";
-    } else if (
-      // kbm
-      NumScreens === 2 &&
-      screenshot.width == 772 &&
-      screenshot.height == 512
-    ) {
-      aspectX = "6";
-      aspectY = "4";
-    } else if (
-      // 3画面横汎用
-      NumScreens === 3 &&
-      screenshot.width >= 620 &&
-      screenshot.width <= 1156 &&
-      screenshot.height >= 220 &&
-      screenshot.height <= 256
-    ) {
-      aspectX = "4";
-      aspectY = "1";
-    } else if (NumScreens === 3 && screenshot.width === 1544 && screenshot.height === 384) {
-      // racedrivpan
-      aspectX = "12";
-      aspectY = "3";
-    } else if (screenshot.width === 512 && screenshot.height === 128) {
-      // pinball
-      aspectX = "4";
-      aspectY = "1";
-    } else if (screenshot.width === 950 && screenshot.height === 1243) {
-      // game watch
-      aspectX = "950";
-      aspectY = "1243";
-    } else if (screenshot.width === 906 && screenshot.height === 1197) {
-      // game watch
-      aspectX = "906";
-      aspectY = "1197";
-    } else if (NumScreens === 2 && screenshot.width === 642 && screenshot.height === 224) {
-      aspectX = "8";
-      aspectY = "3";
-    } else if (NumScreens === 2 && screenshot.width === 320 && screenshot.height === 416) {
-      aspectX = "4";
-      aspectY = "6";
-    }
-
-    document.querySelector(".p-info__img").style.aspectRatio = aspectX + "/" + aspectY;
-    if (aspectX > aspectY) {
-      document.querySelector(".p-info__img").style.width = "100%";
-      document.querySelector(".p-info__img").style.height = "";
-    } else {
-      document.querySelector(".p-info__img").style.width = "";
-      document.querySelector(".p-info__img").style.height = "100%";
-    }
-  } else {
-    document.querySelector(".p-info__img").removeAttribute("style");
-  }
-}
 
 // 起動
 async function executeMAME(args) {
@@ -717,10 +568,18 @@ window.retrofireAPI.onDebugMessage((_event, text) => {
   debug.scrollTop = debug.scrollHeight;
 });
 
+// フォーカスロスト
 window.retrofireAPI.onBlur((_event, text) => {
   console.log("onBlur");
   // ポップアップ閉じる
   PopupMenu.close();
+});
+
+// フォーカス
+window.retrofireAPI.onFocus((_event, text) => {
+  console.log("onFocus");
+  // スクリーンショット読み直す
+  screenShot.show(zipName);
 });
 
 // -------------------------------------

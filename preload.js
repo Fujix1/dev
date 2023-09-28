@@ -27,4 +27,5 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   onUpdateClock: (callback) => ipcRenderer.on("update-clock", callback),
   onDebugMessage: (callback) => ipcRenderer.on("debug-message", callback),
   onBlur: (callback) => ipcRenderer.on("blur", callback),
+  onFocus: (callback) => ipcRenderer.on("focus", callback),
 });
