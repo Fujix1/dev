@@ -1302,7 +1302,7 @@ input[type=search]::-webkit-search-results-decoration {
   top: 0;
   left: 0;
 }
-.l-splitter:hover.l-splitter:before {
+.l-splitter:hover.l-splitter:before, .l-splitter.is-dragging.l-splitter:before {
   opacity: 1;
 }
 .l-splitter__v {

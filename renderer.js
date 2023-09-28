@@ -255,7 +255,9 @@ async function onLoad() {
     // メインプロセスを呼び出し
     const result = await window.retrofireAPI.dialog("");
     if (result && result.result == true) {
-      document.querySelector(".p-info__img").src = "data:image/png;base64," + result.img;
+      window.requestAnimationFrame(() => {
+        document.querySelector(".p-info__img").src = "data:image/png;base64," + result.img;
+      });
     }
   });
 
@@ -500,7 +502,9 @@ async function itemSelectHandler(dataIndex, zipName) {
       st += mameinfo[this.data[masterId].zipname];
     }
   }
-  document.querySelector("#info").innerHTML = st;
+  window.requestAnimationFrame(() => {
+    document.querySelector("#info").innerHTML = st;
+  });
 
   // スクリーンショット
   let result;
@@ -508,23 +512,27 @@ async function itemSelectHandler(dataIndex, zipName) {
   if (screenshot.zip !== zipName) {
     result = await window.retrofireAPI.getScreenshot(zipName);
     if (result.result) {
-      screenshot.zip = zipName;
-      screenshot.width = parseInt(result.width);
-      screenshot.height = parseInt(result.height);
-      screenshot.index = dataIndex;
-      document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
-      setScreenshotAspect();
+      window.requestAnimationFrame(() => {
+        screenshot.zip = zipName;
+        screenshot.width = parseInt(result.width);
+        screenshot.height = parseInt(result.height);
+        screenshot.index = dataIndex;
+        document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
+        setScreenshotAspect();
+      });
     } else {
       // 親セットのショット確認
       if (screenshot.zip !== masterZip) {
         result = await window.retrofireAPI.getScreenshot(masterZip);
         if (result.result) {
-          document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
-          screenshot.zip = masterZip;
-          screenshot.width = parseInt(result.width);
-          screenshot.height = parseInt(result.height);
-          screenshot.index = masterId;
-          setScreenshotAspect();
+          window.requestAnimationFrame(() => {
+            document.querySelector(".p-info__img").setAttribute("src", "data:image/png;base64," + result.img);
+            screenshot.zip = masterZip;
+            screenshot.width = parseInt(result.width);
+            screenshot.height = parseInt(result.height);
+            screenshot.index = masterId;
+            setScreenshotAspect();
+          });
         } else {
           screenshot.zip = "";
           screenshot.width = 0;
