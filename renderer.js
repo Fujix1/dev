@@ -136,13 +136,16 @@ const actTakeOutFromFolder = new Action({
   caption: "フォルダから出す",
   iconFont: "microns",
   iconChar: "e777",
-  onExecute: async (self) => {},
+  onExecute: async (self) => {
+    await window.retrofireAPI.renameScreenShot(screenShot.zipName);
+    screenShot.show(screenShot.zipName);
+  },
   onUpdate: async (self) => {
     self.enabled = screenShot.index !== -1 && screenShot.infolder;
   },
 });
 
-const pmScreenshot = new PopupMenu([actKeepAspect, "---", actDeleteScreenShot, actTakeOutFromFolder]);
+const pmScreenshot = new PopupMenu([actKeepAspect, "---", actDeleteScreenShot, "---", actTakeOutFromFolder]);
 document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e) => {
   console.log("contextmenu");
   e.stopPropagation();

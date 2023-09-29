@@ -12,6 +12,7 @@ const { validateBufferMIMEType } = require("validate-image-type");
 const sizeOf = require("image-size");
 
 const { CONSTS, rfConfig, rfProfiles, rfPath } = require("./rfConfig");
+const glob = require("glob");
 
 //-------------------------------------------------------------------
 // 初期設定
@@ -339,9 +340,34 @@ ipcMain.handle("delete-screen-shot", async (event, data) => {
       try {
         await shell.trashItem(path2);
         sendDebug("スクリーンショットをゴミ箱に移動: " + path2);
+        // 空フォルダなら削除
+        const files = glob.sync(rfPath.snap + data + path.sep + "*");
+        if (files.length === 0) {
+          fs.rmSync(rfPath.snap + data, { recursive: true });
+        }
       } catch (error) {
         sendDebug("スクリーンショット削除失敗: " + path2);
       }
+    }
+  }
+});
+
+// スクリーンショット改名移動
+ipcMain.handle("rename-screen-shot", async (event, data) => {
+  // 改名
+  const path1 = rfPath.snap + data + ".png";
+  const path2 = rfPath.snap + data + path.sep + "0000.png";
+  if (fs.existsSync(path2)) {
+    try {
+      fs.renameSync(path2, path1);
+      // 空フォルダなら削除
+      const files = glob.sync(rfPath.snap + data + path.sep + "*");
+      if (files.length === 0) {
+        fs.rmSync(rfPath.snap + data, { recursive: true });
+      }
+      sendDebug("スクリーンショットをフォルダから移動: " + path1);
+    } catch (error) {
+      sendDebug("スクリーンショット移動失敗: " + path1);
     }
   }
 });

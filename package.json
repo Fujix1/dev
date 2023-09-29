@@ -24,6 +24,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
+    "glob": "^10.3.10",
     "image-size": "^1.0.2",
     "split.js": "^1.6.5",
     "update-electron-app": "^2.0.1",
