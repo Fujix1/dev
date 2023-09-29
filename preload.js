@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   setStoreTemp: async (args) => await ipcRenderer.invoke("set-store-temp", args),
 
   dialog: async (args) => await ipcRenderer.invoke("open-dialog", args),
+  deleteScreenShot: async (args) => await ipcRenderer.invoke("delete-screen-shot", args),
   getRecord: async (args) => await ipcRenderer.invoke("get-record", args),
   getMame32j: async (args) => await ipcRenderer.invoke("get-mame32j", args),
   getMameInfo: async (args) => await ipcRenderer.invoke("get-mameinfo", args),

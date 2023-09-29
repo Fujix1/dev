@@ -4,7 +4,6 @@
 const child_process = require("node:child_process");
 const path = require("node:path");
 const fs = require("node:fs");
-
 const { app, BrowserWindow, dialog, ipcMain, shell, roleList, MenuItem } = require("electron");
 const Store = require("electron-store");
 const store = new Store();
@@ -18,6 +17,7 @@ const { CONSTS, rfConfig, rfProfiles, rfPath } = require("./rfConfig");
 // 初期設定
 //-------------------------------------------------------------------
 app.disableHardwareAcceleration();
+const APPNAME = "Retrofire Neo";
 
 //-------------------------------------------------------------------
 // 定数
@@ -311,6 +311,38 @@ ipcMain.handle("open-dialog", async (event, data) => {
 
   if (result) {
     return openLocalImage(result[0]);
+  }
+});
+
+// スクリーンショット削除
+ipcMain.handle("delete-screen-shot", async (event, data) => {
+  const result = dialog.showMessageBoxSync(mainWindow, {
+    title: APPNAME,
+    type: "question",
+    message: "このスクリーンショットを削除しますか？",
+    buttons: ["OK", "Cancel"],
+  });
+
+  // 削除処理
+  if (result === 0) {
+    const path1 = rfPath.snap + data + ".png";
+    const path2 = rfPath.snap + data + path.sep + "0000.png";
+
+    if (fs.existsSync(path1)) {
+      try {
+        await shell.trashItem(path1);
+        sendDebug("スクリーンショットをゴミ箱に移動: " + path1);
+      } catch (error) {
+        sendDebug("スクリーンショット削除失敗: " + path1);
+      }
+    } else if (fs.existsSync(path2)) {
+      try {
+        await shell.trashItem(path2);
+        sendDebug("スクリーンショットをゴミ箱に移動: " + path2);
+      } catch (error) {
+        sendDebug("スクリーンショット削除失敗: " + path2);
+      }
+    }
   }
 });
 

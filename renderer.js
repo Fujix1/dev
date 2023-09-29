@@ -1,5 +1,6 @@
 "use strict";
 
+const APPNAME = "Retrofire Neo";
 let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
@@ -118,7 +119,30 @@ const actKeepAspect = new Action({
   },
 });
 
-const pmScreenshot = new PopupMenu([actKeepAspect]);
+const actDeleteScreenShot = new Action({
+  caption: "削除",
+  iconFont: "themify",
+  iconChar: "e605",
+  onExecute: async (self) => {
+    await window.retrofireAPI.deleteScreenShot(screenShot.zipName);
+    screenShot.show(screenShot.zipName);
+  },
+  onUpdate: async (self) => {
+    self.enabled = screenShot.index !== -1;
+  },
+});
+
+const actTakeOutFromFolder = new Action({
+  caption: "フォルダから出す",
+  iconFont: "microns",
+  iconChar: "e777",
+  onExecute: async (self) => {},
+  onUpdate: async (self) => {
+    self.enabled = screenShot.index !== -1 && screenShot.infolder;
+  },
+});
+
+const pmScreenshot = new PopupMenu([actKeepAspect, "---", actDeleteScreenShot, actTakeOutFromFolder]);
 document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e) => {
   console.log("contextmenu");
   e.stopPropagation();
@@ -162,6 +186,11 @@ async function onLoad() {
       });
     }
   }
+
+  // 検索オプション
+  document.querySelector(".p-search__dropbox").addEventListener("mouseenter", (e) => {
+    PopupMenu.close();
+  });
 
   // キー入力処理
   window.addEventListener("keydown", (e) => {

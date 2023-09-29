@@ -47,6 +47,9 @@
     
     &--disabled {
       color: var(--cl-popup--text-desabled);
+      & .m-popup__itemIcon {
+        color: var(--cl-popup--text-desabled);
+      }
     }
     &:not(.m-popup__item--disabled) {
       &:hover {
@@ -80,8 +83,10 @@
     }
     &Icon {
       position: absolute;
-      font-size: 110%;
-      left: 13px;
+      font-size: 16px;
+      line-height: 1;
+      left: 6px;
+      color: var(--cl-text--weak);
     }
   }
   &__hr {
