@@ -67,6 +67,12 @@ const createWindow = () => {
       contextIsolation: true,
       preload: path.join(__dirname, "preload.js"),
     },
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#353c41",
+      //symbolColor: "#74b1be",
+      symbolColor: "#aaa",
+    },
   });
 
   // ウィンドウ内に指定HTMLを表示

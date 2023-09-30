@@ -1,0 +1,20 @@
+.p-title {
+  height: 32px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  background-color: var(--cl-title--bg);
+  color: var(--cl-title--text);
+  display: flex;
+  align-items: center;
+  padding-left: 1em;
+
+  &__title {
+    font-weight: bold;
+    font-size: 115%;
+    font-family: "Myriad Pro";
+    
+    span {
+
+    }
+  }
+}

@@ -2469,13 +2469,15 @@ template {
 @media (prefers-color-scheme: light) {
   :root {
     --s-transition: 0.2s;
+    --cl-title--bg: #353c41;
+    --cl-title--text: #aaa;
     --cl-control-bg: #1c1e22;
-    --cl-info-bg: #1c1e22;
+    --cl-info-bg: #1f2124;
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
     --cl-ui-boxshadow: 1px 1px 2px 2px rgba(0,0,0,.3);
-    --cl-l-head-bg: #26282f;
+    --cl-l-head-bg: #1f2124;
     --cl-text--highlight: #bbb;
     --cl-text--main: #222;
     --cl-text--weak: #a7a7a7;
@@ -2484,9 +2486,9 @@ template {
     --cl-active: linear-gradient(90deg, #257db3, #25b392);
     --cl-active--sub: #3c6f80;
     --cl-selected--unfocused: linear-gradient(90deg, #737e85, #5f6665);
-    --cl-text: #eee;
+    --cl-text: #ccc;
     --cl-text--inactive: #ccc;
-    --cl-listheaderbg: #343436;
+    --cl-listheaderbg: #32373a;
     --cl-listheadertext: #a4c4dd;
     --cl-listheader-hover: #3e7383;
     --cl-listheader-text-hover: #eee;
@@ -2502,6 +2504,7 @@ template {
     --cl-popup--bg: #444;
     --cl-popup--hr: #888;
     --cl-popup--bg-hover: #222;
+    --cl-footer--bg: #353c41;
     /*
         --cl-scrollbar-track: #fff;
         --cl-scrollbar-thumb: #aaa;
@@ -2658,7 +2661,6 @@ input[type=search]::-webkit-search-results-decoration {
 
 .l-info {
   background: var(--cl-info-bg);
-  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.3) inset;
 }
 
 .l-head {
@@ -2700,7 +2702,7 @@ input[type=search]::-webkit-search-results-decoration {
 
 .l-footer {
   margin-top: auto;
-  background-color: rgb(53, 60, 65);
+  background-color: var(--cl-footer--bg);
   color: #fff;
   min-height: 30px;
 }
@@ -3242,6 +3244,21 @@ input[type=search]::-webkit-search-results-decoration {
   background-color: #555;
 }
 
+.p-title {
+  height: 32px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  background-color: var(--cl-title--bg);
+  color: var(--cl-title--text);
+  display: flex;
+  align-items: center;
+  padding-left: 1em;
+}
+.p-title__title {
+  font-weight: bold;
+  font-size: 115%;
+  font-family: "Myriad Pro";
+}
 .debug {
   width: 100%;
   height: 100%;
