@@ -37,11 +37,6 @@ const MAIN_FORM_DEFAULT = {
 // ウインドウ管理
 let mainWindow;
 
-// ゲーム情報管理
-let recordString;
-let mame32jString;
-let mameinfo;
-
 // 受信した設定
 let settingsToBeStored = {};
 
