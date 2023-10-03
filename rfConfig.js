@@ -1,9 +1,11 @@
+const path = require("node:path");
+
 //-------------------------------------------------------------------
 // 定数
 //-------------------------------------------------------------------
 const CONSTS = {
-  PATH_RESOURCES: "./resource.json",
-  PATH_MAME32J: "./mame32j.lst",
+  PATH_RESOURCES: path.join(__dirname, "resource.json"),
+  PATH_MAME32J: path.join(__dirname, "mame32j.lst"),
 };
 
 //-------------------------------------------------------------------

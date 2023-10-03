@@ -413,6 +413,16 @@ ipcMain.handle("get-mameinfo", async (event, data) => {
   }
 });
 
+// command.datを返す
+ipcMain.handle("get-command", async (event, data) => {
+  const res = loadFile(rfPath.dats + "/command.dat");
+  if (res.result) {
+    return res.data;
+  } else {
+    return;
+  }
+});
+
 /**
  * MAME 起動処理
  */

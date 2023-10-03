@@ -2486,7 +2486,7 @@ template {
     --cl-active: linear-gradient(90deg, #257db3, #25b392);
     --cl-active--sub: #3c6f80;
     --cl-selected--unfocused: linear-gradient(90deg, #737e85, #5f6665);
-    --cl-text: #ccc;
+    --cl-text: #eee;
     --cl-text--inactive: #ccc;
     --cl-listheaderbg: #32373a;
     --cl-listheadertext: #a4c4dd;
