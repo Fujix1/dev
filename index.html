@@ -89,12 +89,24 @@
         </div>
         <div class="l-splitter l-splitter__v" splitter-id = "info" anchor=".l-info" ></div>
         <div class="l-info" style="min-width: 240px; max-width: 640px;">
-          <div class="p-info">
-            <figure class="p-info__screenshot">
-              <img class="p-info__img" id="openImage">
-            </figure>
-            <p class="p-info__text" id="info" tabindex="0"></p>
+          <div class="m-tab">
+            <div class="m-tab__labels">
+              <label class="m-tab__label"><input type="radio" name="m-tab__radio" class="m-tab__radio" checked>Info</label>
+              <label class="m-tab__label"><input type="radio" name="m-tab__radio" class="m-tab__radio">Command</label>
+            </div>
+            <div class="m-tab__contents">
+              <div class="m-tab__content">
+                <div class="p-info">
+                  <figure class="p-info__screenshot">
+                    <img class="p-info__img" id="openImage">
+                  </figure>
+                  <p class="p-info__text" id="info" tabindex="0"></p>
+                </div>
+              </div>
+              <div class="m-tab__content">1</div>
+            </div>
           </div>
+
         </div>
       </div>
       <div class="l-footer" tooltip="ぼくはまちちゃんX！">

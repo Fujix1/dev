@@ -5,7 +5,7 @@ let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
-const command = {}; // command.dat 情報
+
 const screenShot = new ScreenShot();
 let zipName = "";
 
@@ -440,6 +440,10 @@ async function onLoad() {
   }
 
   console.log("history:", Date.now() - tick, "ms");
+
+  // Command.dat 読み込み
+  const command = new Command();
+  command.init();
 
   // リストビュー初期化
   var tick = Date.now();

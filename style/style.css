@@ -2472,7 +2472,8 @@ template {
     --cl-title--bg: #353c41;
     --cl-title--text: #aaa;
     --cl-control-bg: #1c1e22;
-    --cl-info-bg: #1f2124;
+    --cl-tab--bg: #17181a;
+    --cl-tab-content--bg: #1f2124;
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
@@ -2660,7 +2661,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 
 .l-info {
-  background: var(--cl-info-bg);
+  display: flex;
 }
 
 .l-head {
@@ -3099,6 +3100,74 @@ input[type=search]::-webkit-search-results-decoration {
   height: 1px;
   border: none;
   background: var(--cl-popup--hr);
+}
+
+.m-tab {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--cl-tab--bg);
+}
+.m-tab__labels {
+  height: 45px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  display: flex;
+  width: 100%;
+  color: var(--cl-text);
+  box-sizing: border-box;
+  transition: var(--s-transition);
+  border-bottom: 3px solid var(--cl-tab-content--bg);
+}
+.m-tab__labels:has(label:nth-of-type(1) > input:checked) ~ .m-tab__contents > .m-tab__content:nth-of-type(1) {
+  display: flex;
+}
+.m-tab__labels:has(label:nth-of-type(2) > input:checked) ~ .m-tab__contents > .m-tab__content:nth-of-type(2) {
+  display: flex;
+}
+.m-tab__labels:hover {
+  border-bottom-color: var(--cl-listheader-border);
+}
+.m-tab__label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 15px 0px;
+  font-size: 125%;
+  color: var(--cl-listheadertext);
+  font-family: "Helvetica", "arial", sans-serif;
+}
+.m-tab__label:has(input:checked) {
+  color: var(--cl-theme);
+  background-color: var(--cl-tab-content--bg);
+}
+.m-tab__label:has(:not(:disabled)) {
+  cursor: pointer;
+}
+.m-tab__label:has(:not(:disabled)):hover {
+  color: var(--cl-text);
+  background: var(--cl-listheader-hover);
+}
+.m-tab__label:has(:disabled) {
+  color: var(--cl-text--weak);
+}
+.m-tab__radio {
+  display: none;
+}
+.m-tab__contents {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+.m-tab__content {
+  display: none;
+  color: var(--cl-text);
+  background-color: var(--cl-tab-content--bg);
+  flex-grow: 1;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
 }
 
 .p-search {
