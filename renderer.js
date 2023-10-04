@@ -5,6 +5,7 @@ let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
+const command = {}; // command.dat 情報
 const screenShot = new ScreenShot();
 let zipName = "";
 
@@ -361,6 +362,7 @@ async function onLoad() {
   for (let i = 0; i < record.length; i++) {
     record[i].kana = record[i].desc;
     record[i].descJ = record[i].desc;
+    record[i].descHiragana = record[i].desc;
   }
   console.log(Date.now() - tick);
   console.log("resources.json:", record.length);
@@ -376,6 +378,11 @@ async function onLoad() {
     for (let j = n; j < record.length; j++) {
       if (record[j].zipname === item[0]) {
         record[j].descJ = item[1];
+        // 検索用のひらがな変換
+        const hiragana = item[1].replace(/[ァ-ン]/g, function (s) {
+          return String.fromCharCode(s.charCodeAt(0) - 0x60);
+        });
+        record[j].descHiragana = hiragana;
         record[j].kana = item[2];
         n = j + 1;
         break;
