@@ -370,7 +370,7 @@ async function onLoad() {
   // mame32j読み込み
   var tick = Date.now();
   let mame32j = await window.retrofireAPI.getMame32j();
-  mame32j = mame32j.split("\r\n");
+  mame32j = mame32j.split("\n");
 
   let n = 0;
   for (let i = 0; i < mame32j.length; i++) {
