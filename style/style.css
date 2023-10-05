@@ -3372,7 +3372,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-shrink: 1;
   overflow: auto;
   font-size: 13px;
-  line-height: 17px;
+  line-height: 18px;
   font-family: "ＭＳ ゴシック", monospace;
   white-space: pre;
   color: var(--cl-text--inactive);
@@ -3382,6 +3382,298 @@ input[type=search]::-webkit-search-results-decoration {
   flex-grow: 0;
   flex-shrink: 0;
   overflow: hidden;
+}
+
+i.c {
+  display: inline-block;
+  width: 14px;
+  height: 18px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 13px;
+  vertical-align: top;
+}
+i.c-1 {
+  background-image: url("../imgs/command/1.svg");
+}
+i.c-2 {
+  background-image: url("../imgs/command/2.svg");
+}
+i.c-3 {
+  background-image: url("../imgs/command/3.svg");
+}
+i.c-4 {
+  background-image: url("../imgs/command/4.svg");
+}
+i.c-5 {
+  background-image: url("../imgs/command/5.svg");
+}
+i.c-6 {
+  background-image: url("../imgs/command/6.svg");
+}
+i.c-7 {
+  background-image: url("../imgs/command/7.svg");
+}
+i.c-8 {
+  background-image: url("../imgs/command/8.svg");
+}
+i.c-9 {
+  background-image: url("../imgs/command/9.svg");
+}
+i.c-10 {
+  background-image: url("../imgs/command/10.svg");
+}
+i.c-a {
+  background-image: url("../imgs/command/a.svg");
+}
+i.c-b {
+  background-image: url("../imgs/command/b.svg");
+}
+i.c-ball {
+  background-image: url("../imgs/command/ball.svg");
+}
+i.c-bff {
+  background-image: url("../imgs/command/bff.svg");
+}
+i.c-box {
+  background-image: url("../imgs/command/box.svg");
+}
+i.c-boxline {
+  background-image: url("../imgs/command/boxline.svg");
+}
+i.c-c {
+  background-image: url("../imgs/command/c.svg");
+}
+i.c-circle {
+  background-image: url("../imgs/command/circle.svg");
+}
+i.c-d {
+  background-image: url("../imgs/command/d.svg");
+}
+i.c-dash {
+  background-image: url("../imgs/command/dash.svg");
+}
+i.c-dc {
+  background-image: url("../imgs/command/dc.svg");
+}
+i.c-dia {
+  background-image: url("../imgs/command/dia.svg");
+}
+i.c-dialine {
+  background-image: url("../imgs/command/dialine.svg");
+}
+i.c-dot {
+  background-image: url("../imgs/command/dot.svg");
+}
+i.c-doublebox {
+  background-image: url("../imgs/command/doublebox.svg");
+}
+i.c-down {
+  background-image: url("../imgs/command/down.svg");
+}
+i.c-downleft {
+  background-image: url("../imgs/command/downleft.svg");
+}
+i.c-downright {
+  background-image: url("../imgs/command/downright.svg");
+}
+i.c-e {
+  background-image: url("../imgs/command/e.svg");
+}
+i.c-f {
+  background-image: url("../imgs/command/f.svg");
+}
+i.c-fdb {
+  background-image: url("../imgs/command/fdb.svg");
+}
+i.c-fdf {
+  background-image: url("../imgs/command/fdf.svg");
+}
+i.c-fub {
+  background-image: url("../imgs/command/fub.svg");
+}
+i.c-fuf {
+  background-image: url("../imgs/command/fuf.svg");
+}
+i.c-g {
+  background-image: url("../imgs/command/g.svg");
+}
+i.c-guard {
+  background-image: url("../imgs/command/guard.svg");
+}
+i.c-h {
+  background-image: url("../imgs/command/h.svg");
+}
+i.c-hcb {
+  background-image: url("../imgs/command/hcb.svg");
+}
+i.c-hcf {
+  background-image: url("../imgs/command/hcf.svg");
+}
+i.c-hub {
+  background-image: url("../imgs/command/hub.svg");
+}
+i.c-huf {
+  background-image: url("../imgs/command/huf.svg");
+}
+i.c-i {
+  background-image: url("../imgs/command/i.svg");
+}
+i.c-itriangle {
+  background-image: url("../imgs/command/itriangle.svg");
+}
+i.c-itriangleline {
+  background-image: url("../imgs/command/itriangleline.svg");
+}
+i.c-j {
+  background-image: url("../imgs/command/j.svg");
+}
+i.c-k {
+  background-image: url("../imgs/command/k.svg");
+}
+i.c-kick {
+  background-image: url("../imgs/command/kick.svg");
+}
+i.c-l {
+  background-image: url("../imgs/command/l.svg");
+}
+i.c-left {
+  background-image: url("../imgs/command/left.svg");
+}
+i.c-lk {
+  background-image: url("../imgs/command/lk.svg");
+}
+i.c-lp {
+  background-image: url("../imgs/command/lp.svg");
+}
+i.c-m {
+  background-image: url("../imgs/command/m.svg");
+}
+i.c-minus {
+  background-image: url("../imgs/command/minus.svg");
+}
+i.c-mk {
+  background-image: url("../imgs/command/mk.svg");
+}
+i.c-mp {
+  background-image: url("../imgs/command/mp.svg");
+}
+i.c-n {
+  background-image: url("../imgs/command/n.svg");
+}
+i.c-neutral {
+  background-image: url("../imgs/command/neutral.svg");
+}
+i.c-o {
+  background-image: url("../imgs/command/o.svg");
+}
+i.c-oval {
+  background-image: url("../imgs/command/oval.svg");
+}
+i.c-p {
+  background-image: url("../imgs/command/p.svg");
+}
+i.c-plus {
+  background-image: url("../imgs/command/plus.svg");
+}
+i.c-plus_1 {
+  background-image: url("../imgs/command/plus_1.svg");
+}
+i.c-punch {
+  background-image: url("../imgs/command/punch.svg");
+}
+i.c-q {
+  background-image: url("../imgs/command/q.svg");
+}
+i.c-qbd {
+  background-image: url("../imgs/command/qbd.svg");
+}
+i.c-qbu {
+  background-image: url("../imgs/command/qbu.svg");
+}
+i.c-qdb {
+  background-image: url("../imgs/command/qdb.svg");
+}
+i.c-qdf {
+  background-image: url("../imgs/command/qdf.svg");
+}
+i.c-qfd {
+  background-image: url("../imgs/command/qfd.svg");
+}
+i.c-qfu {
+  background-image: url("../imgs/command/qfu.svg");
+}
+i.c-qub {
+  background-image: url("../imgs/command/qub.svg");
+}
+i.c-quf {
+  background-image: url("../imgs/command/quf.svg");
+}
+i.c-r {
+  background-image: url("../imgs/command/r.svg");
+}
+i.c-right {
+  background-image: url("../imgs/command/right.svg");
+}
+i.c-s {
+  background-image: url("../imgs/command/s.svg");
+}
+i.c-select {
+  background-image: url("../imgs/command/select.svg");
+}
+i.c-sk {
+  background-image: url("../imgs/command/sk.svg");
+}
+i.c-sp {
+  background-image: url("../imgs/command/sp.svg");
+}
+i.c-start {
+  background-image: url("../imgs/command/star.svg");
+}
+i.c-starline {
+  background-image: url("../imgs/command/starline.svg");
+}
+i.c-start {
+  background-image: url("../imgs/command/start.svg");
+}
+i.c-t {
+  background-image: url("../imgs/command/t.svg");
+}
+i.c-triangle {
+  background-image: url("../imgs/command/triangle.svg");
+}
+i.c-triangleline {
+  background-image: url("../imgs/command/triangleline.svg");
+}
+i.c-u {
+  background-image: url("../imgs/command/u.svg");
+}
+i.c-up {
+  background-image: url("../imgs/command/up.svg");
+}
+i.c-upleft {
+  background-image: url("../imgs/command/upleft.svg");
+}
+i.c-upright {
+  background-image: url("../imgs/command/upright.svg");
+}
+i.c-v {
+  background-image: url("../imgs/command/v.svg");
+}
+i.c-w {
+  background-image: url("../imgs/command/w.svg");
+}
+i.c-x {
+  background-image: url("../imgs/command/x.svg");
+}
+i.c-xff {
+  background-image: url("../imgs/command/xff.svg");
+}
+i.c-y {
+  background-image: url("../imgs/command/y.svg");
+}
+i.c-z {
+  background-image: url("../imgs/command/z.svg");
 }
 
 .debug {

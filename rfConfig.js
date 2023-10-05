@@ -26,12 +26,18 @@ const rfConfig = {
  */
 
 const rfProfiles = [
-  { title: "テスト", exePath: "d:/mame/mame.exe", workDir: "d:/mame/", option: "-mouse", optEnabled: false },
+  {
+    title: "テスト",
+    exePath: "C:\\Users\\tfuji\\Desktop\\mame\\mame.exe",
+    workDir: "C:\\Users\\tfuji\\Desktop\\mame\\",
+    option: "-mouse",
+    optEnabled: false,
+  },
 ];
 
 const rfPath = {
   dats: "./dats",
-  snap: "d:\\mame\\snap\\",
+  snap: "C:\\Users\\tfuji\\Desktop\\mame\\snap\\",
 };
 
 module.exports = {

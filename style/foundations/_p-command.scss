@@ -16,7 +16,7 @@
     flex-shrink: 1;
     overflow: auto;
     font-size: 13px;
-    line-height: 17px;
+    line-height: 18px;
     font-family: "ＭＳ ゴシック", monospace;
     white-space: pre;
     color: var(--cl-text--inactive);
@@ -27,4 +27,109 @@
     flex-shrink: 0;
     overflow: hidden;
   }
+}
+
+i.c {
+  display: inline-block;
+  width: 14px;
+  height: 18px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 13px;
+  vertical-align: top;
+
+  &-1 { background-image: url("../imgs/command/1.svg"); }
+  &-2 { background-image: url("../imgs/command/2.svg"); }
+  &-3 { background-image: url("../imgs/command/3.svg"); }
+  &-4 { background-image: url("../imgs/command/4.svg"); }
+  &-5 { background-image: url("../imgs/command/5.svg"); }
+  &-6 { background-image: url("../imgs/command/6.svg"); }
+  &-7 { background-image: url("../imgs/command/7.svg"); }
+  &-8 { background-image: url("../imgs/command/8.svg"); }
+  &-9 { background-image: url("../imgs/command/9.svg"); }
+  &-10 { background-image: url("../imgs/command/10.svg"); }
+  &-a { background-image: url("../imgs/command/a.svg"); }
+  &-b { background-image: url("../imgs/command/b.svg"); }
+  &-ball { background-image: url("../imgs/command/ball.svg"); }
+  &-bff { background-image: url("../imgs/command/bff.svg"); }
+  &-box { background-image: url("../imgs/command/box.svg"); }
+  &-boxline { background-image: url("../imgs/command/boxline.svg"); }
+  &-c { background-image: url("../imgs/command/c.svg"); }
+  &-circle { background-image: url("../imgs/command/circle.svg"); }
+  &-d { background-image: url("../imgs/command/d.svg"); }
+  &-dash { background-image: url("../imgs/command/dash.svg"); }
+  &-dc { background-image: url("../imgs/command/dc.svg"); }
+  &-dia { background-image: url("../imgs/command/dia.svg"); }
+  &-dialine { background-image: url("../imgs/command/dialine.svg"); }
+  &-dot { background-image: url("../imgs/command/dot.svg"); }
+  &-doublebox { background-image: url("../imgs/command/doublebox.svg"); }
+  &-down { background-image: url("../imgs/command/down.svg"); }
+  &-downleft { background-image: url("../imgs/command/downleft.svg"); }
+  &-downright { background-image: url("../imgs/command/downright.svg"); }
+  &-e { background-image: url("../imgs/command/e.svg"); }
+  &-f { background-image: url("../imgs/command/f.svg"); }
+  &-fdb { background-image: url("../imgs/command/fdb.svg"); }
+  &-fdf { background-image: url("../imgs/command/fdf.svg"); }
+  &-fub { background-image: url("../imgs/command/fub.svg"); }
+  &-fuf { background-image: url("../imgs/command/fuf.svg"); }
+  &-g { background-image: url("../imgs/command/g.svg"); }
+  &-guard { background-image: url("../imgs/command/guard.svg"); }
+  &-h { background-image: url("../imgs/command/h.svg"); }
+  &-hcb { background-image: url("../imgs/command/hcb.svg"); }
+  &-hcf { background-image: url("../imgs/command/hcf.svg"); }
+  &-hub { background-image: url("../imgs/command/hub.svg"); }
+  &-huf { background-image: url("../imgs/command/huf.svg"); }
+  &-i { background-image: url("../imgs/command/i.svg"); }
+  &-itriangle { background-image: url("../imgs/command/itriangle.svg"); }
+  &-itriangleline { background-image: url("../imgs/command/itriangleline.svg"); }
+  &-j { background-image: url("../imgs/command/j.svg"); }
+  &-k { background-image: url("../imgs/command/k.svg"); }
+  &-kick { background-image: url("../imgs/command/kick.svg"); }
+  &-l { background-image: url("../imgs/command/l.svg"); }
+  &-left { background-image: url("../imgs/command/left.svg"); }
+  &-lk { background-image: url("../imgs/command/lk.svg"); }
+  &-lp { background-image: url("../imgs/command/lp.svg"); }
+  &-m { background-image: url("../imgs/command/m.svg"); }
+  &-minus { background-image: url("../imgs/command/minus.svg"); }
+  &-mk { background-image: url("../imgs/command/mk.svg"); }
+  &-mp { background-image: url("../imgs/command/mp.svg"); }
+  &-n { background-image: url("../imgs/command/n.svg"); }
+  &-neutral { background-image: url("../imgs/command/neutral.svg"); }
+  &-o { background-image: url("../imgs/command/o.svg"); }
+  &-oval { background-image: url("../imgs/command/oval.svg"); }
+  &-p { background-image: url("../imgs/command/p.svg"); }
+  &-plus { background-image: url("../imgs/command/plus.svg"); }
+  &-plus_1 { background-image: url("../imgs/command/plus_1.svg"); }
+  &-punch { background-image: url("../imgs/command/punch.svg"); }
+  &-q { background-image: url("../imgs/command/q.svg"); }
+  &-qbd { background-image: url("../imgs/command/qbd.svg"); }
+  &-qbu { background-image: url("../imgs/command/qbu.svg"); }
+  &-qdb { background-image: url("../imgs/command/qdb.svg"); }
+  &-qdf { background-image: url("../imgs/command/qdf.svg"); }
+  &-qfd { background-image: url("../imgs/command/qfd.svg"); }
+  &-qfu { background-image: url("../imgs/command/qfu.svg"); }
+  &-qub { background-image: url("../imgs/command/qub.svg"); }
+  &-quf { background-image: url("../imgs/command/quf.svg"); }
+  &-r { background-image: url("../imgs/command/r.svg"); }
+  &-right { background-image: url("../imgs/command/right.svg"); }
+  &-s { background-image: url("../imgs/command/s.svg"); }
+  &-select { background-image: url("../imgs/command/select.svg"); }
+  &-sk { background-image: url("../imgs/command/sk.svg"); }
+  &-sp { background-image: url("../imgs/command/sp.svg"); }
+  &-start { background-image: url("../imgs/command/star.svg"); }
+  &-starline { background-image: url("../imgs/command/starline.svg"); }
+  &-start { background-image: url("../imgs/command/start.svg"); }
+  &-t { background-image: url("../imgs/command/t.svg"); }
+  &-triangle { background-image: url("../imgs/command/triangle.svg"); }
+  &-triangleline { background-image: url("../imgs/command/triangleline.svg"); }
+  &-u { background-image: url("../imgs/command/u.svg"); }
+  &-up { background-image: url("../imgs/command/up.svg"); }
+  &-upleft { background-image: url("../imgs/command/upleft.svg"); }
+  &-upright { background-image: url("../imgs/command/upright.svg"); }
+  &-v { background-image: url("../imgs/command/v.svg"); }
+  &-w { background-image: url("../imgs/command/w.svg"); }
+  &-x { background-image: url("../imgs/command/x.svg"); }
+  &-xff { background-image: url("../imgs/command/xff.svg"); }
+  &-y { background-image: url("../imgs/command/y.svg"); }
+  &-z { background-image: url("../imgs/command/z.svg"); } 
 }
