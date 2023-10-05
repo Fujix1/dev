@@ -2462,7 +2462,7 @@ template {
   content: "\e801";
 } /* '' */
 :root {
-  --ff-base: "Meiryo", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans","", san-serif;
+  --ff-base: "BIZ UDPゴシック", "Meiryo", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans","", san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
   --font-size: 12px;
   --ff-sans-serif: "Helvetica", "Helvetica Neue", "Arial", "Nimbus Sans", "FreeSans", sans-serif;
@@ -3330,7 +3330,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-grow: 1;
   margin: 0;
   padding: 10px 10px;
-  line-height: 1.35;
+  line-height: 1.45;
   overflow-y: auto;
   color: var(--cl-text--inactive);
 }
@@ -3373,7 +3373,7 @@ input[type=search]::-webkit-search-results-decoration {
   overflow: auto;
   font-size: 13px;
   line-height: 18px;
-  font-family: "ＭＳ ゴシック", monospace;
+  font-family: "BIZ UDゴシック", "ＭＳ ゴシック", monospace;
   white-space: pre;
   color: var(--cl-text--inactive);
   padding: 4px 8px;
@@ -3386,11 +3386,11 @@ input[type=search]::-webkit-search-results-decoration {
 
 i.c {
   display: inline-block;
-  width: 14px;
+  width: 13px;
   height: 18px;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 13px;
+  background-size: 92%;
   vertical-align: top;
 }
 i.c-1 {
