@@ -1,0 +1,30 @@
+.p-command {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  flex-grow: 1;
+  -webkit-user-drag: none;
+  overflow: hidden;
+  &__dropdown {
+    flex-shrink: 0;
+    flex-grow: 0;
+    overflow: hidden;
+    padding: 5px;
+  }
+  &__body {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: auto;
+    font-size: 13px;
+    line-height: 17px;
+    font-family: "ＭＳ ゴシック", monospace;
+    white-space: pre;
+    color: var(--cl-text--inactive);
+    padding: 4px 8px;
+  }
+  &__footer {
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+}

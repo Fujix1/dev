@@ -5,6 +5,7 @@
 @use "foundations/variables";
 @use "foundations/base";
 @use "foundations/layout";
+@use "foundations/m-select";
 @use "foundations/m-fujList";
 @use "foundations/m-checkbox";
 @use "foundations/m-tooltip";
@@ -13,6 +14,7 @@
 @use "foundations/p-search";
 @use "foundations/p-info";
 @use "foundations/p-title";
+@use "foundations/p-command";
 
 .debug {
   width: 100%;

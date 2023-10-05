@@ -3,6 +3,8 @@
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
   --font-size: 12px;
 
+  --ff-sans-serif: "Helvetica", "Helvetica Neue", "Arial", "Nimbus Sans", "FreeSans", sans-serif;
+
   @media (prefers-color-scheme: light) {
     --s-transition: 0.2s;
 
@@ -13,6 +15,7 @@
 
     --cl-tab--bg: #17181a;
     --cl-tab-content--bg: #1f2124;
+    --cl-tab-text--disabled: #444; 
 
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;

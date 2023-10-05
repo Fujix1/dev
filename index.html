@@ -91,8 +91,12 @@
         <div class="l-info" style="min-width: 240px; max-width: 640px;">
           <div class="m-tab">
             <div class="m-tab__labels">
-              <label class="m-tab__label"><input type="radio" name="m-tab__radio" class="m-tab__radio" checked>Info</label>
-              <label class="m-tab__label"><input type="radio" name="m-tab__radio" class="m-tab__radio">Command</label>
+              <label class="m-tab__label m-tab__label--info">
+                <input type="radio" name="m-tab__radio" class="m-tab__radio" checked value="0"><span>Info</span>
+              </label>
+              <label class="m-tab__label m-tab__label--command">
+                <input type="radio" name="m-tab__radio" class="m-tab__radio" value="1"><span>Command</span>
+              </label>
             </div>
             <div class="m-tab__contents">
               <div class="m-tab__content">
@@ -103,7 +107,17 @@
                   <p class="p-info__text" id="info" tabindex="0"></p>
                 </div>
               </div>
-              <div class="m-tab__content">1</div>
+              <div class="m-tab__content">
+                <div class="p-command">
+                  <div class="p-command__dropdown">
+                    <select class="m-select" name="commandTitle" id="commandTitle"></select>
+                  </div>
+                  <div class="p-command__body" id="commandBody"></div>
+                  <div class="p-command__footer">
+                    footer
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

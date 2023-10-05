@@ -7,6 +7,7 @@ const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
 
 const screenShot = new ScreenShot();
+const command = new Command();
 let zipName = "";
 
 const LANG = { JP: 0, EN: 1 };
@@ -189,6 +190,10 @@ async function onLoad() {
         }
       });
     }
+    // コマンドタブ
+    if (readConfig.hasOwnProperty("infoTab")) {
+      document.querySelector(".m-tab__radio[value='" + readConfig.infoTab + "']").checked = true;
+    }
   }
 
   // 検索オプション
@@ -227,7 +232,6 @@ async function onLoad() {
           }
           break;
         }
-
         case "Escape":
           PopupMenu.close();
           break;
@@ -249,6 +253,15 @@ async function onLoad() {
           e.preventDefault();
         }
         break;
+      case "f": {
+        if (e.ctrlKey) {
+          const search = document.getElementById("search");
+          if (e.target !== search) {
+            search.focus();
+          }
+          break;
+        }
+      }
       case "Escape": // 検索リセット
         clearSearch();
         break;
@@ -442,7 +455,6 @@ async function onLoad() {
   console.log("history:", Date.now() - tick, "ms");
 
   // Command.dat 読み込み
-  const command = new Command();
   command.init();
 
   // リストビュー初期化
@@ -508,6 +520,7 @@ async function itemSelectHandler(dataIndex, zipName) {
   if (dataIndex === -1) {
     document.querySelector("#info").innerHTML = "";
     screenShot.show("");
+    command.show("");
     return;
   }
 
@@ -547,6 +560,7 @@ async function itemSelectHandler(dataIndex, zipName) {
   });
 
   screenShot.show(zipName);
+  command.show(zipName);
 }
 
 // ウインドウ終了前
@@ -562,6 +576,7 @@ function clearSearch() {
   listViewMain.updateListViewSearch({ searchWord: "" });
 }
 
+//------------------------------------------------------------------------------
 // フォームの config 送信
 function saveFormConfig() {
   try {
@@ -580,6 +595,9 @@ function saveFormConfig() {
 
     // スクリーンショットアスペクト比
     config.keepAspect = screenShot.keepAspect;
+
+    // コマンドタブ
+    config.infoTab = parseInt(document.querySelector(".m-tab__radio:checked").value);
 
     config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
     console.log("フォーム設定 main.js に送信");
