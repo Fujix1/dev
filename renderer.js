@@ -22,6 +22,12 @@ let config = {
     { id: "tree", dimension: "200px" },
     { id: "bottom", dimension: "100px" },
   ],
+  command: {
+    flip: false,
+    wordwrap: false,
+    zenhan: false,
+    history: {},
+  },
 };
 
 const root = document.querySelector(":root");
@@ -183,12 +189,7 @@ async function onLoad() {
     }
     // スプリッター設定
     if (readConfig.hasOwnProperty("splitter")) {
-      readConfig.splitter.forEach((item) => {
-        if (item.dimension !== "") {
-          config.splitter[item.id] = item.dimension;
-          root.style.setProperty("--splitter-" + item.id + "-dimension", item.dimension);
-        }
-      });
+      config.splitter = readConfig.splitter;
     }
     // コマンドタブ
     if (readConfig.hasOwnProperty("infoTab")) {
@@ -197,10 +198,16 @@ async function onLoad() {
     // コマンドオプション
     if (readConfig.hasOwnProperty("command")) {
       config.command = readConfig.command;
-    } else {
-      config.command = { flip: false, wordwrap: false, zenhan: false };
     }
   }
+
+  // スプリッター初期設定
+  config.splitter.forEach((item) => {
+    if (item.dimension !== "") {
+      config.splitter[item.id] = item.dimension;
+      root.style.setProperty("--splitter-" + item.id + "-dimension", item.dimension);
+    }
+  });
 
   // 検索オプション
   document.querySelector(".p-search__dropbox").addEventListener("mouseenter", (e) => {
@@ -461,7 +468,6 @@ async function onLoad() {
   console.log("history:", Date.now() - tick, "ms");
 
   // Command.dat 読み込み
-  console.log(config.command);
   command.init(config.command);
 
   // リストビュー初期化
@@ -607,10 +613,16 @@ function saveFormConfig() {
     config.infoTab = parseInt(document.querySelector(".m-tab__radio:checked").value);
 
     // コマンドオプション
+    const pageHistory = {};
+    command.master.forEach((item) => {
+      pageHistory[item.info] = item.lastPage;
+    });
+
     config.command = {
       flip: command.flip,
       wordwrap: command.wordwrap,
       zenhan: command.zenhan,
+      history: pageHistory,
     };
 
     config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
