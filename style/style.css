@@ -2462,7 +2462,7 @@ template {
   content: "\e801";
 } /* '' */
 :root {
-  --ff-base: "BIZ UDPゴシック", "Meiryo", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans","", san-serif;
+  --ff-base: "Meiryo", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans",san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
   --font-size: 12px;
   --ff-sans-serif: "Helvetica", "Helvetica Neue", "Arial", "Nimbus Sans", "FreeSans", sans-serif;
@@ -2508,6 +2508,7 @@ template {
     --cl-popup--hr: #888;
     --cl-popup--bg-hover: #222;
     --cl-footer--bg: #353c41;
+    --cl-command--bg: #031934;
     /*
         --cl-scrollbar-track: #fff;
         --cl-scrollbar-thumb: #aaa;
@@ -2779,7 +2780,7 @@ input[type=search]::-webkit-search-results-decoration {
   border-radius: 0;
   color: var(--cl-text--inactive);
   border: 1px solid transparent;
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.5;
   padding: 3px 28px 3px 5px;
   transition: border-color var(--s-transition);
@@ -3011,6 +3012,47 @@ input[type=search]::-webkit-search-results-decoration {
 .m-checkbox__language:not(:disabled) + label:hover:before {
   cursor: pointer;
   color: var(--cl-theme);
+}
+
+.m-checkbox2 {
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.m-checkbox2:not(:last-of-type) {
+  margin-right: 1em;
+}
+.m-checkbox2__label {
+  cursor: pointer;
+}
+.m-checkbox2__input {
+  appearance: none;
+  vertical-align: middle;
+}
+.m-checkbox2__input:focus-visible {
+  outline: none;
+}
+.m-checkbox2__input:focus-visible:before {
+  color: var(--cl-theme);
+}
+.m-checkbox2__input:not(:disabled):hover {
+  cursor: pointer;
+}
+.m-checkbox2__input:not(:disabled):hover:before {
+  color: var(--cl-theme);
+}
+.m-checkbox2__input:before {
+  content: "\e750";
+  font-size: 20px;
+  line-height: 20px;
+  font-family: "microns";
+  transition: var(--s-transition);
+  color: #fff;
+}
+.m-checkbox2__input:checked:before {
+  content: "\e77e";
 }
 
 .m-tooltip {
@@ -3371,26 +3413,36 @@ input[type=search]::-webkit-search-results-decoration {
   flex-grow: 1;
   flex-shrink: 1;
   overflow: auto;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 13.5px;
+  line-height: 20px;
   font-family: "BIZ UDゴシック", "ＭＳ ゴシック", monospace;
   white-space: pre;
   color: var(--cl-text--inactive);
+  background-color: var(--cl-command--bg);
   padding: 4px 8px;
+}
+.p-command__body.wrap {
+  white-space: pre-wrap;
+  overflow-x: hidden;
 }
 .p-command__footer {
   flex-grow: 0;
   flex-shrink: 0;
   overflow: hidden;
+  background-color: var(--cl-tab--bg);
+  display: flex;
+  flex-wrap: wrap;
+  padding: 12px;
+  color: var(--cl-text--weak);
 }
 
 i.c {
   display: inline-block;
-  width: 13px;
-  height: 18px;
+  width: 13.5px;
+  height: 20px;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 92%;
+  background-size: 98%;
   vertical-align: top;
 }
 i.c-1 {
@@ -3431,9 +3483,6 @@ i.c-b {
 }
 i.c-ball {
   background-image: url("../imgs/command/ball.svg");
-}
-i.c-bff {
-  background-image: url("../imgs/command/bff.svg");
 }
 i.c-box {
   background-image: url("../imgs/command/box.svg");
@@ -3665,6 +3714,9 @@ i.c-w {
 }
 i.c-x {
   background-image: url("../imgs/command/x.svg");
+}
+i.c-xbb {
+  background-image: url("../imgs/command/xbb.svg");
 }
 i.c-xff {
   background-image: url("../imgs/command/xff.svg");

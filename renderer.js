@@ -194,6 +194,12 @@ async function onLoad() {
     if (readConfig.hasOwnProperty("infoTab")) {
       document.querySelector(".m-tab__radio[value='" + readConfig.infoTab + "']").checked = true;
     }
+    // コマンドオプション
+    if (readConfig.hasOwnProperty("command")) {
+      config.command = readConfig.command;
+    } else {
+      config.command = { flip: false, wordwrap: false, zenhan: false };
+    }
   }
 
   // 検索オプション
@@ -455,7 +461,8 @@ async function onLoad() {
   console.log("history:", Date.now() - tick, "ms");
 
   // Command.dat 読み込み
-  command.init();
+  console.log(config.command);
+  command.init(config.command);
 
   // リストビュー初期化
   var tick = Date.now();
@@ -598,6 +605,13 @@ function saveFormConfig() {
 
     // コマンドタブ
     config.infoTab = parseInt(document.querySelector(".m-tab__radio:checked").value);
+
+    // コマンドオプション
+    config.command = {
+      flip: command.flip,
+      wordwrap: command.wordwrap,
+      zenhan: command.zenhan,
+    };
 
     config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
     console.log("フォーム設定 main.js に送信");

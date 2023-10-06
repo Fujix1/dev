@@ -15,27 +15,37 @@
     flex-grow: 1;
     flex-shrink: 1;
     overflow: auto;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 13.5px;
+    line-height: 20px;
     font-family: "BIZ UDゴシック","ＭＳ ゴシック", monospace;
     white-space: pre;
     color: var(--cl-text--inactive);
+    background-color: var(--cl-command--bg);
     padding: 4px 8px;
+    &.wrap {
+      white-space: pre-wrap;
+      overflow-x: hidden;
+    }
   }
   &__footer {
     flex-grow: 0;
     flex-shrink: 0;
     overflow: hidden;
+    background-color: var(--cl-tab--bg);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 12px;
+    color: var(--cl-text--weak);
   }
 }
 
 i.c {
   display: inline-block;
-  width: 13px;
-  height: 18px;
+  width: 13.5px;
+  height: 20px;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 92%;
+  background-size: 98%;
   vertical-align: top;
 
   &-1 { background-image: url("../imgs/command/1.svg"); }
@@ -51,7 +61,6 @@ i.c {
   &-a { background-image: url("../imgs/command/a.svg"); }
   &-b { background-image: url("../imgs/command/b.svg"); }
   &-ball { background-image: url("../imgs/command/ball.svg"); }
-  &-bff { background-image: url("../imgs/command/bff.svg"); }
   &-box { background-image: url("../imgs/command/box.svg"); }
   &-boxline { background-image: url("../imgs/command/boxline.svg"); }
   &-c { background-image: url("../imgs/command/c.svg"); }
@@ -129,6 +138,7 @@ i.c {
   &-v { background-image: url("../imgs/command/v.svg"); }
   &-w { background-image: url("../imgs/command/w.svg"); }
   &-x { background-image: url("../imgs/command/x.svg"); }
+  &-xbb { background-image: url("../imgs/command/xbb.svg"); }
   &-xff { background-image: url("../imgs/command/xff.svg"); }
   &-y { background-image: url("../imgs/command/y.svg"); }
   &-z { background-image: url("../imgs/command/z.svg"); } 

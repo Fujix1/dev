@@ -1,5 +1,5 @@
 :root {
-  --ff-base: 'BIZ UDPゴシック', 'Meiryo', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro',"Noto Sans CJK JP", 'Noto Sans','', san-serif;
+  --ff-base:  'Meiryo', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro',"Noto Sans CJK JP", 'Noto Sans',san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
   --font-size: 12px;
 
@@ -59,6 +59,8 @@
     --cl-popup--bg-hover: #222;
 
     --cl-footer--bg: #353c41;
+
+    --cl-command--bg: #031934;
 
     /*
     --cl-scrollbar-track: #fff;

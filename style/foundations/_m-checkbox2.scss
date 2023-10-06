@@ -1,0 +1,40 @@
+.m-checkbox2 {
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  &:not(:last-of-type) {
+    margin-right: 1em;    
+  }
+  &__label {
+    cursor: pointer;
+  }
+  &__input {
+    appearance: none;
+    vertical-align: middle;
+    &:focus-visible {
+      outline: none;
+      &:before {
+        color: var(--cl-theme);
+      }
+    }
+    &:not(:disabled):hover {
+      cursor: pointer;
+      &:before {
+        color: var(--cl-theme);
+      }
+    }
+    &:before {
+      content: "\e750";
+      font-size: 20px;
+      line-height: 20px;
+      font-family: "microns";
+      transition: var(--s-transition);
+      color: #fff;
+    }
+    &:checked:before {
+      content: "\e77e";
+    }
+  }
+}
