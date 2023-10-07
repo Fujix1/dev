@@ -327,8 +327,8 @@ ipcMain.handle("delete-screen-shot", async (event, data) => {
 
   // 削除処理
   if (result === 0) {
-    const path1 = rfPath.snap + data + ".png";
-    const path2 = rfPath.snap + data + path.sep + "0000.png";
+    const path1 = path.join(rfPath.snap, data + ".png");
+    const path2 = path.join(rfPath.snap, data, "0000.png");
 
     if (fs.existsSync(path1)) {
       try {
@@ -342,9 +342,9 @@ ipcMain.handle("delete-screen-shot", async (event, data) => {
         await shell.trashItem(path2);
         sendDebug("スクリーンショットをゴミ箱に移動: " + path2);
         // 空フォルダなら削除
-        const files = glob.sync(rfPath.snap + data + path.sep + "*");
+        const files = glob.sync(path.join(rfPath.snap, data, "*"));
         if (files.length === 0) {
-          fs.rmSync(rfPath.snap + data, { recursive: true });
+          fs.rmSync(path.join(rfPath.snap, data), { recursive: true });
         }
       } catch (error) {
         sendDebug("スクリーンショット削除失敗: " + path2);
@@ -356,15 +356,15 @@ ipcMain.handle("delete-screen-shot", async (event, data) => {
 // スクリーンショット改名移動
 ipcMain.handle("rename-screen-shot", async (event, data) => {
   // 改名
-  const path1 = rfPath.snap + data + ".png";
-  const path2 = rfPath.snap + data + path.sep + "0000.png";
+  const path1 = path.join(rfPath.snap, data + ".png");
+  const path2 = path.join(rfPath.snap, data, "0000.png");
   if (fs.existsSync(path2)) {
     try {
       fs.renameSync(path2, path1);
       // 空フォルダなら削除
-      const files = glob.sync(rfPath.snap + data + path.sep + "*");
+      const files = glob.sync(path.join(rfPath.snap, data, "*"));
       if (files.length === 0) {
-        fs.rmSync(rfPath.snap + data, { recursive: true });
+        fs.rmSync(path.join(rfPath.snap, data), { recursive: true });
       }
       sendDebug("スクリーンショットをフォルダから移動: " + path1);
     } catch (error) {
@@ -459,4 +459,18 @@ ipcMain.handle("set-store-temp", async (event, data) => {
  */
 ipcMain.handle("open-url", async (event, url) => {
   shell.openExternal(url);
+});
+
+/**
+ *  cfgファイルの存在を確認
+ */
+ipcMain.handle("cfg-exists", async (event, zipName) => {
+  return fs.existsSync(path.join(rfPath.cfg, zipName + ".cfg"));
+});
+
+/**
+ * nvram フォルダと内容の存在確認
+ */
+ipcMain.handle("nvram-exists", async (event, zipName) => {
+  return fs.existsSync(path.join(rfPath.nvram, zipName));
 });

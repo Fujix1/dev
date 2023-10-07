@@ -147,11 +147,22 @@ const actGithub = new Action({
   },
 });
 
-const pmMainList = new PopupMenu([actRun, "---", actDriver, actGithub]);
-document.querySelector(".list-view").addEventListener("contextmenu", (e) => {
+const actDeleteCfg = new Action({
+  caption: "cfg ファイル",
+  onExecute: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+  },
+  onUpdate: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    self.enabled = await window.retrofireAPI.cfgExists(zipName);
+  },
+});
+
+const pmMainList = new PopupMenu([actRun, "---", actDriver, actGithub, "---", actDeleteCfg]);
+document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
   e.stopPropagation();
   e.preventDefault();
-  pmMainList.show(e);
+  await pmMainList.show(e);
 });
 
 //------------------------------------------------------------

@@ -27,6 +27,8 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   getHistory: async (args) => await ipcRenderer.invoke("get-history", args),
   getCommand: async (args) => await ipcRenderer.invoke("get-command", args),
   getScreenshot: async (args) => await ipcRenderer.invoke("get-screenshot", args),
+  cfgExists: async (args) => await ipcRenderer.invoke("cfg-exists", args),
+  nvramExists: async (args) => await ipcRenderer.invoke("nvram-exists", args),
 
   onUpdateClock: (callback) => ipcRenderer.on("update-clock", callback),
   onDebugMessage: (callback) => ipcRenderer.on("debug-message", callback),

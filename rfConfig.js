@@ -38,6 +38,8 @@ const rfProfiles = [
 const rfPath = {
   dats: "./dats",
   snap: "d:\\mame\\snap\\",
+  cfg: "d:\\mame\\cfg",
+  nvram: "d:\\mame\\nvram",
 };
 
 module.exports = {
