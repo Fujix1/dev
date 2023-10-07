@@ -142,7 +142,7 @@ const actGithub = new Action({
     if (dataIndex === -1) {
       self.caption = "GitHubを開く";
     } else {
-      self.caption = "「" + record[dataIndex].source + "」をGitHubを開く";
+      self.caption = "「" + record[dataIndex].source + "」をGitHubで開く";
     }
   },
 });
@@ -158,7 +158,18 @@ const actDeleteCfg = new Action({
   },
 });
 
-const pmMainList = new PopupMenu([actRun, "---", actDriver, actGithub, "---", actDeleteCfg]);
+const actDeleteNvram = new Action({
+  caption: "NVRam ファイル",
+  onExecute: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+  },
+  onUpdate: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    self.enabled = await window.retrofireAPI.nvramExists(zipName);
+  },
+});
+
+const pmMainList = new PopupMenu([actRun, "---", actDriver, actGithub, "---", actDeleteCfg, actDeleteNvram]);
 document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -349,11 +360,7 @@ async function onLoad() {
     executeMAME({ zipName: document.querySelector("#test3").value, softName: "ys2" });
   });
 
-  document.querySelector("#btn-reset").addEventListener("click", async () => {
-    // メインプロセスを呼び出し
-    result = await window.retrofireAPI.resetWindow("reset");
-    console.log(result);
-  });
+  document.querySelector("#btn-reset").addEventListener("click", async () => {});
 
   document.querySelector("#btn-dialog").addEventListener("click", async () => {
     // メインプロセスを呼び出し

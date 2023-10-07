@@ -28,8 +28,8 @@ const rfConfig = {
 const rfProfiles = [
   {
     title: "テスト",
-    exePath: "d:\\mame\\mame.exe",
-    workDir: "d:\\mame\\",
+    exePath: "C:\\Users\\tfuji\\Desktop\\mame\\mame.exe",
+    workDir: "C:\\Users\\tfuji\\Desktop\\mame\\",
     option: "-mouse",
     optEnabled: false,
   },
@@ -37,9 +37,9 @@ const rfProfiles = [
 
 const rfPath = {
   dats: "./dats",
-  snap: "d:\\mame\\snap\\",
-  cfg: "d:\\mame\\cfg",
-  nvram: "d:\\mame\\nvram",
+  snap: "C:\\Users\\tfuji\\Desktop\\mame\\snap\\",
+  cfg: "C:\\Users\\tfuji\\Desktop\\mame\\cfg",
+  nvram: "C:\\Users\\tfuji\\Desktop\\mame\\nvram",
 };
 
 module.exports = {
