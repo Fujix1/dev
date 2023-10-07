@@ -9,6 +9,7 @@ const history = {}; // history.dat 情報
 const screenShot = new ScreenShot();
 const command = new Command();
 let zipName = "";
+let dataIndex = -1;
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -18,21 +19,16 @@ let config = {
   keepAspect: true, // スクリーンショットアスペクト比
   splitter: [
     // スプリッタの幅高初期値
-    { id: "info", dimension: "320px" },
+    { id: "info", dimension: "360px" },
     { id: "tree", dimension: "200px" },
     { id: "bottom", dimension: "100px" },
   ],
-  command: {
-    flip: false,
-    wordwrap: false,
-    zenhan: false,
-    history: {},
-  },
 };
 
 const root = document.querySelector(":root");
 
-// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// アクションのこと
 const actCut = new Action({
   caption: "切り取り",
   onExecute: (self) => {
@@ -108,7 +104,23 @@ const actRun = new Action({
   },
 });
 
-const pmMainList = new PopupMenu([actRun, "---"]);
+const actDriver = new Action({
+  caption: "ドライバで絞り込み",
+  onExecute: async (self) => {
+    const currentTarget = self.caller.currentTarget;
+    console.log(zipName, dataIndex);
+  },
+  onUpdate: async (self) => {
+    const currentTarget = self.caller.currentTarget;
+    self.enabled = zipName !== "";
+    if (zipName === "") {
+      self.caption = "ドライバ名で絞り込み";
+    } else {
+    }
+  },
+});
+
+const pmMainList = new PopupMenu([actRun, "---", actDriver]);
 document.querySelector(".list-view").addEventListener("contextmenu", (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -528,17 +540,21 @@ async function onLoad() {
 }
 
 // 項目選択時の処理
-async function itemSelectHandler(dataIndex, zipName) {
+async function itemSelectHandler(argDataIndex, argZipName) {
+  console.log("itemselecthandler", argDataIndex, argZipName);
+  zipName = argZipName;
+  dataIndex = argDataIndex;
+
   // 項目なし
-  if (dataIndex === -1) {
+  if (argDataIndex === -1) {
     document.querySelector("#info").innerHTML = "";
     screenShot.show("");
     command.show("");
     return;
   }
 
-  const masterId = parseInt(this.data[dataIndex].masterid);
-  const isMaster = this.data[dataIndex].master === -1;
+  const masterId = parseInt(this.data[argDataIndex].masterid);
+  const isMaster = this.data[argDataIndex].master === -1;
 
   let masterZip = "";
   if (masterId !== -1) {
@@ -547,8 +563,8 @@ async function itemSelectHandler(dataIndex, zipName) {
 
   // dat 情報表示
   let st = "";
-  if (history.hasOwnProperty(zipName)) {
-    st += history[zipName];
+  if (history.hasOwnProperty(argZipName)) {
+    st += history[argZipName];
   } else {
     // クローンのときは親を見る
     if (!isMaster && history.hasOwnProperty(masterZip)) {
@@ -559,11 +575,11 @@ async function itemSelectHandler(dataIndex, zipName) {
     st += "<br>";
   }
 
-  if (mameinfo.hasOwnProperty(zipName)) {
-    st += mameinfo[zipName];
+  if (mameinfo.hasOwnProperty(argZipName)) {
+    st += mameinfo[argZipName];
   } else {
     // クローンのときは親を見る
-    const masterId = this.data[dataIndex].masterid;
+    const masterId = this.data[argDataIndex].masterid;
     if (!isMaster && mameinfo.hasOwnProperty(this.data[masterId].zipname)) {
       st += mameinfo[this.data[masterId].zipname];
     }
@@ -572,8 +588,8 @@ async function itemSelectHandler(dataIndex, zipName) {
     document.querySelector("#info").innerHTML = st;
   });
 
-  screenShot.show(zipName);
-  command.show(zipName);
+  screenShot.show(argZipName);
+  command.show(argZipName);
 }
 
 // ウインドウ終了前
@@ -612,18 +628,8 @@ function saveFormConfig() {
     // コマンドタブ
     config.infoTab = parseInt(document.querySelector(".m-tab__radio:checked").value);
 
-    // コマンドオプション
-    const pageHistory = {};
-    command.master.forEach((item) => {
-      pageHistory[item.info] = item.lastPage;
-    });
-
-    config.command = {
-      flip: command.flip,
-      wordwrap: command.wordwrap,
-      zenhan: command.zenhan,
-      history: pageHistory,
-    };
+    // コマンド設定
+    config.command = command.getConfig;
 
     config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
     console.log("フォーム設定 main.js に送信");
