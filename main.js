@@ -453,3 +453,10 @@ ipcMain.handle("set-store-temp", async (event, data) => {
   console.log("setting received", data);
   settingsToBeStored[data.key] = data.val;
 });
+
+/**
+ * URL をブラウザで開く
+ */
+ipcMain.handle("open-url", async (event, url) => {
+  shell.openExternal(url);
+});

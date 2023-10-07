@@ -106,21 +106,48 @@ const actRun = new Action({
 
 const actDriver = new Action({
   caption: "ドライバで絞り込み",
+  iconFont: "microns",
+  iconChar: "e744",
   onExecute: async (self) => {
-    const currentTarget = self.caller.currentTarget;
-    console.log(zipName, dataIndex);
+    //const currentTarget = self.caller.currentTarget;
+    document.getElementById("search").value = record[dataIndex].source;
+    config.searchTarget = ""; // 検索対象リセット
+    document.querySelector(".p-search__dropboxRadio[value='']").checked = true;
+    listViewMain.updateListViewSearch({ searchWord: record[dataIndex].source, searchTarget: config.searchTarget });
   },
   onUpdate: async (self) => {
-    const currentTarget = self.caller.currentTarget;
-    self.enabled = zipName !== "";
-    if (zipName === "") {
-      self.caption = "ドライバ名で絞り込み";
+    //const currentTarget = self.caller.currentTarget;
+    self.enabled = dataIndex !== -1;
+    if (dataIndex === -1) {
+      self.caption = "ドライバ名で絞り込む";
     } else {
+      self.caption = "「" + record[dataIndex].source + "」で絞り込む";
     }
   },
 });
 
-const pmMainList = new PopupMenu([actRun, "---", actDriver]);
+const actGithub = new Action({
+  caption: "GitHubを開く",
+  iconFont: "themify",
+  iconChar: "e73f",
+  onExecute: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    await window.retrofireAPI.openURL(
+      "https://github.com/mamedev/mame/blob/master/src/mame/" + record[dataIndex].source
+    );
+  },
+  onUpdate: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    self.enabled = dataIndex !== -1;
+    if (dataIndex === -1) {
+      self.caption = "GitHubを開く";
+    } else {
+      self.caption = "「" + record[dataIndex].source + "」をGitHubを開く";
+    }
+  },
+});
+
+const pmMainList = new PopupMenu([actRun, "---", actDriver, actGithub]);
 document.querySelector(".list-view").addEventListener("contextmenu", (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -307,12 +334,6 @@ async function onLoad() {
   // empty the debug output
   document.querySelector("#debug").value = "";
 
-  document.querySelector("#test1").addEventListener("click", () => {
-    executeMAME({ zipName: document.querySelector("#test1").value });
-  });
-  document.querySelector("#test2").addEventListener("click", () => {
-    executeMAME({ zipName: document.querySelector("#test2").value });
-  });
   document.querySelector("#test3").addEventListener("click", () => {
     executeMAME({ zipName: document.querySelector("#test3").value, softName: "ys2" });
   });
@@ -541,7 +562,6 @@ async function onLoad() {
 
 // 項目選択時の処理
 async function itemSelectHandler(argDataIndex, argZipName) {
-  console.log("itemselecthandler", argDataIndex, argZipName);
   zipName = argZipName;
   dataIndex = argDataIndex;
 
