@@ -469,8 +469,106 @@ ipcMain.handle("cfg-exists", async (event, zipName) => {
 });
 
 /**
- * nvram フォルダと内容の存在確認
+ *  cfgファイル削除
+ */
+ipcMain.handle("cfg-delete", async (event, zipName) => {
+  const targetPath = path.join(rfPath.cfg, zipName + ".cfg");
+  const result = dialog.showMessageBoxSync(mainWindow, {
+    title: APPNAME,
+    type: "question",
+    message: "次の cfg ファイルを削除しますか？\n\n" + targetPath,
+    buttons: ["OK", "Cancel"],
+  });
+
+  // 削除
+  if (result === 0) {
+    if (fs.existsSync(targetPath)) {
+      try {
+        fs.unlinkSync(targetPath);
+        sendDebug("cfg ファイル削除: " + targetPath);
+      } catch (error) {
+        sendDebug("cfg ファイル削除失敗: " + targetPath);
+      }
+    }
+  }
+  return;
+});
+
+/**
+ * nvram フォルダの存在確認
  */
 ipcMain.handle("nvram-exists", async (event, zipName) => {
   return fs.existsSync(path.join(rfPath.nvram, zipName));
+});
+
+/**
+ * nvram フォルダ削除
+ */
+ipcMain.handle("nvram-delete", async (event, zipName) => {
+  const targetPath = path.join(rfPath.nvram, zipName);
+  const result = dialog.showMessageBoxSync(mainWindow, {
+    title: APPNAME,
+    type: "question",
+    message: "次の nvram フォルダを削除しますか？\n\n" + targetPath,
+    buttons: ["OK", "Cancel"],
+  });
+
+  // 削除
+  if (result === 0) {
+    if (fs.existsSync(targetPath)) {
+      try {
+        fs.rmSync(targetPath, { recursive: true });
+        sendDebug("nvram フォルダ削除: " + targetPath);
+      } catch (error) {
+        sendDebug("nvram フォルダ削除失敗: " + targetPath);
+      }
+    }
+  }
+  return;
+});
+
+/**
+ * cfg nvram 両方確認
+ */
+ipcMain.handle("nvcfg-exists", async (event, zipName) => {
+  return fs.existsSync(path.join(rfPath.nvram, zipName)) || fs.existsSync(path.join(rfPath.cfg, zipName + ".cfg"));
+});
+
+/**
+ * cfg nvram 両方削除
+ */
+ipcMain.handle("nvcfg-delete", async (event, zipName) => {
+  const cfgPath = path.join(rfPath.cfg, zipName + ".cfg");
+  const nvramPath = path.join(rfPath.nvram, zipName);
+
+  let st = [];
+  if (fs.existsSync(cfgPath)) st.push(cfgPath);
+  if (fs.existsSync(nvramPath)) st.push(nvramPath);
+
+  const result = dialog.showMessageBoxSync(mainWindow, {
+    title: APPNAME,
+    type: "question",
+    message: "次の設定ファイルを削除しますか？\n\n" + st.join("\n"),
+    buttons: ["OK", "Cancel"],
+  });
+
+  // 削除
+  if (result === 0) {
+    if (fs.existsSync(cfgPath)) {
+      try {
+        fs.unlinkSync(cfgPath);
+        sendDebug("cfg ファイル削除: " + cfgPath);
+      } catch (error) {
+        sendDebug("cfg ファイル削除失敗: " + cfgPath);
+      }
+    }
+    if (fs.existsSync(nvramPath)) {
+      try {
+        fs.rmSync(nvramPath, { recursive: true });
+        sendDebug("nvram フォルダ削除: " + nvramPath);
+      } catch (error) {
+        sendDebug("nvram フォルダ削除失敗: " + nvramPath);
+      }
+    }
+  }
 });

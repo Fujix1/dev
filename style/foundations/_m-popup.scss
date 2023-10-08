@@ -88,6 +88,19 @@
       left: 6px;
       color: var(--cl-text--weak);
     }
+    &--hasChildren {
+      &:after {
+        content: "\e649";
+        font-family: "themify";
+        color: var(--cl-text);
+        display: block;
+        font-size: 100%;
+        position: absolute;
+        right: 9px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
   }
   &__hr {
     width: calc(100% + 8px);

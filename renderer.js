@@ -71,14 +71,14 @@ const actPaste = new Action({
 });
 
 // 編集用ポップアップメニュー
-const pmEdit = new PopupMenu([actCut, actCopy, actPaste]);
+const pmEdit = new PopupMenu([{ action: actCut }, { action: actCopy }, { action: actPaste }]);
 document.querySelector("#search").addEventListener("contextmenu", (e) => {
   e.stopPropagation();
   e.preventDefault();
   pmEdit.show(e);
 });
 
-const pmInfo = new PopupMenu([actCopy]);
+const pmInfo = new PopupMenu([{ action: actCopy }]);
 document.querySelector("#info").addEventListener("contextmenu", (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -147,10 +147,16 @@ const actGithub = new Action({
   },
 });
 
+const actDeleteSettings = new Action({
+  caption: "設定ファイル削除",
+  parent: true,
+});
+
 const actDeleteCfg = new Action({
   caption: "cfg ファイル",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
+    await window.retrofireAPI.cfgDelete(zipName);
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
@@ -159,9 +165,10 @@ const actDeleteCfg = new Action({
 });
 
 const actDeleteNvram = new Action({
-  caption: "NVRam ファイル",
+  caption: "nvram ファイル",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
+    await window.retrofireAPI.nvramDelete(zipName);
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
@@ -169,7 +176,30 @@ const actDeleteNvram = new Action({
   },
 });
 
-const pmMainList = new PopupMenu([actRun, "---", actDriver, actGithub, "---", actDeleteCfg, actDeleteNvram]);
+const actDeleteNvCfg = new Action({
+  caption: "すべて",
+  keycode: "Delete",
+  onExecute: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    await window.retrofireAPI.nvcfgDelete(zipName);
+  },
+  onUpdate: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    self.enabled = await window.retrofireAPI.nvcfgExists(zipName);
+  },
+});
+
+const pmMainList = new PopupMenu([
+  { action: actRun },
+  { action: "---" },
+  { action: actDriver },
+  { action: actGithub },
+  { action: "---" },
+  {
+    action: actDeleteSettings,
+    children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: actDeleteNvCfg }],
+  },
+]);
 document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -214,7 +244,13 @@ const actTakeOutFromFolder = new Action({
   },
 });
 
-const pmScreenshot = new PopupMenu([actKeepAspect, "---", actDeleteScreenShot, "---", actTakeOutFromFolder]);
+const pmScreenshot = new PopupMenu([
+  { action: actKeepAspect },
+  { action: "---" },
+  { action: actDeleteScreenShot },
+  { action: "---" },
+  { action: actTakeOutFromFolder },
+]);
 document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e) => {
   console.log("contextmenu");
   e.stopPropagation();
@@ -279,7 +315,7 @@ async function onLoad() {
   window.addEventListener("keydown", (e) => {
     // ポップアップメニュー のキー処理
     if (document.body.classList.contains("is-popupmenu-open")) {
-      const popup = PopupMenu.currentInstance;
+      const popup = PopupMenu.currentUL;
       switch (e.key) {
         case "Enter":
           if (popup.index !== -1) {
@@ -291,6 +327,7 @@ async function onLoad() {
           }
           break;
         case "ArrowUp": {
+          console.log(popup.index);
           if (popup.index === -1) {
             popup.view(popup.length - 1);
           } else {
@@ -299,6 +336,7 @@ async function onLoad() {
           break;
         }
         case "ArrowDown": {
+          console.log(popup.index);
           if (popup.index === -1) {
             popup.view(0);
           } else {

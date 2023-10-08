@@ -3157,6 +3157,17 @@ input[type=search]::-webkit-search-results-decoration {
   left: 6px;
   color: var(--cl-text--weak);
 }
+.m-popup__item--hasChildren:after {
+  content: "\e649";
+  font-family: "themify";
+  color: var(--cl-text);
+  display: block;
+  font-size: 100%;
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+}
 .m-popup__hr {
   width: calc(100% + 8px);
   margin-left: -4px;
