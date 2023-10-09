@@ -147,6 +147,11 @@ const actGithub = new Action({
   },
 });
 
+const actEdit = new Action({
+  caption: "テスト",
+  parent: true,
+});
+
 const actDeleteSettings = new Action({
   caption: "設定ファイル削除",
   parent: true,
@@ -198,6 +203,11 @@ const pmMainList = new PopupMenu([
   {
     action: actDeleteSettings,
     children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: actDeleteNvCfg }],
+  },
+  { action: "---" },
+  {
+    action: actEdit,
+    children: [{ action: actCopy }, { action: actPaste }, { action: actCut }],
   },
 ]);
 document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
