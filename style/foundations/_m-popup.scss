@@ -56,7 +56,7 @@
         //background: var(--cl-popup--bg-hover);
         cursor: pointer;
       }
-      &.is-selected {
+      &.is-selected, &.is-child-open {
         background: var(--cl-popup--bg-hover);
       }
     }

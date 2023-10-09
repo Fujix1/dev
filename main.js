@@ -18,7 +18,7 @@ const glob = require("glob");
 // 初期設定
 //-------------------------------------------------------------------
 app.disableHardwareAcceleration();
-const APPNAME = "Retrofire Neo";
+const APPNAME = "Retrofire Dev";
 
 //-------------------------------------------------------------------
 // 定数

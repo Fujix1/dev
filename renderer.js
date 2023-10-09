@@ -202,7 +202,7 @@ const pmMainList = new PopupMenu([
   { action: "---" },
   {
     action: actDeleteSettings,
-    children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: actDeleteNvCfg }],
+    children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: "---" }, { action: actDeleteNvCfg }],
   },
   { action: "---" },
   {

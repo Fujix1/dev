@@ -3129,7 +3129,7 @@ input[type=search]::-webkit-search-results-decoration {
 .m-popup__item:not(.m-popup__item--disabled):hover {
   cursor: pointer;
 }
-.m-popup__item:not(.m-popup__item--disabled).is-selected {
+.m-popup__item:not(.m-popup__item--disabled).is-selected, .m-popup__item:not(.m-popup__item--disabled).is-child-open {
   background: var(--cl-popup--bg-hover);
 }
 .m-popup__itemCaption {
