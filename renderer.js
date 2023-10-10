@@ -322,35 +322,64 @@ async function onLoad() {
   });
 
   // キー入力処理
-  window.addEventListener("keydown", (e) => {
-    // ポップアップメニュー のキー処理
+  window.addEventListener("keydown", async (e) => {
+    // ポップアップメニュー表示中 のキー処理
     if (document.body.classList.contains("is-popupmenu-open")) {
-      const popup = PopupMenu.currentUL;
+      const popup = PopupMenu.currentPopupMenu; // 現在のポップアップメニュー
+      const activeIndex = popup.getAttribute("activeIndex") ? parseInt(popup.getAttribute("activeIndex")) : -1; // 選択中の有効なアクション Index
+      const actionLength = parseInt(popup.getAttribute("length")); // メニュー内の有効アクション数
+      let targetAction; // 選択されているアクションオブジェクト
+      for (let i = 0; i < popup.actions.length; i++) {
+        if (popup.actions[i].index === activeIndex) {
+          targetAction = popup.actions[i].action;
+        }
+      }
+
       switch (e.key) {
         case "Enter":
-          if (popup.index !== -1) {
-            popup.actions.forEach((action) => {
-              if (action.index == popup.index) {
-                action.execute();
-              }
-            });
-          }
+          if (targetAction) targetAction.execute();
           break;
         case "ArrowUp": {
-          console.log(popup.index);
-          if (popup.index === -1) {
-            popup.view(popup.length - 1);
+          if (activeIndex === -1) {
+            popup.setAttribute("activeIndex", actionLength - 1);
           } else {
-            popup.view(mod(popup.index - 1, popup.length));
+            popup.setAttribute("activeIndex", mod(activeIndex - 1, actionLength));
           }
+          Action.highLight(popup);
           break;
         }
         case "ArrowDown": {
-          console.log(popup.index);
-          if (popup.index === -1) {
-            popup.view(0);
+          if (activeIndex === -1) {
+            popup.setAttribute("activeIndex", 0);
           } else {
-            popup.view(mod(popup.index + 1, popup.length));
+            popup.setAttribute("activeIndex", mod(activeIndex + 1, actionLength));
+          }
+          Action.highLight(popup);
+          break;
+        }
+        case "ArrowRight": {
+          // 子メニューを開く
+          if (activeIndex !== -1) {
+            if (targetAction.parent) {
+              await targetAction.li.showChildren();
+              // 先頭を選択
+              const childUL = targetAction.li.querySelector(":scope>ul.m-popup");
+              if (childUL && childUL.getAttribute("length") > 0) {
+                childUL.setAttribute("activeIndex", 0);
+                Action.highLight(childUL);
+              }
+            }
+          }
+          break;
+        }
+        case "ArrowLeft": {
+          // 子自分メニューを閉じる
+          const parentItem = popup.parentNode;
+          if (parentItem.tagName !== "BODY") {
+            parentItem.classList.remove("is-child-open");
+            popup.classList.remove("is-open");
+            popup.setAttribute("activeIndex", -1);
+            PopupMenu.currentPopupMenu = parentItem.parentNode;
           }
           break;
         }
