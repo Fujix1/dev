@@ -322,6 +322,21 @@ async function onLoad() {
   });
 
   // キー入力処理
+  // input は優先
+  document
+    .querySelectorAll(
+      "input[type='search'],input[type='text'],input[type='number'],input[type='url'],input[type='password']"
+    )
+    .forEach((item) => {
+      item.addEventListener(
+        "keydown",
+        (e) => {
+          e.stopPropagation();
+        },
+        false
+      );
+    });
+
   window.addEventListener("keydown", async (e) => {
     // ポップアップメニュー表示中 のキー処理
     if (document.body.classList.contains("is-popupmenu-open")) {
