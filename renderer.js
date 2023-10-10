@@ -154,6 +154,8 @@ const actEdit = new Action({
 
 const actDeleteSettings = new Action({
   caption: "設定ファイル削除",
+  iconFont: "themify",
+  iconChar: "e605",
   parent: true,
 });
 
