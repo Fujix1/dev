@@ -1,4 +1,4 @@
-.m-fujList {
+.m-listView {
   display: flex;
   flex-direction: column;
   font-family: var(--ff-base);
@@ -9,7 +9,7 @@
   position: relative;
   width: 100%;
   &:focus-visible {
-   // outline: none;
+    // outline: none;
   }
 
   &:focus-within {
@@ -28,7 +28,7 @@
     top: 0;
     z-index: 1;
     background-color: var(--cl-listbg);
-    box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.5)
+    box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.5);
   }
   &__headerItem {
     box-sizing: border-box;
@@ -49,12 +49,12 @@
       color: var(--cl-listheader-text-hover);
     }
     &.is-dragging {
-      opacity: .8;
+      opacity: 0.8;
       z-index: 1;
     }
     &.is-hovered-left:after,
-    &.is-hovered-right:after  {
-      content:'';
+    &.is-hovered-right:after {
+      content: "";
       position: absolute;
       display: block;
       width: 3px;
@@ -66,10 +66,9 @@
     &.is-hovered-left:after {
       left: -2px;
     }
-    &.is-hovered-right:after  {
+    &.is-hovered-right:after {
       right: -1px;
     }
-    
   }
   &__headerText {
     padding: 11px 7px 3px 7px;
@@ -103,7 +102,7 @@
     user-select: none;
     pointer-events: none;
   }
-  &__sort--desc:before{
+  &__sort--desc:before {
     content: "\e707";
   }
 
@@ -130,41 +129,43 @@
     &[data-index="-1"] {
       visibility: hidden;
     }
-    &>div {
+    & > div {
       color: var(--cl-text--inactive);
     }
-    &:not(:focus):not(:hover):nth-child(2n):not(.m-fujList__listItem--selected) {
+    &:not(:focus):not(:hover):nth-child(2n):not(.m-listView__listItem--selected) {
       background: var(--cl-list-bg-2n);
     }
     &:focus {
-      background: var(--cl-active)!important;
+      background: var(--cl-active) !important;
     }
     &:focus-visible {
       outline: none;
     }
-    &--selected { // 選択中（フォーカスなし）
+    &--selected {
+      // 選択中（フォーカスなし）
       background: var(--cl-selected--unfocused);
-      &>div {
+      & > div {
         color: var(--cl-text);
       }
     }
     &:hover {
       //background: var(--cl-active--sub);
-      &>div {
+      & > div {
         //color: var(--cl-text);
       }
     }
   }
 
   &:focus {
-    .m-fujList__listItem {
+    .m-listView__listItem {
       &--selected {
-        background: var(--cl-active)!important;
+        background: var(--cl-active) !important;
       }
     }
   }
   .is-header-resizing &__listItem,
-  .is-header-dragging &__listItem  { // カラムドラッグ中は反応させない
+  .is-header-dragging &__listItem {
+    // カラムドラッグ中は反応させない
     pointer-events: none;
   }
   &__listItemCell {
@@ -209,7 +210,7 @@
         background-image: url(./pics/ico_nowork.svg);
       }
     }
-    &--clone.m-fujList_cellIcon--nowork:before {
+    &--clone.m-listView_cellIcon--nowork:before {
       background-image: url(./pics/ico_nowork_clone.svg);
     }
   }

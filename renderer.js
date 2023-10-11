@@ -147,11 +147,6 @@ const actGithub = new Action({
   },
 });
 
-const actEdit = new Action({
-  caption: "テスト",
-  parent: true,
-});
-
 const actDeleteSettings = new Action({
   caption: "設定ファイル削除",
   iconFont: "themify",
@@ -205,11 +200,6 @@ const pmMainList = new PopupMenu([
   {
     action: actDeleteSettings,
     children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: "---" }, { action: actDeleteNvCfg }],
-  },
-  { action: "---" },
-  {
-    action: actEdit,
-    children: [{ action: actCopy }, { action: actPaste }, { action: actCut }],
   },
 ]);
 document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
@@ -273,7 +263,6 @@ document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e
 //---------------------------------------------------------------------------
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
-
 async function onLoad() {
   // 設定読み込みと適用
   const readConfig = await window.retrofireAPI.getStore("config");
@@ -525,6 +514,9 @@ async function onLoad() {
       listViewMain.updateListViewSearch({ searchTarget: config.searchTarget });
     });
   });
+
+  const mamedb = new Database();
+  await mamedb.loadFromFile();
 
   // ゲームデータ読み込み
   var tick = Date.now();

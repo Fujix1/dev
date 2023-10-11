@@ -386,7 +386,7 @@ ipcMain.handle("get-mame32j", async (event, data) => {
   if (res.result) {
     return res.data;
   } else {
-    return;
+    return "";
   }
 });
 
@@ -396,7 +396,7 @@ ipcMain.handle("get-history", async (event, data) => {
   if (res.result) {
     return res.data;
   } else {
-    return;
+    return "";
   }
 });
 
@@ -406,7 +406,7 @@ ipcMain.handle("get-mameinfo", async (event, data) => {
   if (res.result) {
     return res.data;
   } else {
-    return;
+    return "";
   }
 });
 
@@ -416,7 +416,7 @@ ipcMain.handle("get-command", async (event, data) => {
   if (res.result) {
     return res.data;
   } else {
-    return;
+    return "";
   }
 });
 
