@@ -5,7 +5,7 @@
 
   --ff-sans-serif: "Helvetica", "Helvetica Neue", "Arial", "Nimbus Sans", "FreeSans", sans-serif;
 
-  @media (prefers-color-scheme: light) {
+//  @media (prefers-color-scheme: light) {
     --s-transition: 0.2s;
 
     --cl-title--bg: #353c41;
@@ -59,6 +59,7 @@
     --cl-popup--bg-hover: #222;
 
     --cl-footer--bg: #353c41;
+    --cl-footer--text: #bbb;
 
     --cl-command--bg: #031934;
 
@@ -87,8 +88,8 @@
     --cl-listborder: transparent;
     --cl-list-bg-2n: #fafafa;
 */  
-  }
-
+//  }
+/*
   @media (prefers-color-scheme: dark) {
     --cl-scrollbar-track: #393b3b;
     --cl-scrollbar-thumb: #7a8083;
@@ -113,5 +114,5 @@
     --cl-listheader-border: #4e5458;
     --cl-listborder: #4e5458;
     --cl-list-bg-2n: transparent;
-  }
+  }*/
 }

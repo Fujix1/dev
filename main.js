@@ -196,13 +196,10 @@ const executeMAME = async (event, ...args) => {
   });
   subprocess.on("close", (code) => {
     console.log(`child process exited with code ${code}`);
-    //sendDebug(`child process exited with code ${code}`);
   });
-
   subprocess.on("error", (err) => {
     shell.beep();
     sendDebug(`${err}`);
-    //sendDebug(`child process exited with code ${code}`);
   });
 
   return "return";

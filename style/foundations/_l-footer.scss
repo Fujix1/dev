@@ -1,0 +1,13 @@
+.l-footer {
+  margin-top: auto;
+  background-color: var(--cl-footer--bg);
+  color: var(--cl-footer--text);
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  &__item {
+    line-height: 22px;
+    padding: 0 1em;
+  }
+}
