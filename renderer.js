@@ -3,6 +3,7 @@
 const APPNAME = "Retrofire Neo";
 let listViewMain; // メインリストビュー
 let record; // オリジナルの全ゲーム情報
+let mamedb; // ゲーム情報管理用オブジェクト
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
 
@@ -515,7 +516,7 @@ async function onLoad() {
     });
   });
 
-  const mamedb = new Database();
+  mamedb = new Database();
   await mamedb.loadFromFile();
 
   // ゲームデータ読み込み
