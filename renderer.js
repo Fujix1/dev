@@ -534,11 +534,11 @@ async function onLoad() {
   // mame32j読み込み
   var tick = Date.now();
   let mame32j = await window.retrofireAPI.getMame32j();
-  mame32j = mame32j.split("\n");
-
+  mame32j = mame32j.split("\r\n");
   let n = 0;
   for (let i = 0; i < mame32j.length; i++) {
     const item = mame32j[i].split("\t");
+
     for (let j = n; j < record.length; j++) {
       if (record[j].zipname === item[0]) {
         record[j].descJ = item[1];
