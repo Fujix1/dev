@@ -516,7 +516,7 @@ async function onLoad() {
     });
   });
 
-  mamedb = new Database();
+  mamedb = new Dataset();
   await mamedb.loadFromFile();
 
   // ゲームデータ読み込み
