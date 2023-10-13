@@ -3,7 +3,6 @@
   flex-direction: column;
   flex-shrink: 1;
   flex-grow: 1;
-  -webkit-user-drag: none;
   overflow: hidden;
   &__dropdown {
     flex-shrink: 0;
@@ -27,6 +26,10 @@
       white-space: pre-wrap;
       overflow-x: hidden;
     }
+    /*::selection {
+      color: red;
+      background-color: #555!important;
+    }*/
   }
   &__footer {
     flex-grow: 0;
