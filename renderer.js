@@ -611,6 +611,7 @@ async function onLoad() {
   // リストビュー初期化
   var tick = Date.now();
   listViewMain = new ListView({
+    database: mamedb,
     data: record,
     target: ".list-view",
     columns: [
