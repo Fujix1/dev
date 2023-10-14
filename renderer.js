@@ -668,6 +668,7 @@ async function onLoad() {
 
   listViewMain2 = new ListView2({
     database: mamedb,
+    slug: "main2",
     target: ".list-view2",
     columns: [
       {
@@ -707,7 +708,6 @@ async function onLoad() {
         defaultSort: "asc",
       },
     ],
-    slug: "main2",
     orderByIndex: 1,
     sortDirection: "asc",
     index: -1,
@@ -776,6 +776,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
 window.addEventListener("beforeunload", (e) => {
   saveFormConfig();
   listViewMain.saveSettings();
+  listViewMain2.saveSettings();
 });
 
 // 検索クリア
