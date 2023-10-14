@@ -2820,6 +2820,7 @@ input[type=search]::-webkit-search-results-decoration {
   z-index: 1;
   background-color: var(--cl-listbg);
   box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.5);
+  user-select: none;
 }
 .m-listView__headerItem {
   box-sizing: border-box;
@@ -2865,6 +2866,7 @@ input[type=search]::-webkit-search-results-decoration {
   overflow: hidden;
   text-overflow: ellipsis;
   z-index: 0;
+  user-select: none;
 }
 .m-listView__headerSplitter {
   width: 5px;

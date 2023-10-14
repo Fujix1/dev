@@ -2,6 +2,7 @@
 
 const APPNAME = "Retrofire Neo";
 let listViewMain; // メインリストビュー
+let listViewMain2;
 let record; // オリジナルの全ゲーム情報
 let mamedb; // ゲーム情報管理用オブジェクト
 const mameinfo = {}; // mameinfo.dat 情報
@@ -9,7 +10,7 @@ const history = {}; // history.dat 情報
 
 const screenShot = new ScreenShot();
 const command = new Command();
-let zipName = "";
+
 let dataIndex = -1;
 
 const LANG = { JP: 0, EN: 1 };
@@ -24,6 +25,7 @@ let config = {
     { id: "tree", dimension: "200px" },
     { id: "bottom", dimension: "100px" },
   ],
+  zipName: "", // 選択中の zip 名
 };
 
 const root = document.querySelector(":root");
@@ -95,13 +97,13 @@ const actRun = new Action({
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
     await window.retrofireAPI.executeMAME({
-      zipName: zipName,
+      zipName: config.zipName,
     });
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    self.enabled = zipName !== "";
-    self.caption = zipName !== "" ? "「" + zipName + "」を起動" : "起動";
+    self.enabled = config.zipName !== "";
+    self.caption = config.zipName !== "" ? "「" + config.zipName + "」を起動" : "起動";
   },
 });
 
@@ -159,11 +161,11 @@ const actDeleteCfg = new Action({
   caption: "cfg ファイル",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    await window.retrofireAPI.cfgDelete(zipName);
+    await window.retrofireAPI.cfgDelete(config.zipName);
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    self.enabled = await window.retrofireAPI.cfgExists(zipName);
+    self.enabled = await window.retrofireAPI.cfgExists(config.zipName);
   },
 });
 
@@ -171,11 +173,11 @@ const actDeleteNvram = new Action({
   caption: "nvram ファイル",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    await window.retrofireAPI.nvramDelete(zipName);
+    await window.retrofireAPI.nvramDelete(config.zipName);
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    self.enabled = await window.retrofireAPI.nvramExists(zipName);
+    self.enabled = await window.retrofireAPI.nvramExists(config.zipName);
   },
 });
 
@@ -184,11 +186,11 @@ const actDeleteNvCfg = new Action({
   keycode: "Delete",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    await window.retrofireAPI.nvcfgDelete(zipName);
+    await window.retrofireAPI.nvcfgDelete(config.zipName);
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    self.enabled = await window.retrofireAPI.nvcfgExists(zipName);
+    self.enabled = await window.retrofireAPI.nvcfgExists(config.zipName);
   },
 });
 
@@ -663,12 +665,64 @@ async function onLoad() {
 
   await listViewMain.init();
   console.log("listview init:", Date.now() - tick, "ms");
+
+  listViewMain2 = new ListView2({
+    database: mamedb,
+    target: ".list-view2",
+    columns: [
+      {
+        label: "ゲーム名",
+        data: "desc",
+        order: 0,
+        width: 380,
+        defaultSort: "asc",
+      },
+      {
+        label: "ZIP名",
+        data: "zipname",
+        order: 1,
+        width: 100,
+        defaultSort: "asc",
+      },
+      {
+        label: "メーカー",
+        data: "maker",
+        order: 2,
+        width: 160,
+        defaultSort: "asc",
+      },
+      { label: "年度", data: "year", order: 3, width: 55, defaultSort: "asc" },
+      {
+        label: "マスタ",
+        data: "cloneof",
+        order: 4,
+        width: 100,
+        defaultSort: "asc",
+      },
+      {
+        label: "ドライバ",
+        data: "source",
+        order: 5,
+        width: 180,
+        defaultSort: "asc",
+      },
+    ],
+    slug: "main2",
+    orderByIndex: 1,
+    sortDirection: "asc",
+    index: -1,
+    searchWord: config.searchWord,
+    searchTarget: config.searchTarget,
+    onSelect: itemSelectHandler,
+  });
+  await listViewMain2.init();
+
   window.retrofireAPI.windowIsReady();
 }
 
 // 項目選択時の処理
 async function itemSelectHandler(argDataIndex, argZipName) {
-  zipName = argZipName;
+  config.zipName = argZipName;
   dataIndex = argDataIndex;
 
   // 項目なし
@@ -798,7 +852,7 @@ window.retrofireAPI.onBlur((_event, text) => {
 window.retrofireAPI.onFocus((_event, text) => {
   console.log("onFocus");
   // スクリーンショット読み直す
-  screenShot.show(zipName);
+  screenShot.show(config.zipName);
 });
 
 // -------------------------------------
