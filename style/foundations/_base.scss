@@ -22,9 +22,11 @@ textarea {
   font-size: 12px;
   line-height: 1.2;
   &.debug {
+    width: 100%;
+    display: block;
     background-color: var(--cl-debug--bg);
     color: var(--cl-debug--text);
-    min-height: 100px;
+    min-height: 50px;
     resize: none;
     appearance: none;
     border: none;
