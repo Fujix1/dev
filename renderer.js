@@ -713,7 +713,22 @@ async function onLoad() {
     index: -1,
     searchWord: config.searchWord,
     searchTarget: config.searchTarget,
-    onSelect: itemSelectHandler,
+    //onSelect: itemSelectHandler,
+    onData: function (index) {
+      const row = { classList: ["m-listView__cellIcon"] };
+      Object.assign(row, mamedb.getRecord(index));
+      if (config.language == LANG.JP) {
+        row.desc = row.descJ;
+      }
+      // アイコン
+      if (row.cloneof) {
+        row.classList.push("m-listView__cellIcon--clone");
+      }
+      if (!row.status) {
+        row.classList.push("m-listView__cellIcon--nowork");
+      }
+      return row;
+    },
   });
   await listViewMain2.init();
 
