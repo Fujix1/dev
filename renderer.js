@@ -714,7 +714,7 @@ async function onLoad() {
     searchWord: config.searchWord,
     searchTarget: config.searchTarget,
     //onSelect: itemSelectHandler,
-    onData: function (index) {
+    onData: (index) => {
       const row = { classList: ["m-listView__cellIcon"] };
       Object.assign(row, mamedb.getRecord(index));
       if (config.language == LANG.JP) {
@@ -731,6 +731,7 @@ async function onLoad() {
     },
   });
   await listViewMain2.init();
+  listViewMain2.itemCount = mamedb.filteredLength;
 
   window.retrofireAPI.windowIsReady();
 }
