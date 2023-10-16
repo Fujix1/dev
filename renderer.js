@@ -713,10 +713,14 @@ async function onLoad() {
     index: -1,
     searchWord: config.searchWord,
     searchTarget: config.searchTarget,
-    //onSelect: itemSelectHandler,
+    onSelect: async (index) => {
+      const row = mamedb.getFilteredRecord(index);
+      const dataIndex = mamedb.getDataIndex(index);
+      await itemSelectHandler(dataIndex, row.zipname);
+    },
     onData: (index) => {
       const row = { classList: ["m-listView__cellIcon"] };
-      Object.assign(row, mamedb.getRecord(index));
+      Object.assign(row, mamedb.getFilteredRecord(index));
       if (config.language == LANG.JP) {
         row.desc = row.descJ;
       }
@@ -728,6 +732,11 @@ async function onLoad() {
         row.classList.push("m-listView__cellIcon--nowork");
       }
       return row;
+    },
+    onEnter: (index) => {
+      const row = mamedb.getFilteredRecord(index);
+      console.log("onEnter", index);
+      window.retrofireAPI.executeMAME({ zipName: row.zipname });
     },
   });
   await listViewMain2.init();
@@ -749,12 +758,12 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     return;
   }
 
-  const masterId = parseInt(this.data[argDataIndex].masterid);
-  const isMaster = this.data[argDataIndex].master === -1;
+  const masterId = Dataset.master[argDataIndex].masterid;
+  const isMaster = Dataset.master[argDataIndex].master === -1;
 
   let masterZip = "";
   if (masterId !== -1) {
-    masterZip = this.data[masterId].zipname;
+    masterZip = Dataset.master[masterId].zipname;
   }
 
   // dat 情報表示
@@ -775,9 +784,9 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     st += mameinfo[argZipName];
   } else {
     // クローンのときは親を見る
-    const masterId = this.data[argDataIndex].masterid;
-    if (!isMaster && mameinfo.hasOwnProperty(this.data[masterId].zipname)) {
-      st += mameinfo[this.data[masterId].zipname];
+    const masterId = Dataset.master[argDataIndex].masterid;
+    if (!isMaster && mameinfo.hasOwnProperty(Dataset.master[masterId].zipname)) {
+      st += mameinfo[Dataset.master[masterId].zipname];
     }
   }
   window.requestAnimationFrame(() => {
