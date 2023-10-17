@@ -73,6 +73,19 @@ const actPaste = new Action({
   },
 });
 
+const actKensaku = new Action({
+  caption: "選択文字列をウェブ検索...",
+  onExecute: async (self) => {
+    const target = self.caller.target;
+    await window.retrofireAPI.openURL("https://duckduckgo.com/?q=" + String(document.getSelection()).trim());
+  },
+  onUpdate: async (self) => {
+    const target = self.caller.target;
+    self.enabled = String(document.getSelection()).length > 0;
+    self.caption = "選択文字列をウェブ検索...";
+  },
+});
+
 // 編集用ポップアップメニュー
 const pmEdit = new PopupMenu([{ action: actCut }, { action: actCopy }, { action: actPaste }]);
 document.querySelector("#search").addEventListener("contextmenu", (e) => {
@@ -81,7 +94,7 @@ document.querySelector("#search").addEventListener("contextmenu", (e) => {
   pmEdit.show(e);
 });
 
-const pmInfo = new PopupMenu([{ action: actCopy }]);
+const pmInfo = new PopupMenu([{ action: actCopy }, { action: actKensaku }]);
 document.querySelector("#info").addEventListener("contextmenu", (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -113,10 +126,13 @@ const actDriver = new Action({
   iconChar: "e744",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    document.getElementById("search").value = record[dataIndex].source;
+    document.getElementById("search").value = Dataset.master[dataIndex].source;
     config.searchTarget = ""; // 検索対象リセット
     document.querySelector(".p-search__dropboxRadio[value='']").checked = true;
-    listViewMain.updateListViewSearch({ searchWord: record[dataIndex].source, searchTarget: config.searchTarget });
+    listViewMain.updateListViewSearch({
+      searchWord: Dataset.master[dataIndex].source,
+      searchTarget: config.searchTarget,
+    });
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
@@ -124,7 +140,7 @@ const actDriver = new Action({
     if (dataIndex === -1) {
       self.caption = "ドライバ名で絞り込む";
     } else {
-      self.caption = "「" + record[dataIndex].source + "」で絞り込む";
+      self.caption = "「" + Dataset.master[dataIndex].source + "」で絞り込む";
     }
   },
 });
@@ -136,7 +152,7 @@ const actGithub = new Action({
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
     await window.retrofireAPI.openURL(
-      "https://github.com/mamedev/mame/blob/master/src/mame/" + record[dataIndex].source
+      "https://github.com/mamedev/mame/blob/master/src/mame/" + Dataset.master[dataIndex].source
     );
   },
   onUpdate: async (self) => {
@@ -145,7 +161,7 @@ const actGithub = new Action({
     if (dataIndex === -1) {
       self.caption = "GitHubを開く";
     } else {
-      self.caption = "「" + record[dataIndex].source + "」をGitHubで開く";
+      self.caption = "「" + Dataset.master[dataIndex].source + "」をGitHubで開く";
     }
   },
 });
@@ -205,7 +221,7 @@ const pmMainList = new PopupMenu([
     children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: "---" }, { action: actDeleteNvCfg }],
   },
 ]);
-document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
+document.querySelector(".list-view2").addEventListener("contextmenu", async (e) => {
   e.stopPropagation();
   e.preventDefault();
   await pmMainList.show(e);
@@ -738,6 +754,7 @@ async function onLoad() {
       console.log("onEnter", index);
       window.retrofireAPI.executeMAME({ zipName: row.zipname });
     },
+    onKeyDown: (event) => {},
   });
   await listViewMain2.init();
   listViewMain2.itemCount = mamedb.filteredLength;
