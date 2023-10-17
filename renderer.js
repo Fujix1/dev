@@ -731,7 +731,12 @@ async function onLoad() {
     onColumnClick: async (property, direction) => {
       // columnIndex: {integer},
       // direction: {string} "asc|desc"
-      console.log("onColumnClick", property, direction);
+      const idx = mamedb.getDataIndex(listViewMain2.itemIndex);
+      mamedb.sort({ field: property, direction: direction });
+      // ソート後の dataIndex
+      listViewMain2.itemIndex = mamedb.filteredTable.indexOf(idx);
+      listViewMain2.updateListView();
+      listViewMain2.makeVisible();
     },
     onSelect: async (index) => {
       const row = mamedb.getFilteredRecord(index);
