@@ -683,7 +683,6 @@ async function onLoad() {
   console.log("listview init:", Date.now() - tick, "ms");
 
   listViewMain2 = new ListView2({
-    database: mamedb,
     slug: "main2",
     target: ".list-view2",
     columns: [
@@ -729,6 +728,11 @@ async function onLoad() {
     index: -1,
     searchWord: config.searchWord,
     searchTarget: config.searchTarget,
+    onColumnClick: async (property, direction) => {
+      // columnIndex: {integer},
+      // direction: {string} "asc|desc"
+      console.log("onColumnClick", property, direction);
+    },
     onSelect: async (index) => {
       const row = mamedb.getFilteredRecord(index);
       const dataIndex = mamedb.getDataIndex(index);
@@ -754,7 +758,16 @@ async function onLoad() {
       console.log("onEnter", index);
       window.retrofireAPI.executeMAME({ zipName: row.zipname });
     },
-    onKeyDown: (event) => {},
+    onKeyDown: (e) => {
+      switch (e.code) {
+        case "Tab":
+          if (e.shiftKey) {
+            document.querySelector("#search").focus();
+          }
+          e.preventDefault();
+          break;
+      }
+    },
   });
   await listViewMain2.init();
   listViewMain2.itemCount = mamedb.filteredLength;
