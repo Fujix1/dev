@@ -719,7 +719,7 @@ async function onLoad() {
       await itemSelectHandler(dataIndex, row.zipname);
     },
     onData: (index) => {
-      const row = { classList: ["m-listView__cellIcon"] };
+      const row = { classList: ["m-listView__cellIcon"], cloneof: "" };
       Object.assign(row, mamedb.getFilteredRecord(index));
       if (config.language == LANG.JP) {
         row.desc = row.descJ;
