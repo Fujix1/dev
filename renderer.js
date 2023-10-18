@@ -729,8 +729,6 @@ async function onLoad() {
     searchWord: config.searchWord,
     searchTarget: config.searchTarget,
     onColumnClick: async (property, direction) => {
-      // columnIndex: {integer},
-      // direction: {string} "asc|desc"
       const idx = mamedb.getDataIndex(listViewMain2.itemIndex);
       mamedb.sort({ field: property, direction: direction });
       // ソート後の dataIndex
