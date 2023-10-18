@@ -780,6 +780,8 @@ async function onLoad() {
   });
 
   await listViewMain2.init();
+
+  // 初期表示
   mamedb.filter({
     word: config.searchWord,
     fields: config.searchTarget,
@@ -789,6 +791,10 @@ async function onLoad() {
     direction: listViewMain2.sortDirection,
   });
   listViewMain2.itemCount = mamedb.filteredLength;
+  listViewMain2.itemIndex = mamedb.getFilterdIndexByZip(config.zipName);
+  await itemSelectHandler(mamedb.getDataIndex(listViewMain2.itemIndex), config.zipName);
+  listViewMain2.makeVisible();
+
   window.retrofireAPI.windowIsReady();
 }
 
