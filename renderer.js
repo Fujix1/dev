@@ -486,7 +486,9 @@ async function onLoad() {
   document.querySelector("#search").addEventListener("input", (e) => {
     if (e.target.getAttribute("IME") !== "true") {
       config.searchWord = e.target.value;
-      mamedb.listViewMain.updateListViewSearch({ searchWord: e.target.value });
+      mamedb.filter({ word: config.searchWord });
+      mamedb.sort();
+      listViewMain2.itemCount = mamedb.filteredLength;
     }
   });
   document.querySelector("#search").addEventListener("cut", (e) => {
