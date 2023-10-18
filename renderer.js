@@ -486,8 +486,7 @@ async function onLoad() {
   document.querySelector("#search").addEventListener("input", (e) => {
     if (e.target.getAttribute("IME") !== "true") {
       config.searchWord = e.target.value;
-      mamedb.
-      listViewMain.updateListViewSearch({ searchWord: e.target.value });
+      mamedb.listViewMain.updateListViewSearch({ searchWord: e.target.value });
     }
   });
   document.querySelector("#search").addEventListener("cut", (e) => {
@@ -781,6 +780,14 @@ async function onLoad() {
   });
 
   await listViewMain2.init();
+  mamedb.filter({
+    word: config.searchWord,
+    fields: config.searchTarget,
+  });
+  mamedb.sort({
+    field: listViewMain2.columns[listViewMain2.orderByIndex].data,
+    direction: listViewMain2.sortDirection,
+  });
   listViewMain2.itemCount = mamedb.filteredLength;
   window.retrofireAPI.windowIsReady();
 }
