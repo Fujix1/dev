@@ -279,23 +279,22 @@ document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e
   pmScreenshot.show(e);
 });
 
-//---------------------------------------------------------------------------
+//---------------------------------------------------------------------
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
 async function onLoad() {
   // 設定読み込みと適用
   const readConfig = await window.retrofireAPI.getStore("config");
+  console.log(readConfig);
   if (readConfig) {
     if (readConfig.hasOwnProperty("searchWord")) {
       config.searchWord = readConfig.searchWord;
       document.getElementById("search").value = readConfig.searchWord;
     }
-
     if (readConfig.hasOwnProperty("language")) {
       config.language = readConfig.language;
       document.getElementById("language").checked = readConfig.language == LANG.EN;
     }
-
     if (readConfig.hasOwnProperty("searchTarget")) {
       config.searchTarget = readConfig.searchTarget;
       document.querySelector('input[name="searchRadio"][value="' + readConfig.searchTarget + '"]').checked = true;
@@ -315,6 +314,10 @@ async function onLoad() {
     // コマンドオプション
     if (readConfig.hasOwnProperty("command")) {
       config.command = readConfig.command;
+    }
+    // zipName
+    if (readConfig.hasOwnProperty("zipName")) {
+      config.zipName = readConfig.zipName;
     }
   }
 
@@ -482,6 +485,8 @@ async function onLoad() {
   // 検索欄入力イベント
   document.querySelector("#search").addEventListener("input", (e) => {
     if (e.target.getAttribute("IME") !== "true") {
+      config.searchWord = e.target.value;
+      mamedb.
       listViewMain.updateListViewSearch({ searchWord: e.target.value });
     }
   });
@@ -534,8 +539,10 @@ async function onLoad() {
     });
   });
 
+  //----------------------------------------------------------------------
   mamedb = new Dataset();
   await mamedb.loadFromFile();
+  mamedb.filter(config.searchWord, config.searchTarget);
 
   // ゲームデータ読み込み
   var tick = Date.now();
@@ -679,8 +686,8 @@ async function onLoad() {
     onSelect: itemSelectHandler,
   });
 
-  await listViewMain.init();
-  console.log("listview init:", Date.now() - tick, "ms");
+  //await listViewMain.init();
+  //console.log("listview init:", Date.now() - tick, "ms");
 
   listViewMain2 = new ListView2({
     slug: "main2",
@@ -772,9 +779,9 @@ async function onLoad() {
       }
     },
   });
+
   await listViewMain2.init();
   listViewMain2.itemCount = mamedb.filteredLength;
-
   window.retrofireAPI.windowIsReady();
 }
 
