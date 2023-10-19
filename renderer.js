@@ -782,8 +782,13 @@ async function onLoad() {
   });
 
   await listViewMain2.init();
+  await updateListView();
 
-  // 初期表示
+  window.retrofireAPI.windowIsReady();
+}
+
+// リストビューをガラッと更新
+async function updateListView() {
   mamedb.filter({
     word: config.searchWord,
     fields: config.searchTarget,
@@ -796,8 +801,6 @@ async function onLoad() {
   listViewMain2.itemIndex = mamedb.getFilterdIndexByZip(config.zipName);
   await itemSelectHandler(mamedb.getDataIndex(listViewMain2.itemIndex), config.zipName);
   listViewMain2.makeVisible();
-
-  window.retrofireAPI.windowIsReady();
 }
 
 // 項目選択時の処理
