@@ -866,7 +866,9 @@ window.addEventListener("beforeunload", (e) => {
 document.getElementById("clear").addEventListener("click", clearSearch);
 function clearSearch() {
   document.querySelector("#search").value = "";
-  listViewMain.updateListViewSearch({ searchWord: "" });
+  //listViewMain.updateListViewSearch({ searchWord: "" });
+  config.searchWord = "";
+  updateListView();
 }
 
 //------------------------------------------------------------------------------
