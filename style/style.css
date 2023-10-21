@@ -2781,7 +2781,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .l-footer__item {
   line-height: 22px;
-  padding: 0 1em;
+  padding: 0 1.5em;
 }
 
 .m-select {

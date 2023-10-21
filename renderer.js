@@ -17,7 +17,7 @@ const LANG = { JP: 0, EN: 1 };
 let config = {
   language: LANG.JP, // 言語設定
   searchWord: "", // 検索文字列
-  searchTarget: "", // 検索対象
+  searchFields: "", // 検索対象
   keepAspect: true, // スクリーンショットアスペクト比
   splitter: [
     // スプリッタの幅高初期値
@@ -127,12 +127,10 @@ const actDriver = new Action({
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
     document.getElementById("search").value = Dataset.master[dataIndex].source;
-    config.searchTarget = ""; // 検索対象リセット
+    config.searchFields = ""; // 検索対象リセット
     document.querySelector(".p-search__dropboxRadio[value='']").checked = true;
-    listViewMain.updateListViewSearch({
-      searchWord: Dataset.master[dataIndex].source,
-      searchTarget: config.searchTarget,
-    });
+    config.searchWord = Dataset.master[dataIndex].source;
+    updateListView();
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
@@ -285,7 +283,7 @@ window.addEventListener("DOMContentLoaded", onLoad);
 async function onLoad() {
   // 設定読み込みと適用
   const readConfig = await window.retrofireAPI.getStore("config");
-  console.log(readConfig);
+  console.log("readConfig", readConfig);
   if (readConfig) {
     if (readConfig.hasOwnProperty("searchWord")) {
       config.searchWord = readConfig.searchWord;
@@ -295,9 +293,9 @@ async function onLoad() {
       config.language = readConfig.language;
       document.getElementById("language").checked = readConfig.language == LANG.EN;
     }
-    if (readConfig.hasOwnProperty("searchTarget")) {
-      config.searchTarget = readConfig.searchTarget;
-      document.querySelector('input[name="searchRadio"][value="' + readConfig.searchTarget + '"]').checked = true;
+    if (readConfig.hasOwnProperty("searchFields")) {
+      config.searchFields = readConfig.searchFields;
+      document.querySelector('input[name="searchRadio"][value="' + readConfig.searchFields + '"]').checked = true;
     }
     // スクリーンショット設定
     if (readConfig.hasOwnProperty("keepAspect")) {
@@ -423,7 +421,7 @@ async function onLoad() {
       case "F12": // 言語切替
         config.language = config.language == LANG.JP ? LANG.EN : LANG.JP;
         document.getElementById("language").checked = config.language == LANG.EN;
-        listViewMain.updateListView(true);
+        await updateListView();
         break;
       case "Backspace": // 検索ボックスフォーカス
         const search = document.getElementById("search");
@@ -453,9 +451,9 @@ async function onLoad() {
   });
 
   // 言語切替
-  document.getElementById("language").addEventListener("change", (e) => {
+  document.getElementById("language").addEventListener("change", async (e) => {
     config.language = e.target.checked ? LANG.EN : LANG.JP;
-    listViewMain.updateListView(true);
+    await updateListView();
   });
 
   // empty the debug output
@@ -479,23 +477,23 @@ async function onLoad() {
 
   document.querySelector("#btn-item2").addEventListener("click", () => {
     console.log(listViewMain.dataIndex);
-    listViewMain.makeVisible();
+    //listViewMain.makeVisible();
   });
 
   // 検索欄入力イベント
   document.querySelector("#search").addEventListener("input", (e) => {
     if (e.target.getAttribute("IME") !== "true") {
       config.searchWord = e.target.value;
-      mamedb.filter({ word: config.searchWord });
-      mamedb.sort();
-      listViewMain2.itemCount = mamedb.filteredLength;
+      updateListView();
     }
   });
   document.querySelector("#search").addEventListener("cut", (e) => {
-    listViewMain.updateListViewSearch({ searchWord: e.target.value });
+    config.searchWord = e.target.value;
+    updateListView();
   });
   document.querySelector("#search").addEventListener("paste", (e) => {
-    listViewMain.updateListViewSearch({ searchWord: e.target.value });
+    config.searchWord = e.target.value;
+    updateListView();
   });
   document.querySelector("#search").addEventListener("keydown", (e) => {
     // ポップアップメニュー あり
@@ -504,14 +502,14 @@ async function onLoad() {
       return;
     }
     if (e.code === "Tab") {
-      listViewMain.setFocusOnItem();
+      listViewMain2.makeVisible();
       e.preventDefault();
       return;
     }
     if (e.target.getAttribute("IME") == "true") {
     } else {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
-        listViewMain.setFocusOnItem();
+        listViewMain2.makeVisible();
         e.preventDefault();
         return;
       }
@@ -529,21 +527,26 @@ async function onLoad() {
   // IME 変換確定
   document.querySelector("#search").addEventListener("compositionend", (e) => {
     e.target.setAttribute("IME", false);
-    listViewMain.updateListViewSearch({ searchWord: e.target.value });
+    config.searchWord = e.target.value;
+    updateListView();
   });
 
   // 検索対象
   document.getElementsByName("searchRadio").forEach((item) => {
     item.addEventListener("change", (e) => {
-      config.searchTarget = document.querySelector('input[name="searchRadio"]:checked').value;
-      listViewMain.updateListViewSearch({ searchTarget: config.searchTarget });
+      config.searchFields = document.querySelector('input[name="searchRadio"]:checked').value;
+      config.searchWord = document.querySelector("#search").value;
+      mamedb.filter({ word: config.searchWord, fields: config.searchFields });
+      mamedb.sort();
+      listViewMain2.itemCount = mamedb.filteredLength;
+      updateListView();
     });
   });
 
   //----------------------------------------------------------------------
   mamedb = new Dataset();
   await mamedb.loadFromFile();
-  mamedb.filter(config.searchWord, config.searchTarget);
+  mamedb.filter(config.searchWord, config.searchFields);
 
   // ゲームデータ読み込み
   var tick = Date.now();
@@ -636,59 +639,6 @@ async function onLoad() {
 
   // リストビュー初期化
   var tick = Date.now();
-  listViewMain = new ListView({
-    database: mamedb,
-    data: record,
-    target: ".list-view",
-    columns: [
-      {
-        label: "ゲーム名",
-        data: "desc",
-        order: 0,
-        width: 380,
-        defaultSort: "asc",
-      },
-      {
-        label: "ZIP名",
-        data: "zipname",
-        order: 1,
-        width: 100,
-        defaultSort: "asc",
-      },
-      {
-        label: "メーカー",
-        data: "maker",
-        order: 2,
-        width: 160,
-        defaultSort: "asc",
-      },
-      { label: "年度", data: "year", order: 3, width: 55, defaultSort: "asc" },
-      {
-        label: "マスタ",
-        data: "cloneof",
-        order: 4,
-        width: 100,
-        defaultSort: "asc",
-      },
-      {
-        label: "ドライバ",
-        data: "source",
-        order: 5,
-        width: 180,
-        defaultSort: "asc",
-      },
-    ],
-    slug: "main",
-    orderByIndex: 1,
-    sortDirection: "asc",
-    index: -1,
-    searchWord: config.searchWord,
-    searchTarget: config.searchTarget,
-    onSelect: itemSelectHandler,
-  });
-
-  //await listViewMain.init();
-  //console.log("listview init:", Date.now() - tick, "ms");
 
   listViewMain2 = new ListView2({
     slug: "main2",
@@ -735,16 +685,17 @@ async function onLoad() {
     sortDirection: "asc",
     index: -1,
     searchWord: config.searchWord,
-    searchTarget: config.searchTarget,
+    searchFields: config.searchFields,
     onColumnClick: async (property, direction) => {
       const idx = mamedb.getDataIndex(listViewMain2.itemIndex);
       mamedb.sort({ field: property, direction: direction });
       // ソート後の dataIndex
       listViewMain2.itemIndex = mamedb.filteredTable.indexOf(idx);
-      listViewMain2.updateListView();
+      listViewMain2.updateRowTexts();
       listViewMain2.makeVisible();
     },
     onSelect: async (index) => {
+      if (index === -1) return;
       const row = mamedb.getFilteredRecord(index);
       const dataIndex = mamedb.getDataIndex(index);
       await itemSelectHandler(dataIndex, row.zipname);
@@ -787,20 +738,30 @@ async function onLoad() {
   window.retrofireAPI.windowIsReady();
 }
 
-// リストビューをガラッと更新
+// リストビューを更新
 async function updateListView() {
-  mamedb.filter({
+  var tick = Date.now();
+  await mamedb.filter({
     word: config.searchWord,
-    fields: config.searchTarget,
+    fields: config.searchFields,
   });
-  mamedb.sort({
+  await mamedb.sort({
     field: listViewMain2.columns[listViewMain2.orderByIndex].data,
     direction: listViewMain2.sortDirection,
   });
   listViewMain2.itemCount = mamedb.filteredLength;
   listViewMain2.itemIndex = mamedb.getFilterdIndexByZip(config.zipName);
+
+  // 全項目再描画
+  await listViewMain2.updateRowTexts();
+
+  // 項目再選択
   await itemSelectHandler(mamedb.getDataIndex(listViewMain2.itemIndex), config.zipName);
-  listViewMain2.makeVisible();
+  await listViewMain2.makeVisible(false);
+
+  // 項目数表示
+  document.getElementById("footerNum").innerText = mamedb.filteredLength + " / " + Dataset.master.length;
+  console.log("updateListView", Date.now() - tick, "ms");
 }
 
 // 項目選択時の処理
@@ -809,11 +770,21 @@ async function itemSelectHandler(argDataIndex, argZipName) {
   dataIndex = argDataIndex;
 
   // 項目なし
-  if (argDataIndex === -1) {
+  if (mamedb.filteredLength === 0) {
     document.querySelector("#info").innerHTML = "";
     screenShot.show("");
     command.show("");
     return;
+  }
+
+  // 選択肢ない場合は選択リセット
+  if (argDataIndex === -1) {
+    const row = mamedb.getFilteredRecord(0);
+    config.zipName = row.zipname;
+    dataIndex = mamedb.getDataIndex(0);
+    listViewMain2.itemIndex = 0;
+    argDataIndex = dataIndex;
+    argZipName = config.zipName;
   }
 
   const masterId = Dataset.master[argDataIndex].masterid;
