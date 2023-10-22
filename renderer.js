@@ -926,7 +926,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
 window.addEventListener("beforeunload", (e) => {
   saveFormConfig();
   listViewMain.saveSettings();
-  listViewMain.saveSettings();
+  listViewSub.saveSettings();
 });
 
 // 検索クリア
