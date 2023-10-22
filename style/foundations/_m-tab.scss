@@ -10,6 +10,7 @@
     flex-grow: 0;
     display: flex;
     width: 100%;
+    user-select: none;
 
     color: var(--cl-text);
     box-sizing: border-box;

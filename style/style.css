@@ -2481,10 +2481,10 @@ template {
   --cl-text--highlight: #bbb;
   --cl-text--main: #222;
   --cl-text--weak: #a7a7a7;
-  --cl-theme: #43bbdf;
+  --cl-theme: #4c98af;
   --cl-theme--gray: #888;
-  --cl-active: linear-gradient(90deg, #257db3, #25b392);
-  --cl-active--sub: #3c6f80;
+  --cl-active: #4893aa;
+  --cl-active--sub: #29acd4;
   --cl-selected--unfocused: linear-gradient(90deg, #737e85, #5f6665);
   --cl-text: #eee;
   --cl-text--inactive: #ccc;
@@ -3201,6 +3201,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-grow: 0;
   display: flex;
   width: 100%;
+  user-select: none;
   color: var(--cl-text);
   box-sizing: border-box;
   transition: var(--s-transition);
@@ -3437,7 +3438,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-shrink: 1;
   overflow: auto;
   font-size: 13.5px;
-  line-height: 20px;
+  line-height: 21px;
   font-family: "BIZ UDゴシック", "ＭＳ ゴシック", monospace;
   white-space: pre;
   color: var(--cl-text--inactive);

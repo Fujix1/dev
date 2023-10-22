@@ -2,7 +2,8 @@
 
 const APPNAME = "Retrofire Neo";
 let listViewMain; // メインリストビュー
-let listViewMain2;
+let listViewSub;
+
 let record; // オリジナルの全ゲーム情報
 let mamedb; // ゲーム情報管理用オブジェクト
 const mameinfo = {}; // mameinfo.dat 情報
@@ -219,7 +220,7 @@ const pmMainList = new PopupMenu([
     children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: "---" }, { action: actDeleteNvCfg }],
   },
 ]);
-document.querySelector(".list-view2").addEventListener("contextmenu", async (e) => {
+document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
   e.stopPropagation();
   e.preventDefault();
   await pmMainList.show(e);
@@ -475,10 +476,7 @@ async function onLoad() {
     }
   });
 
-  document.querySelector("#btn-item2").addEventListener("click", () => {
-    console.log(listViewMain.dataIndex);
-    //listViewMain.makeVisible();
-  });
+  document.querySelector("#btn-item2").addEventListener("click", () => {});
 
   // 検索欄入力イベント
   document.querySelector("#search").addEventListener("input", (e) => {
@@ -502,14 +500,14 @@ async function onLoad() {
       return;
     }
     if (e.code === "Tab") {
-      listViewMain2.makeVisible();
+      listViewMain.makeVisible();
       e.preventDefault();
       return;
     }
     if (e.target.getAttribute("IME") == "true") {
     } else {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
-        listViewMain2.makeVisible();
+        listViewMain.makeVisible();
         e.preventDefault();
         return;
       }
@@ -538,7 +536,7 @@ async function onLoad() {
       config.searchWord = document.querySelector("#search").value;
       mamedb.filter({ word: config.searchWord, fields: config.searchFields });
       mamedb.sort();
-      listViewMain2.itemCount = mamedb.filteredLength;
+      listViewMain.itemCount = mamedb.filteredLength;
       updateListView();
     });
   });
@@ -640,9 +638,9 @@ async function onLoad() {
   // リストビュー初期化
   var tick = Date.now();
 
-  listViewMain2 = new ListView2({
-    slug: "main2",
-    target: ".list-view2",
+  listViewMain = new ListView({
+    slug: "main",
+    target: ".list-view",
     columns: [
       {
         label: "ゲーム名",
@@ -684,15 +682,13 @@ async function onLoad() {
     orderByIndex: 1,
     sortDirection: "asc",
     index: -1,
-    searchWord: config.searchWord,
-    searchFields: config.searchFields,
     onColumnClick: async (property, direction) => {
-      const idx = mamedb.getDataIndex(listViewMain2.itemIndex);
+      const idx = mamedb.getDataIndex(listViewMain.itemIndex);
       mamedb.sort({ field: property, direction: direction });
       // ソート後の dataIndex
-      listViewMain2.itemIndex = mamedb.filteredTable.indexOf(idx);
-      listViewMain2.updateRowTexts();
-      listViewMain2.makeVisible();
+      listViewMain.itemIndex = mamedb.filteredTable.indexOf(idx);
+      listViewMain.updateRowTexts();
+      listViewMain.makeVisible();
     },
     onSelect: async (index) => {
       if (index === -1) return;
@@ -732,8 +728,108 @@ async function onLoad() {
     },
   });
 
-  await listViewMain2.init();
+  await listViewMain.init();
   await updateListView();
+
+  listViewSub = new ListView({
+    slug: "sub",
+    target: ".list-sub",
+    columns: [
+      {
+        label: "ゲーム名",
+        data: "desc",
+        order: 0,
+        width: 380,
+        defaultSort: "asc",
+      },
+      {
+        label: "ZIP名",
+        data: "zipname",
+        order: 1,
+        width: 100,
+        defaultSort: "asc",
+      },
+      {
+        label: "メーカー",
+        data: "maker",
+        order: 2,
+        width: 160,
+        defaultSort: "asc",
+      },
+      { label: "年度", data: "year", order: 3, width: 55, defaultSort: "asc" },
+      {
+        label: "マスタ",
+        data: "cloneof",
+        order: 4,
+        width: 100,
+        defaultSort: "asc",
+      },
+      {
+        label: "ドライバ",
+        data: "source",
+        order: 5,
+        width: 180,
+        defaultSort: "asc",
+      },
+      {
+        label: "訳",
+        data: "translated",
+        order: 6,
+        width: 30,
+        defaultSort: "asc",
+      },
+    ],
+    orderByIndex: 1,
+    sortDirection: "asc",
+    index: -1,
+    columnClickable: false,
+    onColumnClick: async (property, direction) => {
+      /*const idx = mamedb.getDataIndex(listViewMain.itemIndex);
+      mamedb.sort({ field: property, direction: direction });
+      // ソート後の dataIndex
+      listViewMain.itemIndex = mamedb.filteredTable.indexOf(idx);
+      listViewMain.updateRowTexts();
+      listViewMain.makeVisible();*/
+    },
+    onSelect: async (index) => {
+      if (index === -1) return;
+      //const row = mamedb.getFilteredRecord(index);
+      //const dataIndex = mamedb.getDataIndex(index);
+      //await itemSelectHandler(dataIndex, row.zipname);
+    },
+    onData: (index) => {
+      /*const row = { classList: ["m-listView__cellIcon"], cloneof: "" };
+      Object.assign(row, mamedb.getFilteredRecord(index));
+      if (config.language == LANG.JP) {
+        row.desc = row.descJ;
+      }
+      // アイコン
+      if (row.cloneof) {
+        row.classList.push("m-listView__cellIcon--clone");
+      }
+      if (!row.status) {
+        row.classList.push("m-listView__cellIcon--nowork");
+      }
+      return row;
+      */
+    },
+    onEnter: (index) => {
+      //const row = mamedb.getFilteredRecord(index);
+      //console.log("onEnter", index);
+      //window.retrofireAPI.executeMAME({ zipName: row.zipname });
+    },
+    onKeyDown: (e) => {
+      /*switch (e.code) {
+        case "Tab":
+          if (e.shiftKey) {
+            document.querySelector("#search").focus();
+          }
+          e.preventDefault();
+          break;
+      }*/
+    },
+  });
+  await listViewSub.init();
 
   window.retrofireAPI.windowIsReady();
 }
@@ -746,18 +842,18 @@ async function updateListView() {
     fields: config.searchFields,
   });
   await mamedb.sort({
-    field: listViewMain2.columns[listViewMain2.orderByIndex].data,
-    direction: listViewMain2.sortDirection,
+    field: listViewMain.columns[listViewMain.orderByIndex].data,
+    direction: listViewMain.sortDirection,
   });
-  listViewMain2.itemCount = mamedb.filteredLength;
-  listViewMain2.itemIndex = mamedb.getFilterdIndexByZip(config.zipName);
+  listViewMain.itemCount = mamedb.filteredLength;
+  listViewMain.itemIndex = mamedb.getFilterdIndexByZip(config.zipName);
 
   // 全項目再描画
-  await listViewMain2.updateRowTexts();
+  await listViewMain.updateRowTexts();
 
   // 項目再選択
-  await itemSelectHandler(mamedb.getDataIndex(listViewMain2.itemIndex), config.zipName);
-  await listViewMain2.makeVisible(false);
+  await itemSelectHandler(mamedb.getDataIndex(listViewMain.itemIndex), config.zipName);
+  await listViewMain.makeVisible(false);
 
   // 項目数表示
   document.getElementById("footerNum").innerText = mamedb.filteredLength + " / " + Dataset.master.length;
@@ -782,7 +878,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     const row = mamedb.getFilteredRecord(0);
     config.zipName = row.zipname;
     dataIndex = mamedb.getDataIndex(0);
-    listViewMain2.itemIndex = 0;
+    listViewMain.itemIndex = 0;
     argDataIndex = dataIndex;
     argZipName = config.zipName;
   }
@@ -830,7 +926,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
 window.addEventListener("beforeunload", (e) => {
   saveFormConfig();
   listViewMain.saveSettings();
-  listViewMain2.saveSettings();
+  listViewMain.saveSettings();
 });
 
 // 検索クリア
