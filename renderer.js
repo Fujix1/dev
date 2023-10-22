@@ -4,7 +4,6 @@ const APPNAME = "Retrofire Neo";
 let listViewMain; // メインリストビュー
 let listViewSub;
 
-let record; // オリジナルの全ゲーム情報
 let mamedb; // ゲーム情報管理用オブジェクト
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
@@ -545,42 +544,6 @@ async function onLoad() {
   mamedb = new Dataset();
   await mamedb.loadFromFile();
   mamedb.filter(config.searchWord, config.searchFields);
-
-  // ゲームデータ読み込み
-  var tick = Date.now();
-  record = JSON.parse(await window.retrofireAPI.getRecord());
-  // descJ と kana 追加
-  for (let i = 0; i < record.length; i++) {
-    record[i].kana = record[i].desc;
-    record[i].descJ = record[i].desc;
-    record[i].descHiragana = record[i].desc;
-  }
-  console.log(Date.now() - tick);
-  console.log("resources.json:", record.length);
-
-  // mame32j読み込み
-  var tick = Date.now();
-  let mame32j = await window.retrofireAPI.getMame32j();
-  mame32j = mame32j.split("\r\n");
-  let n = 0;
-  for (let i = 0; i < mame32j.length; i++) {
-    const item = mame32j[i].split("\t");
-
-    for (let j = n; j < record.length; j++) {
-      if (record[j].zipname === item[0]) {
-        record[j].descJ = item[1];
-        // 検索用のひらがな変換
-        const hiragana = item[1].replace(/[ァ-ン]/g, function (s) {
-          return String.fromCharCode(s.charCodeAt(0) - 0x60);
-        });
-        record[j].descHiragana = hiragana;
-        record[j].kana = item[2];
-        n = j + 1;
-        break;
-      }
-    }
-  }
-  console.log("mame32j:", Date.now() - tick, "ms");
 
   // mameinfo.dat読み込み
   var tick = Date.now();
