@@ -342,7 +342,12 @@ async function onLoad() {
       item.addEventListener(
         "keydown",
         (e) => {
-          e.stopPropagation();
+          switch (e.key) {
+            case "F12":
+              break;
+            default:
+              e.stopPropagation();
+          }
         },
         false
       );
