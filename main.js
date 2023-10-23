@@ -27,8 +27,8 @@ const APPNAME = "Retrofire Dev";
 const MAIN_FORM_DEFAULT = {
   x: 50,
   y: 50,
-  width: 1024,
-  height: 768,
+  width: 1600,
+  height: 980,
 };
 
 //-------------------------------------------------------------------
