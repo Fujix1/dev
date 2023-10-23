@@ -12,6 +12,9 @@ const screenShot = new ScreenShot();
 const command = new Command();
 
 let dataIndex = -1;
+let dataSubIndex = -1;
+let dataSubZipname = "";
+let dataSubTable = [];
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -697,7 +700,6 @@ async function onLoad() {
   });
 
   await listViewMain.init();
-  await updateListView();
 
   listViewSub = new ListView({
     slug: "sub",
@@ -766,8 +768,8 @@ async function onLoad() {
       //await itemSelectHandler(dataIndex, row.zipname);
     },
     onData: (index) => {
-      /*const row = { classList: ["m-listView__cellIcon"], cloneof: "" };
-      Object.assign(row, mamedb.getFilteredRecord(index));
+      const row = { classList: ["m-listView__cellIcon"], cloneof: "", translated: false };
+      Object.assign(row, Dataset.master[dataSubTable[index]]);
       if (config.language == LANG.JP) {
         row.desc = row.descJ;
       }
@@ -779,7 +781,6 @@ async function onLoad() {
         row.classList.push("m-listView__cellIcon--nowork");
       }
       return row;
-      */
     },
     onEnter: (index) => {
       //const row = mamedb.getFilteredRecord(index);
@@ -798,6 +799,8 @@ async function onLoad() {
     },
   });
   await listViewSub.init();
+
+  await updateListView();
 
   window.retrofireAPI.windowIsReady();
 }
@@ -851,12 +854,31 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     argZipName = config.zipName;
   }
 
+  console.log("itemSelectHandler", argZipName);
+
   const masterId = Dataset.master[argDataIndex].masterid;
   const isMaster = Dataset.master[argDataIndex].master === -1;
 
   let masterZip = "";
   if (masterId !== -1) {
     masterZip = Dataset.master[masterId].zipname;
+  }
+
+  // サブリスト更新
+  if (dataSubZipname !== masterZip) {
+    dataSubZipname = masterZip;
+    dataSubIndex = masterId;
+
+    // ファミリ抽出
+    dataSubTable = [masterId];
+    for (let i = 0; i < Dataset.master.length; i++) {
+      if (Dataset.master[i].masterid === masterId && Dataset.master[i].master === 0) {
+        dataSubTable.push(i);
+      }
+    }
+
+    listViewSub.itemCount = dataSubTable.length;
+    await listViewSub.updateRowTexts();
   }
 
   // dat 情報表示
