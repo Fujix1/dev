@@ -864,21 +864,24 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     masterZip = Dataset.master[masterId].zipname;
   }
 
-  // サブリスト更新
-  if (dataSubZipname !== masterZip) {
-    dataSubZipname = masterZip;
-    dataSubIndex = masterId;
+  updateSubList();
 
-    // ファミリ抽出
-    dataSubTable = [masterId];
-    for (let i = 0; i < Dataset.master.length; i++) {
-      if (Dataset.master[i].masterid === masterId && Dataset.master[i].master === 0) {
-        dataSubTable.push(i);
+  async function updateSubList() {
+    // サブリスト更新
+    if (dataSubZipname !== masterZip) {
+      dataSubZipname = masterZip;
+      dataSubIndex = masterId;
+
+      // ファミリ抽出
+      dataSubTable = [masterId];
+      for (let i = 0; i < Dataset.master.length; i++) {
+        if (Dataset.master[i].masterid === masterId && Dataset.master[i].master === 0) {
+          dataSubTable.push(i);
+        }
       }
+      listViewSub.itemCount = dataSubTable.length;
+      listViewSub.updateRowTexts();
     }
-
-    listViewSub.itemCount = dataSubTable.length;
-    await listViewSub.updateRowTexts();
   }
 
   // dat 情報表示
