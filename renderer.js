@@ -841,6 +841,12 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     document.querySelector("#info").innerHTML = "";
     screenShot.show("");
     command.show("");
+
+    // サブリスト
+    dataSubIndex = -1;
+    dataSubZipname = "";
+    dataSubTable = [];
+    updateSubList();
     return;
   }
 
