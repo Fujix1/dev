@@ -16,6 +16,8 @@ let dataSubIndex = -1;
 let dataSubZipname = "";
 let dataSubTable = [];
 
+let updatingListView = false;
+
 const LANG = { JP: 0, EN: 1 };
 let config = {
   language: LANG.JP, // 言語設定
@@ -427,9 +429,13 @@ async function onLoad() {
     // 平時
     switch (e.key) {
       case "F12": // 言語切替
-        config.language = config.language == LANG.JP ? LANG.EN : LANG.JP;
-        document.getElementById("language").checked = config.language == LANG.EN;
-        await updateListView();
+        if (!e.repeat) {
+          config.language = config.language == LANG.JP ? LANG.EN : LANG.JP;
+          document.getElementById("language").checked = config.language == LANG.EN;
+          console.log(updatingListView);
+          updateListView();
+        }
+
         break;
       case "Backspace": // 検索ボックスフォーカス
         const search = document.getElementById("search");
@@ -461,7 +467,7 @@ async function onLoad() {
   // 言語切替
   document.getElementById("language").addEventListener("change", async (e) => {
     config.language = e.target.checked ? LANG.EN : LANG.JP;
-    await updateListView();
+    updateListView();
   });
 
   // empty the debug output
@@ -807,6 +813,7 @@ async function onLoad() {
 
 // リストビューを更新
 async function updateListView() {
+  updatingListView = true;
   var tick = Date.now();
   await mamedb.filter({
     word: config.searchWord,
@@ -829,12 +836,14 @@ async function updateListView() {
   // 項目数表示
   document.getElementById("footerNum").innerText = mamedb.filteredLength + " / " + Dataset.master.length;
   console.log("updateListView", Date.now() - tick, "ms");
+  updatingListView = false;
 }
 
 // 項目選択時の処理
 async function itemSelectHandler(argDataIndex, argZipName) {
   config.zipName = argZipName;
   dataIndex = argDataIndex;
+  let masterZip = "";
 
   // 項目なし
   if (mamedb.filteredLength === 0) {
@@ -863,9 +872,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
   console.log("itemSelectHandler", argZipName);
 
   const masterId = Dataset.master[argDataIndex].masterid;
-  const isMaster = Dataset.master[argDataIndex].master === -1;
 
-  let masterZip = "";
   if (masterId !== -1) {
     masterZip = Dataset.master[masterId].zipname;
   }
@@ -874,29 +881,58 @@ async function itemSelectHandler(argDataIndex, argZipName) {
 
   async function updateSubList() {
     // サブリスト更新
-    if (dataSubZipname !== masterZip) {
-      dataSubZipname = masterZip;
-      dataSubIndex = masterId;
-
-      // ファミリ抽出
-      dataSubTable = [masterId];
-      for (let i = 0; i < Dataset.master.length; i++) {
-        if (Dataset.master[i].masterid === masterId && Dataset.master[i].master === 0) {
-          dataSubTable.push(i);
-        }
-      }
+    if (masterZip === "") {
       listViewSub.itemCount = dataSubTable.length;
       listViewSub.updateRowTexts();
+    } else {
+      if (dataSubZipname !== masterZip) {
+        dataSubZipname = masterZip;
+        dataSubIndex = masterId;
+
+        // ファミリ抽出
+        dataSubTable = [masterId];
+        for (let i = 0; i < Dataset.master.length; i++) {
+          if (Dataset.master[i].masterid === masterId && Dataset.master[i].master === 0) {
+            dataSubTable.push(i);
+          }
+        }
+        listViewSub.itemCount = dataSubTable.length;
+      }
+
+      // サブリストの選択項目が違う場合は選び直し
+      if (listViewSub.itemIndex !== dataSubTable.indexOf(dataIndex)) {
+        listViewSub.itemIndex = dataSubTable.indexOf(dataIndex);
+        listViewSub.makeVisible(false);
+        listViewSub.updateRowTexts();
+      }
     }
   }
 
-  // dat 情報表示
+  showInfo(argZipName);
+  screenShot.show(argZipName);
+  command.show(argZipName);
+}
+
+/**
+ * DATとコマンド表示
+ * @param {*} zipName
+ */
+async function showInfo(zipName) {
+  const index = Dataset.indexOfZip(zipName);
+  const masterId = Dataset.master[index].masterid;
+  let masterZip = "";
+
   let st = "";
-  if (history.hasOwnProperty(argZipName)) {
-    st += history[argZipName];
+
+  if (masterId !== -1) {
+    masterZip = Dataset.master[masterId].zipname;
+  }
+
+  if (history.hasOwnProperty(zipName)) {
+    st += history[zipName];
   } else {
     // クローンのときは親を見る
-    if (!isMaster && history.hasOwnProperty(masterZip)) {
+    if (masterId !== -1 && history.hasOwnProperty(masterZip)) {
       st += history[masterZip];
     }
   }
@@ -904,21 +940,15 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     st += "<br>";
   }
 
-  if (mameinfo.hasOwnProperty(argZipName)) {
-    st += mameinfo[argZipName];
+  if (mameinfo.hasOwnProperty(zipName)) {
+    st += mameinfo[zipName];
   } else {
     // クローンのときは親を見る
-    const masterId = Dataset.master[argDataIndex].masterid;
-    if (!isMaster && mameinfo.hasOwnProperty(Dataset.master[masterId].zipname)) {
-      st += mameinfo[Dataset.master[masterId].zipname];
+    if (masterId !== -1 && mameinfo.hasOwnProperty(masterZip)) {
+      st += mameinfo[masterZip];
     }
   }
-  window.requestAnimationFrame(() => {
-    document.querySelector("#info").innerHTML = st;
-  });
-
-  screenShot.show(argZipName);
-  command.show(argZipName);
+  document.querySelector("#info").innerHTML = st;
 }
 
 // ウインドウ終了前
