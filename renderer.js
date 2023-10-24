@@ -869,7 +869,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     argZipName = config.zipName;
   }
 
-  console.log("itemSelectHandler", argZipName);
+  //console.log("itemSelectHandler", argZipName);
 
   const masterId = Dataset.master[argDataIndex].masterid;
 
@@ -903,8 +903,8 @@ async function itemSelectHandler(argDataIndex, argZipName) {
       if (listViewSub.itemIndex !== dataSubTable.indexOf(dataIndex)) {
         listViewSub.itemIndex = dataSubTable.indexOf(dataIndex);
         listViewSub.makeVisible(false);
-        listViewSub.updateRowTexts();
       }
+      listViewSub.updateRowTexts();
     }
   }
 
