@@ -44,7 +44,7 @@
     &:focus {
       background: var(--cl-popup--bg-hover);
     }
-    
+
     &--disabled {
       color: var(--cl-popup--text-desabled);
       & .m-popup__itemIcon {
@@ -56,7 +56,8 @@
         //background: var(--cl-popup--bg-hover);
         cursor: pointer;
       }
-      &.is-selected, &.is-child-open {
+      &.is-selected,
+      &.is-child-open {
         background: var(--cl-popup--bg-hover);
       }
     }
