@@ -728,6 +728,11 @@ async function onLoad() {
           break;
       }
     },
+    onFocus: (e, index) => {
+      // 起動用のセット名更新
+      dataIndex = mamedb.getDataIndex(index);
+      config.zipName = Dataset.master[dataIndex].zipname;
+    },
   });
 
   await listViewMain.init();
@@ -821,6 +826,11 @@ async function onLoad() {
           e.preventDefault();
           break;
       }*/
+    },
+    onFocus: (e, index) => {
+      // 起動用のセット名更新
+      dataIndex = dataSubTable[index];
+      config.zipName = Dataset.master[dataIndex].zipname;
     },
   });
   await listViewSub.init();
