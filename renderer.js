@@ -110,16 +110,14 @@ document.querySelector("#info").addEventListener("contextmenu", (e) => {
 const actRun = new Action({
   caption: "起動",
   keycode: "F5",
-  iconFont: "microns",
-  iconChar: "e71c",
+  iconFont: "fontello",
+  iconChar: "E803",
   onExecute: async (self) => {
-    //const currentTarget = self.caller.currentTarget;
     await window.retrofireAPI.executeMAME({
       zipName: config.zipName,
     });
   },
   onUpdate: async (self) => {
-    //const currentTarget = self.caller.currentTarget;
     self.enabled = config.zipName !== "";
     self.caption = config.zipName !== "" ? "「" + config.zipName + "」を起動" : "起動";
   },
@@ -127,8 +125,8 @@ const actRun = new Action({
 
 const actDriver = new Action({
   caption: "ドライバで絞り込み",
-  iconFont: "microns",
-  iconChar: "e744",
+  iconFont: "fontello",
+  iconChar: "E802",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
     document.getElementById("search").value = Dataset.master[dataIndex].source;
@@ -150,8 +148,8 @@ const actDriver = new Action({
 
 const actGithub = new Action({
   caption: "GitHubを開く",
-  iconFont: "themify",
-  iconChar: "e73f",
+  iconFont: "fontello",
+  iconChar: "F308",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
     await window.retrofireAPI.openURL(
@@ -174,6 +172,13 @@ const actDeleteSettings = new Action({
   iconFont: "themify",
   iconChar: "e605",
   parent: true,
+  onUpdate: async (self) => {
+    if (config.zipName === "") {
+      self.enabled = false;
+    } else {
+      self.enabled = await window.retrofireAPI.nvcfgExists(config.zipName);
+    }
+  },
 });
 
 const actDeleteCfg = new Action({
@@ -192,11 +197,19 @@ const actDeleteNvram = new Action({
   caption: "nvram ファイル",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    await window.retrofireAPI.nvramDelete(config.zipName);
+    if (config.zipName === "") {
+      return;
+    } else {
+      await window.retrofireAPI.nvramDelete(config.zipName);
+    }
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    self.enabled = await window.retrofireAPI.nvramExists(config.zipName);
+    if (config.zipName === "") {
+      self.enabled = false;
+    } else {
+      self.enabled = await window.retrofireAPI.nvramExists(config.zipName);
+    }
   },
 });
 
@@ -205,11 +218,18 @@ const actDeleteNvCfg = new Action({
   keycode: "Delete",
   onExecute: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    await window.retrofireAPI.nvcfgDelete(config.zipName);
+    if (config.zipName === "") {
+      return;
+    } else {
+      await window.retrofireAPI.nvcfgDelete(config.zipName);
+    }
   },
   onUpdate: async (self) => {
-    //const currentTarget = self.caller.currentTarget;
-    self.enabled = await window.retrofireAPI.nvcfgExists(config.zipName);
+    if (config.zipName === "") {
+      self.enabled = false;
+    } else {
+      self.enabled = await window.retrofireAPI.nvcfgExists(config.zipName);
+    }
   },
 });
 
@@ -225,6 +245,11 @@ const pmMainList = new PopupMenu([
   },
 ]);
 document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  await pmMainList.show(e);
+});
+document.querySelector(".list-sub").addEventListener("contextmenu", async (e) => {
   e.stopPropagation();
   e.preventDefault();
   await pmMainList.show(e);
@@ -760,18 +785,13 @@ async function onLoad() {
     index: -1,
     columnClickable: false,
     onColumnClick: async (property, direction) => {
-      /*const idx = mamedb.getDataIndex(listViewMain.itemIndex);
-      mamedb.sort({ field: property, direction: direction });
-      // ソート後の dataIndex
-      listViewMain.itemIndex = mamedb.filteredTable.indexOf(idx);
-      listViewMain.updateRowTexts();
-      listViewMain.makeVisible();*/
+      // 何もしない
     },
     onSelect: async (index) => {
       if (index === -1) return;
-      //const row = mamedb.getFilteredRecord(index);
-      //const dataIndex = mamedb.getDataIndex(index);
-      //await itemSelectHandler(dataIndex, row.zipname);
+      console.log("サブ選択", index);
+      const dataIndex = dataSubTable[index];
+      subItemSelectHandler(dataIndex);
     },
     onData: (index) => {
       const row = { classList: ["m-listView__cellIcon"], cloneof: "", translated: false };
@@ -789,9 +809,8 @@ async function onLoad() {
       return row;
     },
     onEnter: (index) => {
-      //const row = mamedb.getFilteredRecord(index);
-      //console.log("onEnter", index);
-      //window.retrofireAPI.executeMAME({ zipName: row.zipname });
+      const row = Dataset.master[dataSubTable[index]];
+      window.retrofireAPI.executeMAME({ zipName: row.zipname });
     },
     onKeyDown: (e) => {
       /*switch (e.code) {
@@ -806,14 +825,13 @@ async function onLoad() {
   });
   await listViewSub.init();
 
-  await updateListView();
+  updateListView();
 
   window.retrofireAPI.windowIsReady();
 }
 
 // リストビューを更新
 async function updateListView() {
-  updatingListView = true;
   var tick = Date.now();
   await mamedb.filter({
     word: config.searchWord,
@@ -835,8 +853,10 @@ async function updateListView() {
 
   // 項目数表示
   document.getElementById("footerNum").innerText = mamedb.filteredLength + " / " + Dataset.master.length;
+
+  //
+
   console.log("updateListView", Date.now() - tick, "ms");
-  updatingListView = false;
 }
 
 // 項目選択時の処理
@@ -850,6 +870,8 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     document.querySelector("#info").innerHTML = "";
     screenShot.show("");
     command.show("");
+    config.zipName = "";
+    dataIndex = -1;
 
     // サブリスト
     dataSubIndex = -1;
@@ -911,6 +933,12 @@ async function itemSelectHandler(argDataIndex, argZipName) {
   showInfo(argZipName);
   screenShot.show(argZipName);
   command.show(argZipName);
+}
+
+async function subItemSelectHandler(argDataIndex) {
+  console.log("subItemSelectHandler", argDataIndex);
+  config.zipName = Dataset.master[argDataIndex].zipname;
+  dataIndex = argDataIndex;
 }
 
 /**

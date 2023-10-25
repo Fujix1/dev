@@ -2413,7 +2413,7 @@ template {
 
 @font-face {
   font-family: "fontello";
-  src: url("fonts/fontello.woff2?79088309") format("woff2");
+  src: url("fonts/fontello.woff2?88979756") format("woff2");
   font-weight: normal;
   font-style: normal;
 }
@@ -2423,7 +2423,7 @@ template {
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'fontello';
-    src: url('../font/fontello.svg?79088308#fontello') format('svg');
+    src: url('../font/fontello.svg?88979756#fontello') format('svg');
   }
 }
 */
@@ -2461,6 +2461,21 @@ template {
 .icon-ico-en:before {
   content: "\e801";
 } /* '' */
+.icon-search:before {
+  content: "\e802";
+} /* '' */
+.icon-play:before {
+  content: "\e803";
+} /* '' */
+.icon-check:before {
+  content: "\e804";
+} /* '' */
+.icon-cancel-circle:before {
+  content: "\e805";
+} /* '' */
+.icon-github:before {
+  content: "\f308";
+} /* '' */
 :root {
   --ff-base: "Meiryo", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans",san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
@@ -3153,11 +3168,11 @@ input[type=search]::-webkit-search-results-decoration {
   text-align: right;
 }
 .m-popup__item--checked:before {
-  content: "\e718";
-  font-family: "microns";
+  content: "\e804";
+  font-family: "fontello";
   color: var(--cl-text);
   display: block;
-  font-size: 160%;
+  font-size: 110%;
   position: absolute;
   left: 9px;
   top: 50%;
@@ -3165,10 +3180,13 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-popup__itemIcon {
   position: absolute;
-  font-size: 16px;
+  font-size: 14.5px;
   line-height: 1;
-  left: 6px;
+  width: 18px;
+  text-align: center;
   color: var(--cl-text--weak);
+  font-weight: normal;
+  left: 6px;
 }
 .m-popup__item--hasChildren:after {
   content: "\e649";
@@ -3337,11 +3355,11 @@ input[type=search]::-webkit-search-results-decoration {
   appearance: none;
 }
 .p-search__dropboxRadio:checked:before {
-  content: "\e718";
-  font-family: "microns";
+  content: "\e804";
+  font-family: "fontello";
   color: var(--cl-text);
   display: block;
-  font-size: 160%;
+  font-size: 110%;
   position: absolute;
   left: 9px;
   top: 50%;

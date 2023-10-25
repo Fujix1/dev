@@ -70,11 +70,11 @@
 
     &--checked {
       &:before {
-        content: "\e718";
-        font-family: "microns";
+        content: "\e804";
+        font-family: "fontello";
         color: var(--cl-text);
         display: block;
-        font-size: 160%;
+        font-size: 110%;
         position: absolute;
         left: 9px;
         top: 50%;
@@ -83,10 +83,13 @@
     }
     &Icon {
       position: absolute;
-      font-size: 16px;
+      font-size: 14.5px;
       line-height: 1;
-      left: 6px;
+      width: 18px;
+      text-align: center;
       color: var(--cl-text--weak);
+      font-weight: normal;
+      left: 6px;
     }
     &--hasChildren {
       &:after {

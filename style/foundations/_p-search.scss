@@ -73,11 +73,11 @@
     &Radio {
       appearance: none;
       &:checked:before {
-        content: "\e718";
-        font-family: "microns";
+        content: "\e804";
+        font-family: "fontello";
         color: var(--cl-text);
         display: block;
-        font-size: 160%;
+        font-size: 110%;
         position: absolute;
         left: 9px;
         top: 50%;
