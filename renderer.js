@@ -282,8 +282,8 @@ const actDeleteScreenShot = new Action({
 
 const actTakeOutFromFolder = new Action({
   caption: "フォルダから出す",
-  iconFont: "microns",
-  iconChar: "e777",
+  iconFont: "fontello",
+  iconChar: "e806",
   onExecute: async (self) => {
     await window.retrofireAPI.renameScreenShot(screenShot.zipName);
     screenShot.show(screenShot.zipName);
@@ -794,7 +794,7 @@ async function onLoad() {
     },
     onSelect: async (index) => {
       if (index === -1) return;
-      console.log("サブ選択", index);
+
       const dataIndex = dataSubTable[index];
       subItemSelectHandler(dataIndex);
     },
@@ -818,14 +818,14 @@ async function onLoad() {
       window.retrofireAPI.executeMAME({ zipName: row.zipname });
     },
     onKeyDown: (e) => {
-      /*switch (e.code) {
+      switch (e.code) {
         case "Tab":
           if (e.shiftKey) {
             document.querySelector("#search").focus();
           }
           e.preventDefault();
           break;
-      }*/
+      }
     },
     onFocus: (e, index) => {
       // 起動用のセット名更新
@@ -931,7 +931,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
         listViewSub.itemCount = dataSubTable.length;
       }
 
-      // サブリストの選択項目が違う場合は選び直し
+      // サブリストの選択項目が見つからない場合は選び直し
       if (listViewSub.itemIndex !== dataSubTable.indexOf(dataIndex)) {
         listViewSub.itemIndex = dataSubTable.indexOf(dataIndex);
         listViewSub.makeVisible(false);
@@ -946,9 +946,11 @@ async function itemSelectHandler(argDataIndex, argZipName) {
 }
 
 async function subItemSelectHandler(argDataIndex) {
-  console.log("subItemSelectHandler", argDataIndex);
   config.zipName = Dataset.master[argDataIndex].zipname;
   dataIndex = argDataIndex;
+  showInfo(config.zipName);
+  screenShot.show(config.zipName);
+  command.show(config.zipName);
 }
 
 /**
