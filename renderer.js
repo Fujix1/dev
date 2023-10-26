@@ -804,6 +804,7 @@ async function onLoad() {
       if (config.language == LANG.JP) {
         row.desc = row.descJ;
       }
+
       // アイコン
       if (row.cloneof) {
         row.classList.push("m-listView__cellIcon--clone");

@@ -2994,20 +2994,20 @@ input[type=search]::-webkit-search-results-decoration {
   display: block;
   width: 20px;
   height: 20px;
-  background: url(./pics/ico_rom.svg) no-repeat left center;
+  background: url(./pics/ico_rom.png) no-repeat left center;
   background-size: 16px;
   position: absolute;
   left: 3px;
   top: 0;
 }
 .m-listView__cellIcon--clone:before {
-  background-image: url(./pics/ico_rom_clone.svg);
+  background-image: url(./pics/ico_rom_clone.png);
 }
 .m-listView__cellIcon--nowork:before {
-  background-image: url(./pics/ico_nowork.svg);
+  background-image: url(./pics/ico_nowork.png);
 }
-.m-listView__cellIcon--clone.m-listView_cellIcon--nowork:before {
-  background-image: url(./pics/ico_nowork_clone.svg);
+.m-listView__cellIcon--clone.m-listView__cellIcon--nowork:before {
+  background-image: url(./pics/ico_nowork_clone.png);
 }
 
 .m-checkbox {
