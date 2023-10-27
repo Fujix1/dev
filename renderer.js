@@ -799,12 +799,11 @@ async function onLoad() {
       subItemSelectHandler(dataIndex);
     },
     onData: (index) => {
-      const row = { classList: ["m-listView__cellIcon"], cloneof: "", translated: false };
+      const row = { classList: ["m-listView__cellIcon"], cloneof: "" };
       Object.assign(row, Dataset.master[dataSubTable[index]]);
       if (config.language == LANG.JP) {
         row.desc = row.descJ;
       }
-
       // アイコン
       if (row.cloneof) {
         row.classList.push("m-listView__cellIcon--clone");
@@ -812,6 +811,8 @@ async function onLoad() {
       if (!row.status) {
         row.classList.push("m-listView__cellIcon--nowork");
       }
+      // 訳
+      row.translated = row.desc !== row.descJ || row.desc !== row.kana ? "✓" : "";
       return row;
     },
     onEnter: (index) => {
