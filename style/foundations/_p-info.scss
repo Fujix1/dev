@@ -43,9 +43,25 @@
     line-height: 1.45;
     overflow-y: auto;
     color: var(--cl-text--inactive);
+    position: relative;
+    z-index: 0;
     &::selection {
       color: var(--cl-text);
       background-color: #555;
+    }
+    &:before {
+      content: '';
+      display: block;
+      background-image: var(--screenshot);
+      background-size: cover;
+      background-position: center;
+      filter: blur(23px) brightness(0.5);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
     }
   }
 }
