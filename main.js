@@ -13,6 +13,7 @@ const sizeOf = require("image-size");
 
 const { CONSTS, rfConfig, rfProfiles, rfPath } = require("./rfConfig");
 const glob = require("glob");
+const Parser = require("node-xml-stream");
 
 //-------------------------------------------------------------------
 // 初期設定
