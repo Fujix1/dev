@@ -36,9 +36,13 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   nvcfgExists: async (args) => await ipcRenderer.invoke("nvcfg-exists", args),
   nvcfgDelete: async (args) => await ipcRenderer.invoke("nvcfg-delete", args),
 
+  // list.xml 解析
+  parseListxml: async (args) => await ipcRenderer.invoke("parse-listxml", args),
+
   // デバッグメッセージ返す
   onDebugMessage: (callback) => ipcRenderer.on("debug-message", callback),
 
+  // アプリのフォーカス
   onBlur: (callback) => ipcRenderer.on("blur", callback),
   onFocus: (callback) => ipcRenderer.on("focus", callback),
 });

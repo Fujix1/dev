@@ -571,3 +571,34 @@ ipcMain.handle("nvcfg-delete", async (event, zipName) => {
     }
   }
 });
+
+/**
+ * list.xml 解析
+ */
+ipcMain.handle("parse-listxml", async (event, data) => {
+  const parser = new Parser();
+
+  console.log("parse xml");
+  // 開始タグが見つかった
+  //parser.on("opentag", (name, attrs) => console.log(`${name} has opened`));
+  parser.on("opentag", (name, attrs) => {});
+
+  // 終了タグが見つかった
+  //parser.on("closetag", (name) => console.log(`${name} has closed`));
+  parser.on("closetag", (name) => {});
+
+  // テキストが見つかった
+  //parser.on("text", (text) => console.log(text));
+  parser.on("text", (text) => {});
+
+  parser.on("error", (err) => {
+    // Handle a parsing error
+  });
+
+  // 読み込みが完了した
+  parser.on("finish", () => console.log("finish!"));
+
+  // Streamとパーサーを接続してファイルを読み込んでいく
+  const stream = fs.createReadStream("./temp/list.xml");
+  stream.pipe(parser);
+});
