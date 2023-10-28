@@ -2,7 +2,7 @@
 #                                        #
 #     Mameinfo.dat 日本語版              #
 #                                        #
-#     September 4, 2023                  #
+#     October 19, 2023                   #
 #                                        #
 #                                        #
 #     MAME Bug Database J                #
@@ -688,6 +688,9 @@ $mame
 
 【実機の仕様・バグ】
 
+- コンティニューするときプレイヤー1ボタンとスタートを同時押しする必要がある。(#08760, v0.258, Augusto)
+
+
 - 残り時間警告が一旦かかると、普通のBGMが鳴らなくなる。日本版と米国版では起きない。(#03798, v0.137u1, zoroasterisk, 担当: stephh)
 
 
@@ -1287,6 +1290,11 @@ $mame
 【FAQ】
 
 - デフォルトでは音量が小さすぎるため、F2キーでサービスメニューに入り"VOLUME ADJUST"で音量を上げると解決する。このとき80～90%以上にすると音が割れるの注意。 (FAQ #000)
+
+
+【バグ】
+
+- タイトルが違う。(#08758, v0.258, PepsiBoy428)
 $end
 
 $info=pebe0014
@@ -1789,6 +1797,11 @@ $mame
 【FAQ】
 
 - EEPROMの初期化はF2キーを押したままF3キーでリセット。 (FAQ #106)
+
+
+【バグ】
+
+- 難易度を変更しようすとると致命的エラーが起こる。(#08775, v0.259, HungryWolf999)
 $end
 
 $info=salmndr2
@@ -2569,9 +2582,6 @@ $mame
 - [riveraid] スタートボタンが動作せず画面が化ける。(#08657, v0.255, Russell)
 
 
-- スタートボタンが動作しない。(#08597, v0.253, Ziggy)
-
-
 - カセットのソフトリストのステータスについて。(#07548, v0.217, shoegazer)
 
 
@@ -2810,6 +2820,13 @@ $mame
 【バグ】
 
 - 地面が表示されない。(#05304, v0.149, ソース内の記述, 担当: Phil Bennett)
+$end
+
+$info=apple2e
+$mame
+【バグ】
+
+- フロッピー作成が正しく動作しない。(#08779, v0.259, arcadeludofan)
 $end
 
 $info=apple2ee
@@ -3721,6 +3738,9 @@ $info=c64p
 $mame
 【バグ】
 
+- [pang] スプライト化けと縦カラムの色がおかしい。(#08755, v0.258, ICEknight)
+
+
 - Bouldermarkスコアがウソな感じ。(#06950, v0.196, kazblox)
 $end
 
@@ -3792,6 +3812,13 @@ $mame
 【バグ】
 
 - Clownのイントロで映像と音声が合わない。(#07093, v0.201, MetalGod)
+$end
+
+$info=carnival
+$mame
+【バグ】
+
+- 最後のパイプの色がおかしい。(#08761, v0.258, manokori)
 $end
 
 $info=cascade
@@ -4374,6 +4401,9 @@ $end
 $info=ct486
 $mame
 【バグ】
+
+- MS-DOS 6.22のセットアップディスクを起動しようとするとフリーズする。(#08767, v0.258, Davidian1024)
+
 
 - スピーチサウンドが遅れる、または途切れる。(#07732, v0.223, ArcadeShadow)
 
@@ -6867,6 +6897,13 @@ $mame
 - [バグかもね] ムチで敵を打つと敵が上に表示される。(#01150, v0.100u2, 担当: Robbbert)
 $end
 
+$info=indy_4610
+$mame
+【バグ】
+
+- ネットワーク設定でIRIX 6.2をロードしようとするとMAMEがクラッシュする。(#08752, v0.258, Hirudov)
+$end
+
 $info=intlc440
 $mame
 【バグ】
@@ -8737,6 +8774,13 @@ $mame
 - ドライバが多分違う。(#07403, v0.209, mdqgames)
 $end
 
+$info=nightstr
+$mame
+【バグ】
+
+- 参照用のVHS録画映像。(#08773, v0.259, Cow)
+$end
+
 $info=ninjaw
 $mame
 【バグ】
@@ -9278,6 +9322,13 @@ $mame
 - コースBをクリアするとゲームが再起動する。(#06240, v0.174, Scagazza)
 $end
 
+$info=pencil2
+$mame
+【バグ】
+
+- 複数キー入力が認識されないのでTreasure Huntがプレイできない。(#08759, v0.258, Hirudov)
+$end
+
 $info=pengadvb
 $mame
 【バグ】
@@ -9642,62 +9693,6 @@ $mame
 【バグ】
 
 - 3曲で不具合がありプレイ出来ない。(#06088, v0.168, Nate123)
-$end
-
-$info=popn4
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
-$end
-
-$info=popn5
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
-$end
-
-$info=popn6
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
-$end
-
-$info=popn7
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
-$end
-
-$info=popn8
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
-$end
-
-$info=popnanm
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
-$end
-
-$info=popnanm2
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
-$end
-
-$info=popnmt
-$mame
-【バグ】
-
-- CHDのフォーマットが正しくない。(#07999, v0.232, gspat, 担当: windyfairy)
 $end
 
 $info=popnpop
@@ -11092,6 +11087,21 @@ $mame
 - ゲームを開始してハンドルに触れないでいると、最初のコーナーの途中にいきなりスキップする。(#05227, v0.149, sea7)
 $end
 
+$info=sharrier
+$mame
+【バグ】
+
+- [バグかもね] "You're doing great!"のサンプルが鳴らない。(#08770, v0.258, Cow)
+
+
+【実機の仕様・バグ】
+
+- Vの文字が化けている。グラフィックROMの吸い出し不良か。(#04450, v0.143, kunikuni)
+
+
+- イニシャル入力画面が表示されるとき、ハイスコア一覧が下からスクロールしてくるが、ゲーム中のスプライトの後ろに表示されてしまう。(#00996, v0.36rc2)
+$end
+
 $info=shimpact
 $mame
 【バグ】
@@ -11261,14 +11271,41 @@ $info=sms
 $mame
 【バグ】
 
+- 一部ゲームでBIOSにリセットしてしまう。(#08753, v0.258, ICEknight)
+
+
 - 表示領域が狭い。(#06892, v0.194, ICEknight)
+$end
+
+$info=sms1
+$mame
+【バグ】
+
+- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
+$end
+
+$info=sms1br
+$mame
+【バグ】
+
+- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
 $end
 
 $info=sms1pal
 $mame
 【バグ】
 
+- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
+
+
 - PAL版のアスペクト比が違う。(#08425, v0.247, ICEknight)
+$end
+
+$info=sms1paln
+$mame
+【バグ】
+
+- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
 $end
 
 $info=smspal
@@ -13046,6 +13083,13 @@ $mame
 - [バグかもね] 4面の終わりでゲームが進めなくなる。(#07612, v0.220, John_Nada)
 $end
 
+$info=ujlnow
+$mame
+【バグ】
+
+- Joe ChinがGuitar Tutorial画面に出てこない。(#08774, v0.259, danylopez123)
+$end
+
 $info=ultracin
 $mame
 【バグ】
@@ -13452,6 +13496,13 @@ $mame
 - [バグかもね] 信号のグラフィック順がおかしい。(#02746, v0.128u6, Scagazza)
 $end
 
+$info=wheelfir
+$mame
+【バグ】
+
+- [バグかもね] 'Player Number'と'Number of Players'を両方2に設定すると黒画面になる。(#08776, v0.259, Hydreigon)
+$end
+
 $info=wheelrun
 $mame
 【バグ】
@@ -13645,6 +13696,9 @@ $end
 $info=x68000
 $mame
 【バグ】
+
+- SCSIハードディスクをロードするとフロッピーが読めない。(#08751, v0.254, Wayder)
+
 
 - イジェクトしないでディスクを直接変えると認識しない。(#06953, v0.197, AriaOTP)
 $end
@@ -14842,6 +14896,13 @@ $mame
 - ボーナス面で、敵を40匹全て倒すとチャージが60発手に入る。しかし、赤い敵がボーナスに混じると合計が41匹になってボーナスがもらえない。(#01289, gregf)
 $end
 
+$info=exterm
+$mame
+【実機の仕様・バグ】
+
+- インストテキストのマスキングが不良。(#08765, v0.258, ICEknight)
+$end
+
 $info=f1dream
 $mame
 【実機の仕様・バグ】
@@ -16017,16 +16078,6 @@ $mame
 【実機の仕様・バグ】
 
 - シニアコースの2面でBGMが止まる。(#06938, v0.196, Kale)
-$end
-
-$info=sharrier
-$mame
-【実機の仕様・バグ】
-
-- Vの文字が化けている。グラフィックROMの吸い出し不良か。(#04450, v0.143, kunikuni)
-
-
-- イニシャル入力画面が表示されるとき、ハイスコア一覧が下からスクロールしてくるが、ゲーム中のスプライトの後ろに表示されてしまう。(#00996, v0.36rc2)
 $end
 
 $info=shinobi
