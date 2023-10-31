@@ -1,14 +1,5 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
-contextBridge.exposeInMainWorld("myApi", {
-  node: () => process.versions.node,
-  chrome: () => process.versions.chrome,
-  electron: () => process.versions.electron,
-  hamachi: "ぼくはまちちゃん",
-  api1: async (...args) => await ipcRenderer.invoke("channel_ichiri", ...args),
-  executeMAME: async (...args) => await ipcRenderer.invoke("executeMAME", ...args),
-});
-
 contextBridge.exposeInMainWorld("retrofireAPI", {
   executeMAME: async (args) => await ipcRenderer.invoke("execute-MAME", args),
   resetWindow: async (args) => await ipcRenderer.invoke("window-reset", args),
@@ -36,9 +27,13 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   nvcfgExists: async (args) => await ipcRenderer.invoke("nvcfg-exists", args),
   nvcfgDelete: async (args) => await ipcRenderer.invoke("nvcfg-delete", args),
 
+  // list.xml解析
+  parseListxml: async (args) => await ipcRenderer.invoke("parse-listxml", args),
+
   // デバッグメッセージ返す
   onDebugMessage: (callback) => ipcRenderer.on("debug-message", callback),
 
+  // focus
   onBlur: (callback) => ipcRenderer.on("blur", callback),
   onFocus: (callback) => ipcRenderer.on("focus", callback),
 });

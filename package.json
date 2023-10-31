@@ -26,6 +26,7 @@
     "electron-store": "^8.1.0",
     "glob": "^10.3.10",
     "image-size": "^1.0.2",
+    "node-xml-stream": "^1.0.2",
     "split.js": "^1.6.5",
     "update-electron-app": "^3.0.0",
     "validate-image-type": "^3.0.0"
