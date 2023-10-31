@@ -575,28 +575,265 @@ ipcMain.handle("nvcfg-delete", async (event, zipName) => {
 /**
  * list.xml 解析
  */
-ipcMain.handle("parse-listxml", async (event, data) => {
+//type TGameStatus = (gsGood, gsImperfect, gsPreliminary, gsUnknown);
+const GameStatus = { gsGood: 0, gsImperfect: 1, gsPreliminary: 2, gsUnknown: 3 };
+ipcMain.handle("parse-listxml", async (event, arg) => {
+  console.log("parse listxml");
   const parser = new Parser();
+  let version = "";
 
-  console.log("parse xml");
+  class ListInfo {
+    constructor() {
+      this.zipname = "";
+      this.desc = "";
+      this.maker = "";
+      this.year = "????";
+      this.cloneof = "";
+      this.masterid = -1;
+      this.master = true;
+      this.romof = "";
+      this.sampleof = "";
+      this.vector = false;
+      this.lightgun = false;
+      this.analog = false;
+      this.status = false;
+      this.driverstatus = GameStatus.gsUnknown; // 新規
+      this.channels = 0;
+      this.vertical = false;
+
+      this.cpu = "";
+      this.sounds = "--";
+      this.screens = "--";
+      this.numscreens = 0;
+      //this.Palettesize = 0; // TODO: 廃止
+      this.resx = 0;
+      this.resy = 0;
+      //this.ScanRate = 0; // TODO: 廃止
+
+      this.palette = GameStatus.gsUnknown; // color -> palette 改名
+      this.sound = GameStatus.gsUnknown;
+      this.graphics = GameStatus.gsUnknown; // gfx -> graphics 改名
+      this.protection = GameStatus.gsUnknown; // protect -> protection 改名
+      this.cocktail = GameStatus.gsUnknown;
+      this.savestate = GameStatus.gsUnknown;
+
+      this.source = "";
+      this.chd = "";
+      this.chdonly = true;
+      this.chdmerge = false;
+      this.ld = false;
+      this.chdnodump = false;
+      this.ismechanical = false;
+
+      this.softwarelist = [];
+    }
+  }
+
+  /*
+  type //
+    PListInfo = ^TListInfo;
+    TListInfo = record
+
+      ZipName : string;     // Zip名
+      DescE   : string;     // 英語名
+      Maker   : string;     // メーカー
+      Year    : string;     // 製造年
+
+      CloneOf : string;     // マスタ名
+      MasterID: integer;    // マスタのID
+      Master  : boolean;    // マスタ
+
+      RomOf   : string;     //  RomOf
+
+      SampleOf: string;     // サンプル名
+
+      Vector  : boolean;    // ベクター
+      LightGun: boolean;    // 光線銃
+      Analog  : boolean;    // アナログ操作
+      Status  : boolean;    // ステータス Good=True
+      Channels: integer;    // サウンドチャンネル数
+      Vertical: boolean;    // 縦画面
+
+      CPUs    : string;     // CPUs
+      Sounds  : string;     // Sound chips
+      Screens : string;     // 画面情報
+      NumScreens: integer;  // 画面数
+      Palettesize :integer; // 色数
+      ResX    : Word;       // 解像度X
+      ResY    : Word;       // 解像度Y
+      ScanRate: string;     // スキャンレート
+      Color   : TGameStatus;// 色ステータス
+      Sound   : TGameStatus;// 音ステータス
+      GFX     : TGameStatus;// GFXステータス
+      Protect : TGameStatus;// プロテクトステータス
+      Cocktail: TGameStatus;// カクテルステータス
+      SaveState:TGameStatus;// セーブステート
+      Source  : string;     // ソースファイル
+      CHD     : string;     // CHD
+      CHDOnly : boolean;    // CHDのみのゲーム
+      CHDMerge: boolean;    // CHDのマージ指定あり
+      LD      : boolean;    // レーザーディスク
+      CHDNoDump: boolean;   // CHD未吸い出し
+      isMechanical: boolean;// メカニカルゲーム
+
+      Flag    : boolean;    // 汎用
+  end;
+*/
+
+  let currentTag = ""; //
+  let newItem;
+
   // 開始タグが見つかった
-  //parser.on("opentag", (name, attrs) => console.log(`${name} has opened`));
-  parser.on("opentag", (name, attrs) => {});
+  parser.on("opentag", (name, attrs) => {
+    switch (name) {
+      case "mame": {
+        version = attrs.build;
+        break;
+      }
+      case "machine": {
+        newItem = new ListInfo();
+        if (attrs.name) newItem.zipname = attrs.name; // zipname
+        if (attrs.cloneof) newItem.cloneof = attrs.cloneof;
+        if (attrs.romof) newItem.romof = attrs.romof;
+        if (attrs.sampleof) newItem.cloneof = attrs.sampleof;
+        if (attrs.sourcefile) newItem.source = attrs.sourcefile; // source
+        if (attrs.ismechanical) newItem.ismechanical = attrs.ismechanical === "yes";
+        break;
+      }
+      case "description": {
+        currentTag = "description";
+        break;
+      }
+      case "year": {
+        currentTag = "year";
+        break;
+      }
+      case "manufacturer": {
+        currentTag = "manufacturer";
+        break;
+      }
+      case "sound": {
+        newItem.channels = parseInt(attrs.channels);
+        break;
+      }
+      case "disk": {
+        newItem.chd = attrs.name;
+        if (attrs.merge) newItem.chdmerge = true;
+        if (attrs.status) newItem.chdnodump = attrs.status === "nodump";
+        if (attrs.region) newItem.ld = attrs.region === "laserdisc";
+        break;
+      }
+      case "control": {
+        if (attrs.type) newItem.lightgun = attrs.type === "lightgun";
+        if (attrs.minimum) newItem.analog = true;
+        break;
+      }
+      case "softwarelist": {
+        newItem.softwarelist.push({ tag: attrs.tag, name: attrs.name });
+        break;
+      }
+      case "driver": {
+        newItem.status = attrs.status === "good";
+
+        switch (newItem.status) {
+          case "good":
+            newItem.driverstatus = GameStatus.gsGood;
+            break;
+          case "imperfect":
+            newItem.driverstatus = GameStatus.gsImperfect;
+            break;
+          case "preliminary":
+            newItem.driverstatus = GameStatus.gsPreliminary;
+            break;
+        }
+
+        if (attrs.savestate) {
+          switch (newItem.status) {
+            case "supported":
+              newItem.savestate = GameStatus.gsGood;
+              break;
+            case "unsupported":
+              newItem.savestate = GameStatus.gsPreliminary;
+              break;
+          }
+        }
+
+        break;
+      }
+      case "feature": {
+        if (attrs.sound) {
+          if (attrs.sound === "unemulated") newItem.sound = GameStatus.gsPreliminary;
+          else if (attrs.sound === "imperfect") newItem.sound = GameStatus.gsImperfect;
+        }
+        if (attrs.graphics) {
+          if (attrs.graphics === "unemulated") newItem.graphics = GameStatus.gsPreliminary;
+          else if (attrs.graphics === "imperfect") newItem.graphics = GameStatus.gsImperfect;
+        }
+        if (attrs.protection) {
+          if (attrs.protection === "unemulated") newItem.protection = GameStatus.gsPreliminary;
+          else if (attrs.protection === "imperfect") newItem.protection = GameStatus.gsImperfect;
+        }
+        if (attrs.palette) {
+          if (attrs.palette === "unemulated") newItem.palette = GameStatus.gsPreliminary;
+          else if (attrs.palette === "imperfect") newItem.palette = GameStatus.gsImperfect;
+        }
+        break;
+      }
+      default: {
+      }
+    }
+  });
 
   // 終了タグが見つかった
-  //parser.on("closetag", (name) => console.log(`${name} has closed`));
-  parser.on("closetag", (name) => {});
+  parser.on("closetag", (name) => {
+    switch (name) {
+      case "machine": {
+        //console.log(newItem);
+        console.log(newItem.zipname);
+        break;
+      }
+      case "description": {
+        currentTag = "";
+        break;
+      }
+      case "year": {
+        currentTag = "";
+        break;
+      }
+      case "manufacturer": {
+        currentTag = "";
+        break;
+      }
+    }
+  });
 
   // テキストが見つかった
-  //parser.on("text", (text) => console.log(text));
-  parser.on("text", (text) => {});
-
-  parser.on("error", (err) => {
-    // Handle a parsing error
+  parser.on("text", (text) => {
+    switch (currentTag) {
+      case "description": {
+        newItem.desc = text;
+        break;
+      }
+      case "year": {
+        newItem.year = text;
+        break;
+      }
+      case "manufacturer": {
+        newItem.maker = text;
+        break;
+      }
+    }
   });
 
   // 読み込みが完了した
-  parser.on("finish", () => console.log("finish!"));
+  parser.on("finish", () => {
+    console.log("finish!");
+  });
+
+  // error
+  parser.on("error", (err) => {
+    console.log(err);
+  });
 
   // Streamとパーサーを接続してファイルを読み込んでいく
   const stream = fs.createReadStream("./temp/list.xml");

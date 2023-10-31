@@ -516,6 +516,8 @@ async function onLoad() {
 
   document.querySelector("#btn-item2").addEventListener("click", async () => {
     let res = await window.retrofireAPI.parseListxml();
+
+    console.log(window.retrofireAPI.parseListxml(""));
   });
 
   // 検索欄入力イベント
