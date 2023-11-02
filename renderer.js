@@ -516,8 +516,7 @@ async function onLoad() {
 
   document.querySelector("#btn-item2").addEventListener("click", async () => {
     let res = await window.retrofireAPI.parseListxml();
-
-    console.log(window.retrofireAPI.parseListxml(""));
+    console.log(res);
   });
 
   // 検索欄入力イベント
@@ -930,7 +929,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
         // ファミリ抽出
         dataSubTable = [masterId];
         for (let i = 0; i < Dataset.master.length; i++) {
-          if (Dataset.master[i].masterid === masterId && Dataset.master[i].master === 0) {
+          if (Dataset.master[i].masterid === masterId && Dataset.master[i].master) {
             dataSubTable.push(i);
           }
         }

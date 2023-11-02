@@ -33,6 +33,8 @@ const MAIN_FORM_DEFAULT = {
   height: 980,
 };
 
+const PATH_LISTXML = "./temp/list.xml";
+
 //-------------------------------------------------------------------
 // 変数
 //-------------------------------------------------------------------
@@ -575,12 +577,26 @@ ipcMain.handle("nvcfg-delete", async (event, zipName) => {
 /**
  * list.xml 解析
  */
-//type TGameStatus = (gsGood, gsImperfect, gsPreliminary, gsUnknown);
 const GameStatus = { gsGood: 0, gsImperfect: 1, gsPreliminary: 2, gsUnknown: 3 };
+
 ipcMain.handle("parse-listxml", async (event, arg) => {
-  console.log("parse listxml");
+  sendDebug("list.xml 解析準備");
+
+  // ファイルチェック
+  if (fs.existsSync(PATH_LISTXML) === false) {
+    sendDebug("list.xml 解析失敗：ファイルなし");
+    return { result: false, error: "list.xml was not found." };
+  }
+  const stat = fs.statSync(PATH_LISTXML);
+  if (stat.size < 200000000) {
+    sendDebug("list.xml 解析失敗：ファイル無効");
+    return { result: false, error: "list.xml file is too small." };
+  }
+
   const parser = new Parser();
   let version = "";
+
+  const listInfos = [];
 
   class ListInfo {
     constructor() {
@@ -601,7 +617,7 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
       this.channels = 0;
       this.vertical = false;
 
-      this.cpu = "";
+      this.cpus = "";
       this.sounds = "--";
       this.screens = "--";
       this.numscreens = 0;
@@ -626,6 +642,9 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
       this.ismechanical = false;
 
       this.softwarelist = [];
+      this.cpuList = [];
+      this.soundList = [];
+      this.screenList = [];
     }
   }
 
@@ -682,6 +701,7 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
 
   let currentTag = ""; //
   let newItem;
+  let inMachine = false;
 
   // 開始タグが見つかった
   parser.on("opentag", (name, attrs) => {
@@ -691,95 +711,181 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
         break;
       }
       case "machine": {
-        newItem = new ListInfo();
-        if (attrs.name) newItem.zipname = attrs.name; // zipname
-        if (attrs.cloneof) newItem.cloneof = attrs.cloneof;
-        if (attrs.romof) newItem.romof = attrs.romof;
-        if (attrs.sampleof) newItem.cloneof = attrs.sampleof;
-        if (attrs.sourcefile) newItem.source = attrs.sourcefile; // source
-        if (attrs.ismechanical) newItem.ismechanical = attrs.ismechanical === "yes";
-        break;
-      }
-      case "description": {
-        currentTag = "description";
-        break;
-      }
-      case "year": {
-        currentTag = "year";
-        break;
-      }
-      case "manufacturer": {
-        currentTag = "manufacturer";
-        break;
-      }
-      case "sound": {
-        newItem.channels = parseInt(attrs.channels);
-        break;
-      }
-      case "disk": {
-        newItem.chd = attrs.name;
-        if (attrs.merge) newItem.chdmerge = true;
-        if (attrs.status) newItem.chdnodump = attrs.status === "nodump";
-        if (attrs.region) newItem.ld = attrs.region === "laserdisc";
-        break;
-      }
-      case "control": {
-        if (attrs.type) newItem.lightgun = attrs.type === "lightgun";
-        if (attrs.minimum) newItem.analog = true;
-        break;
-      }
-      case "softwarelist": {
-        newItem.softwarelist.push({ tag: attrs.tag, name: attrs.name });
-        break;
-      }
-      case "driver": {
-        newItem.status = attrs.status === "good";
-
-        switch (newItem.status) {
-          case "good":
-            newItem.driverstatus = GameStatus.gsGood;
-            break;
-          case "imperfect":
-            newItem.driverstatus = GameStatus.gsImperfect;
-            break;
-          case "preliminary":
-            newItem.driverstatus = GameStatus.gsPreliminary;
-            break;
+        if (!attrs.runnable && !attrs.isbios) {
+          inMachine = true;
+          newItem = new ListInfo();
+          listInfos.push(newItem);
+          if (attrs.name) newItem.zipname = attrs.name; // zipname
+          if (attrs.cloneof) {
+            newItem.cloneof = attrs.cloneof;
+            newItem.master = false;
+          }
+          if (attrs.romof) newItem.romof = attrs.romof;
+          if (attrs.sampleof) newItem.cloneof = attrs.sampleof;
+          if (attrs.sourcefile) newItem.source = attrs.sourcefile; // source
+          if (attrs.ismechanical) newItem.ismechanical = attrs.ismechanical === "yes";
         }
+        break;
+      }
+    }
 
-        if (attrs.savestate) {
+    // machineタグ内だけ拾う
+    if (inMachine) {
+      switch (name) {
+        case "description": {
+          currentTag = "description";
+          break;
+        }
+        case "year": {
+          currentTag = "year";
+          break;
+        }
+        case "manufacturer": {
+          currentTag = "manufacturer";
+          break;
+        }
+        case "rom": {
+          if (newItem.chdonly && !attrs.hasOwnProperty("merge")) {
+            newItem.chdonly = false;
+          }
+          break;
+        }
+        case "sound": {
+          newItem.channels = parseInt(attrs.channels);
+          break;
+        }
+        case "disk": {
+          newItem.chd = attrs.name;
+          if (attrs.merge) newItem.chdmerge = true;
+          if (attrs.status) newItem.chdnodump = attrs.status === "nodump";
+          if (attrs.region) newItem.ld = attrs.region === "laserdisc";
+          break;
+        }
+        case "control": {
+          if (attrs.type) newItem.lightgun = attrs.type === "lightgun";
+          if (attrs.minimum) newItem.analog = true;
+          break;
+        }
+        case "softwarelist": {
+          newItem.softwarelist.push({ tag: attrs.tag, name: attrs.name });
+          break;
+        }
+        case "driver": {
+          newItem.status = attrs.status === "good";
+
           switch (newItem.status) {
-            case "supported":
-              newItem.savestate = GameStatus.gsGood;
+            case "good":
+              newItem.driverstatus = GameStatus.gsGood;
               break;
-            case "unsupported":
-              newItem.savestate = GameStatus.gsPreliminary;
+            case "imperfect":
+              newItem.driverstatus = GameStatus.gsImperfect;
+              break;
+            case "preliminary":
+              newItem.driverstatus = GameStatus.gsPreliminary;
               break;
           }
-        }
 
-        break;
-      }
-      case "feature": {
-        if (attrs.sound) {
-          if (attrs.sound === "unemulated") newItem.sound = GameStatus.gsPreliminary;
-          else if (attrs.sound === "imperfect") newItem.sound = GameStatus.gsImperfect;
+          if (attrs.savestate) {
+            switch (newItem.status) {
+              case "supported":
+                newItem.savestate = GameStatus.gsGood;
+                break;
+              case "unsupported":
+                newItem.savestate = GameStatus.gsPreliminary;
+                break;
+            }
+          }
+
+          if (attrs.cocktail) {
+            if (attrs.cocktail === "preliminary") newItem.cocktail = GameStatus.gsPreliminary;
+          }
+
+          break;
         }
-        if (attrs.graphics) {
-          if (attrs.graphics === "unemulated") newItem.graphics = GameStatus.gsPreliminary;
-          else if (attrs.graphics === "imperfect") newItem.graphics = GameStatus.gsImperfect;
+        case "feature": {
+          if (attrs.sound) {
+            if (attrs.sound === "unemulated") newItem.sound = GameStatus.gsPreliminary;
+            else if (attrs.sound === "imperfect") newItem.sound = GameStatus.gsImperfect;
+          }
+          if (attrs.graphics) {
+            if (attrs.graphics === "unemulated") newItem.graphics = GameStatus.gsPreliminary;
+            else if (attrs.graphics === "imperfect") newItem.graphics = GameStatus.gsImperfect;
+          }
+          if (attrs.protection) {
+            if (attrs.protection === "unemulated") newItem.protection = GameStatus.gsPreliminary;
+            else if (attrs.protection === "imperfect") newItem.protection = GameStatus.gsImperfect;
+          }
+          if (attrs.palette) {
+            if (attrs.palette === "unemulated") newItem.palette = GameStatus.gsPreliminary;
+            else if (attrs.palette === "imperfect") newItem.palette = GameStatus.gsImperfect;
+          }
+          break;
         }
-        if (attrs.protection) {
-          if (attrs.protection === "unemulated") newItem.protection = GameStatus.gsPreliminary;
-          else if (attrs.protection === "imperfect") newItem.protection = GameStatus.gsImperfect;
+        case "chip": {
+          switch (attrs.type) {
+            case "cpu": {
+              let st = attrs.name;
+              let clock = parseInt(attrs.clock);
+              if (clock < 1000000) {
+                st += " @ " + clock / 1000 + " KHz";
+              } else {
+                st += " @ " + clock / 1000000 + " MHz";
+              }
+              if (attrs.tag && attrs.tag !== "") {
+                st += " (" + attrs.tag + ")";
+              }
+              newItem.cpuList.push(st);
+              break;
+            }
+            case "audio": {
+              if (attrs.name.slice(-1) === "/") {
+                attrs.name = attrs.name.slice(0, -1);
+              }
+              if (attrs.name !== "Speaker") {
+                let st = attrs.name;
+                if (attrs.clock) {
+                  let clock = parseInt(attrs.clock);
+                  if (clock < 1000000) {
+                    st += " @ " + clock / 1000 + " KHz";
+                  } else {
+                    st += " @ " + clock / 1000000 + " MHz";
+                  }
+                }
+                newItem.soundList.push(st);
+                break;
+              }
+              break;
+            }
+          }
+          break;
         }
-        if (attrs.palette) {
-          if (attrs.palette === "unemulated") newItem.palette = GameStatus.gsPreliminary;
-          else if (attrs.palette === "imperfect") newItem.palette = GameStatus.gsImperfect;
+        case "display": {
+          let w, h, r;
+          if (attrs.type && attrs.type === "vector") newItem.vector = true;
+
+          if (attrs.rotate && (attrs.rotate === "90" || attrs.rotate === "270")) {
+            newItem.vertical = true;
+            w = parseInt(attrs.height);
+            h = parseInt(attrs.width);
+          } else {
+            w = parseInt(attrs.width);
+            h = parseInt(attrs.height);
+          }
+          r = parseFloat(attrs.refresh);
+
+          if (newItem.vector) {
+            newItem.screenList.push("Vector @ " + r + " Hz");
+          } else {
+            newItem.screenList.push(w + "x" + h + " @ " + r + " Hz");
+          }
+          if (newItem.resx === 0) {
+            newItem.resx = w;
+            newItem.resy = h;
+          }
+          newItem.numscreens++;
         }
-        break;
-      }
-      default: {
+        default: {
+        }
       }
     }
   });
@@ -788,8 +894,96 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
   parser.on("closetag", (name) => {
     switch (name) {
       case "machine": {
-        //console.log(newItem);
-        console.log(newItem.zipname);
+        if (inMachine) {
+          inMachine = false; // <machine></machine>ぬけた
+
+          // CPUまとめ
+          // tag があるので現在はすべてユニーク
+          let count = {};
+          for (let i = 0; i < newItem.cpuList.length; i++) {
+            let elm = newItem.cpuList[i];
+            count[elm] = (count[elm] || 0) + 1;
+          }
+
+          let items = [];
+          for (let key in count) {
+            if (count[key] === 1) {
+              items.push(key);
+            } else {
+              items.push(count[key] + " x " + key);
+            }
+          }
+          newItem.cpus = items.join("<br>");
+          /*          newItem.cpus.replace("&quot;", '"');
+          newItem.cpus.replace("&amp;", "&");
+          newItem.cpus.replace("&lt;", "<");
+          newItem.cpus.replace("&gt;", ">");
+          */
+          // Soundsまとめ
+          count = {};
+          for (let i = 0; i < newItem.soundList.length; i++) {
+            let elm = newItem.soundList[i];
+            count[elm] = (count[elm] || 0) + 1;
+          }
+
+          items = [];
+          for (let key in count) {
+            if (count[key] === 1) {
+              items.push(key);
+            } else {
+              items.push(count[key] + " x " + key);
+            }
+          }
+          newItem.sounds = items.join("<br>");
+          /*
+          newItem.sounds.replace("&quot;", '"');
+          newItem.sounds.replace("&amp;", "&");
+          newItem.sounds.replace("&lt;", "<");
+          newItem.sounds.replace("&gt;", ">");
+          */
+
+          // Screens まとめ
+          count = {};
+          for (let i = 0; i < newItem.screenList.length; i++) {
+            let elm = newItem.screenList[i];
+            count[elm] = (count[elm] || 0) + 1;
+          }
+
+          items = [];
+          for (let key in count) {
+            if (count[key] === 1) {
+              items.push(key);
+            } else {
+              items.push(count[key] + " x " + key);
+            }
+          }
+
+          if (newItem.vector) {
+            newItem.screens = "ベクタ, ";
+          } else {
+            newItem.screens = "ラスタ, ";
+          }
+
+          if (newItem.vertical) {
+            newItem.screens += "縦表示, ";
+          } else {
+            newItem.screens += "横表示, ";
+          }
+
+          if (newItem.numscreens > 0) {
+            newItem.screens += newItem.numscreens + "画面";
+          } else {
+            newItem.screens = "--";
+          }
+
+          newItem.screens += "<br>" + items.join(", ");
+        }
+
+        // 節約
+        delete newItem.cpuList;
+        delete newItem.soundList;
+        delete newItem.screenList;
+
         break;
       }
       case "description": {
@@ -809,33 +1003,58 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
 
   // テキストが見つかった
   parser.on("text", (text) => {
-    switch (currentTag) {
-      case "description": {
-        newItem.desc = text;
-        break;
-      }
-      case "year": {
-        newItem.year = text;
-        break;
-      }
-      case "manufacturer": {
-        newItem.maker = text;
-        break;
+    if (inMachine) {
+      switch (currentTag) {
+        case "description": {
+          newItem.desc = text;
+          break;
+        }
+        case "year": {
+          newItem.year = text;
+          break;
+        }
+        case "manufacturer": {
+          newItem.maker = text;
+          if (newItem.maker === "unknown") {
+            newItem.maker = "<unknown>";
+          } else if (newItem.maker === "(bootleg)") {
+            newItem.maker = "bootleg";
+          }
+          break;
+        }
       }
     }
   });
 
   // 読み込みが完了した
-  parser.on("finish", () => {
-    console.log("finish!");
+  parser.on("finish", async () => {
+    console.log("XML parse completed.");
+
+    // マスタ ID の検索
+    console.log("Finding Master IDs");
+    for (let i = 0; i < listInfos.length; i++) {
+      if (!listInfos[i].master) {
+        const cloneof = listInfos[i].cloneof;
+        let masterid = listInfos.findIndex((item) => item.zipname === cloneof);
+        if (masterid !== -1) listInfos[i].masterid = masterid;
+      }
+    }
+    //
+    console.log("Writing a file.");
+    fs.writeFileSync("./temp/resource.json", JSON.stringify(listInfos, null, 1));
+    sendDebug("resource.json 出力完了");
   });
 
   // error
   parser.on("error", (err) => {
     console.log(err);
+    return { result: false, error: "xml parser error: " + err };
   });
 
   // Streamとパーサーを接続してファイルを読み込んでいく
-  const stream = fs.createReadStream("./temp/list.xml");
+  const stream = fs.createReadStream(PATH_LISTXML);
   stream.pipe(parser);
+  sendDebug("list.xml 解析開始");
+  console.log("after pipe");
+  return { result: true };
 });
