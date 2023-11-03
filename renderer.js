@@ -1,6 +1,8 @@
 "use strict";
 
 const APPNAME = "Retrofire Neo";
+const GameStatus = { gsGood: 0, gsImperfect: 1, gsPreliminary: 2, gsUnknown: 3 }; // enum
+
 let listViewMain; // メインリストビュー
 let listViewSub;
 
@@ -929,7 +931,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
         // ファミリ抽出
         dataSubTable = [masterId];
         for (let i = 0; i < Dataset.master.length; i++) {
-          if (Dataset.master[i].masterid === masterId && Dataset.master[i].master) {
+          if (Dataset.master[i].masterid === masterId) {
             dataSubTable.push(i);
           }
         }
