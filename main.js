@@ -721,7 +721,7 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
             newItem.master = false;
           }
           if (attrs.romof) newItem.romof = attrs.romof;
-          if (attrs.sampleof) newItem.cloneof = attrs.sampleof;
+          if (attrs.sampleof) newItem.sampleof = attrs.sampleof;
           if (attrs.sourcefile) newItem.source = attrs.sourcefile; // source
           if (attrs.ismechanical) newItem.ismechanical = attrs.ismechanical === "yes";
         }
@@ -972,11 +972,10 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
 
           if (newItem.numscreens > 0) {
             newItem.screens += newItem.numscreens + "画面";
+            newItem.screens += "<br>" + items.join(", ");
           } else {
             newItem.screens = "--";
           }
-
-          newItem.screens += "<br>" + items.join(", ");
         }
 
         // 節約
@@ -1037,6 +1036,8 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
         const cloneof = listInfos[i].cloneof;
         let masterid = listInfos.findIndex((item) => item.zipname === cloneof);
         if (masterid !== -1) listInfos[i].masterid = masterid;
+      } else {
+        listInfos[i].masterid = i;
       }
     }
     //

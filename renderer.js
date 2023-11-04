@@ -912,7 +912,9 @@ async function itemSelectHandler(argDataIndex, argZipName) {
 
   const masterId = Dataset.master[argDataIndex].masterid;
 
-  if (masterId !== -1) {
+  if (masterId === -1) {
+    masterZip = Dataset.master[argDataIndex].zipname;
+  } else {
     masterZip = Dataset.master[masterId].zipname;
   }
 
@@ -931,7 +933,7 @@ async function itemSelectHandler(argDataIndex, argZipName) {
         // ファミリ抽出
         dataSubTable = [masterId];
         for (let i = 0; i < Dataset.master.length; i++) {
-          if (Dataset.master[i].masterid === masterId) {
+          if (Dataset.master[i].master === false && Dataset.master[i].masterid === masterId) {
             dataSubTable.push(i);
           }
         }
