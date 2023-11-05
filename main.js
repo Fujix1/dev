@@ -771,8 +771,12 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
           break;
         }
         case "driver": {
+          for (const prop in attrs) {
+            if (attrs[prop].slice(-1) === "/") {
+              attrs[prop] = attrs[prop].slice(0, -1);
+            }
+          }
           newItem.status = attrs.status === "good";
-
           switch (newItem.status) {
             case "good":
               newItem.driverstatus = GameStatus.gsGood;
@@ -786,7 +790,10 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
           }
 
           if (attrs.savestate) {
-            switch (newItem.status) {
+            if (attrs.savestate.slice(-1) === "/") {
+              attrs.savestate = attrs.savestate.slice(0, -1);
+            }
+            switch (attrs.savestate) {
               case "supported":
                 newItem.savestate = GameStatus.gsGood;
                 break;
@@ -799,29 +806,53 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
           if (attrs.cocktail) {
             if (attrs.cocktail === "preliminary") newItem.cocktail = GameStatus.gsPreliminary;
           }
+          break;
+        }
+
+        case "feature": {
+          for (const prop in attrs) {
+            if (attrs[prop].slice(-1) === "/") {
+              attrs[prop] = attrs[prop].slice(0, -1);
+            }
+          }
+
+          let status;
+          switch (attrs.status) {
+            case "unemulated":
+              status = GameStatus.gsPreliminary;
+              break;
+            case "imperfect":
+              status = GameStatus.gsImperfect;
+              break;
+          }
+
+          switch (attrs.type) {
+            case "sound": {
+              newItem.sound = status;
+              break;
+            }
+            case "graphics": {
+              newItem.graphics = status;
+              break;
+            }
+            case "protection": {
+              newItem.protection = status;
+              break;
+            }
+            case "palette": {
+              newItem.palette = status;
+              break;
+            }
+          }
 
           break;
         }
-        case "feature": {
-          if (attrs.sound) {
-            if (attrs.sound === "unemulated") newItem.sound = GameStatus.gsPreliminary;
-            else if (attrs.sound === "imperfect") newItem.sound = GameStatus.gsImperfect;
-          }
-          if (attrs.graphics) {
-            if (attrs.graphics === "unemulated") newItem.graphics = GameStatus.gsPreliminary;
-            else if (attrs.graphics === "imperfect") newItem.graphics = GameStatus.gsImperfect;
-          }
-          if (attrs.protection) {
-            if (attrs.protection === "unemulated") newItem.protection = GameStatus.gsPreliminary;
-            else if (attrs.protection === "imperfect") newItem.protection = GameStatus.gsImperfect;
-          }
-          if (attrs.palette) {
-            if (attrs.palette === "unemulated") newItem.palette = GameStatus.gsPreliminary;
-            else if (attrs.palette === "imperfect") newItem.palette = GameStatus.gsImperfect;
-          }
-          break;
-        }
         case "chip": {
+          for (const prop in attrs) {
+            if (attrs[prop].slice(-1) === "/") {
+              attrs[prop] = attrs[prop].slice(0, -1);
+            }
+          }
           switch (attrs.type) {
             case "cpu": {
               let st = attrs.name;
@@ -838,9 +869,6 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
               break;
             }
             case "audio": {
-              if (attrs.name.slice(-1) === "/") {
-                attrs.name = attrs.name.slice(0, -1);
-              }
               if (attrs.name !== "Speaker") {
                 let st = attrs.name;
                 if (attrs.clock) {
