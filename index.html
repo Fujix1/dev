@@ -27,14 +27,14 @@
            
           </div>
         </div>
-        <div class="l-splitter l-splitter__v" splitter-id ="tree" anchor=".l-tree"></div>
+        <div class="l-splitter l-splitter__v" splitter-id ="tree" anchor=".l-tree">
+
+        </div>
         <div class="l-stage">
           <div class="l-head">
             <div class="l-head__item">
-              <input type="checkbox" id="language" class="m-checkbox m-checkbox__language"><label for="language"
-                tooltip="言語切替 (F12)">言語</label>
-            </div>
-          
+              <input type="checkbox" id="language" class="m-checkbox m-checkbox__language"><label for="language" tooltip="言語切替 (F12)">言語</label>
+            </div>          
             <div class="l-head__item">
               <div class="p-search">
                 <div class="p-search__dropbox">
@@ -63,7 +63,6 @@
                 <div class="p-search__clear" tooltip="クリア(ESC)" id="clear">&#xe75c</div>
               </div>
             </div>
-          
           </div>
           <div class="l-main">
             <div class="l-main__upper">
@@ -73,21 +72,40 @@
               </div>
             </div>
             <div class="l-splitter l-splitter__h" splitter-id="bottom" anchor=".l-main__bottom"></div>
-              <div class="l-main__bottom" style="min-height: 10%; max-height: 80%;">
-                <div class="l-test">
-                  <p>
-                    <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button><button type="button"
-                      id="btn-reset" tooltip="リセットします">リセット</button>
-                    <button type="button" id="btn-dialog">ダイアログ</button>
-                    <button type="button" id="btn-item2">list.xml</button>
-                    <button type="button" id="btn-item2">parsexml</button>
-                  </p>
+            <div class="l-main__bottom" style="min-height: 20%; max-height: 80%;">
+
+              <div class="m-tab">
+                <div class="m-tab__labels">
+                  <label class="m-tab__label m-tab__label--family">
+                    <input type="radio" name="m-tab__bottom" class="m-tab__radio" chekced value="0"><span>Set Family</span>
+                  </label>
+                  <label class="m-tab__label m-tab__label--softlist">
+                    <input type="radio" name="m-tab__bottom" class="m-tab__radio" chekced value="1"><span>Software List</span>
+                  </label>
                 </div>
-                <div class="l-list" tabindex="-1">
-                  <div class="list-sub" tabindex="0">
+                <div class="m-tab__contents">
+                  <div class="m-tab__content">
+                    <div class="l-test">
+                      <p>
+                        <button type="button" class="" id="test3" value="pc8801mk2sr">pc8801mk2sr</button>
+                        <button type="button" id="btn-reset" tooltip="リセットします">リセット</button>
+                        <button type="button" id="btn-dialog">ダイアログ</button>
+                        <button type="button" id="btn-item2">list.xml</button>
+                      </p>
+                    </div>
+                    <div class="l-list" tabindex="-1">
+                      <div class="list-sub" tabindex="0">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="m-tab__content">
+                    b
                   </div>
                 </div>
+              </div>
+
               <textarea class="debug" id="debug" readonly></textarea>
+
             </div>
           </div>
         </div>

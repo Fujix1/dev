@@ -2492,7 +2492,7 @@ template {
   --cl-title--text: #aaa;
   --cl-control-bg: #1c1e22;
   --cl-tab--bg: #17181a;
-  --cl-tab-content--bg: #1f2124;
+  --cl-tab-content--bg: #232326;
   --cl-tab-text--disabled: #444;
   --cl-scrollbar-track: #393b3b;
   --cl-scrollbar-thumb: #7a8083;
@@ -3219,6 +3219,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-direction: column;
   width: 100%;
   background: var(--cl-tab--bg);
+  flex-grow: 1;
 }
 .m-tab__labels {
   height: 45px;

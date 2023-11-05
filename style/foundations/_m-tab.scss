@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   background: var(--cl-tab--bg);
+  flex-grow: 1;
 
   &__labels {
     height: 45px;
