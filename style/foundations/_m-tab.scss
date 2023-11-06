@@ -62,20 +62,22 @@
     display: none;
   }
   &__contents {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
     overflow: hidden;
+    position: relative;
+    flex-grow: 1;
   }
   &__content {
-    //display: none;
-    position: relative;
     z-index: -1;
     color: var(--cl-text);
     background-color: var(--cl-tab-content--bg);
     flex-grow: 1;
     flex-direction: column;
     overflow: hidden;
-    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
   }
 }
