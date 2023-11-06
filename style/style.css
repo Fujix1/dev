@@ -2510,7 +2510,7 @@ template {
   --cl-title--text: #aaa;
   --cl-control-bg: #1c1e22;
   --cl-tab--bg: #17181a;
-  --cl-tab-content--bg: #1f2124;
+  --cl-tab-content--bg: #232326;
   --cl-tab-text--disabled: #444;
   --cl-scrollbar-track: #393b3b;
   --cl-scrollbar-thumb: #7a8083;
@@ -3237,6 +3237,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-direction: column;
   width: 100%;
   background: var(--cl-tab--bg);
+  flex-grow: 1;
 }
 .m-tab__labels {
   height: 45px;
@@ -3252,9 +3253,11 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-tab__labels:has(label:nth-of-type(1) > input:checked) ~ .m-tab__contents > .m-tab__content:nth-of-type(1) {
   display: flex;
+  z-index: 0;
 }
 .m-tab__labels:has(label:nth-of-type(2) > input:checked) ~ .m-tab__contents > .m-tab__content:nth-of-type(2) {
   display: flex;
+  z-index: 0;
 }
 .m-tab__labels:hover {
   border-bottom-color: var(--cl-listheader-hover);
@@ -3297,7 +3300,8 @@ input[type=search]::-webkit-search-results-decoration {
   overflow: hidden;
 }
 .m-tab__content {
-  display: none;
+  position: relative;
+  z-index: -1;
   color: var(--cl-text);
   background-color: var(--cl-tab-content--bg);
   flex-grow: 1;
