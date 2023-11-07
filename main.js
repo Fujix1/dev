@@ -34,6 +34,7 @@ const MAIN_FORM_DEFAULT = {
 };
 
 const PATH_LISTXML = "./temp/list.xml";
+const PATH_LISTSOFT = "./temp/listsoft.xml";
 
 //-------------------------------------------------------------------
 // 変数
@@ -575,6 +576,185 @@ ipcMain.handle("nvcfg-delete", async (event, zipName) => {
 });
 
 /**
+ * listsoft.xml 解析
+ */
+ipcMain.handle("parse-listsoft", async (event, arg) => {
+  sendDebug("listsoft.xml 解析準備");
+
+  // ファイルチェック
+  if (fs.existsSync(PATH_LISTSOFT) === false) {
+    sendDebug("listsoft.xml 解析失敗：ファイルなし");
+    return { result: false, error: "listsoft.xml was not found." };
+  }
+  const stat = fs.statSync(PATH_LISTSOFT);
+  if (stat.size < 90000000) {
+    sendDebug("listsoft.xml 解析失敗：ファイル無効");
+    return { result: false, error: "listsoft.xml file is too small." };
+  }
+
+  const parser = new Parser();
+  const softwarelists = {};
+  let currentTag = ""; //
+  let newSoftwareList;
+  let newSoftware;
+  let inSoftware = false;
+  const regex = /(\(.*\))$/g;
+
+  // 開始タグが見つかった
+  parser.on("opentag", (name, attrs) => {
+    switch (name) {
+      case "softwarelists": {
+        break;
+      }
+      case "softwarelist": {
+        newSoftwareList = { description: attrs.description, softwares: {} };
+        softwarelists[attrs.name] = newSoftwareList;
+        console.log("softwarelist:", attrs.name);
+        break;
+      }
+      case "software": {
+        newSoftware = {
+          name: "",
+          cloneof: "",
+          supported: "",
+          description: "",
+          alt_title: "",
+          year: "",
+          publisher: "",
+        };
+
+        inSoftware = true;
+        newSoftware.name = attrs.name;
+        if (attrs.cloneof) {
+          newSoftware.cloneof = attrs.cloneof;
+        }
+        if (attrs.supported) {
+          newSoftware.supported = attrs.supported;
+        }
+        newSoftwareList.softwares[attrs.name] = newSoftware;
+        break;
+      }
+    }
+
+    // in Software tag
+    if (inSoftware) {
+      switch (name) {
+        case "description": {
+          currentTag = "description";
+          break;
+        }
+        case "year": {
+          currentTag = "year";
+          break;
+        }
+        case "publisher": {
+          currentTag = "publisher";
+          break;
+        }
+        case "info": {
+          // 日本語タイトル
+          if (attrs.name === "alt_title") {
+            for (const prop in attrs) {
+              if (attrs[prop].slice(-1) === "/") {
+                attrs[prop] = attrs[prop].slice(0, -1);
+              }
+            }
+            attrs.value = attrs.value.replace("（", " (");
+            attrs.value = attrs.value.replace("）", ") ");
+            attrs.value = attrs.value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
+              return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
+            });
+            newSoftware.alt_title = attrs.value.trim();
+
+            // 括弧の移設
+            let kakko = newSoftware.description.match(regex);
+            if (kakko !== null) {
+              // (Japan) ~ .... (USA) 型の確認
+              let result = /(\(.*?Japan.*?\)) ~ .* \(.*?\).*(\(.*\)|)$/gi.exec(kakko);
+              if (result !== null) {
+                newSoftware.alt_title += "" + result[1] + result[2];
+              } else {
+                // (USA) ~ ... (Japan) 型の確認
+                let result = /\(.*?\) ~ .* (\(.*?Japan.*?\)).*(\(.*\)|)$/gi.exec(kakko);
+                if (result !== null) {
+                  newSoftware.alt_title += " " + result[1] + result[2];
+                } else {
+                  newSoftware.alt_title += " " + kakko[0];
+                }
+              }
+            }
+          }
+          break;
+        }
+      }
+    }
+  });
+
+  // 終了タグが見つかった
+  parser.on("closetag", (name) => {
+    switch (name) {
+      case "software": {
+        inSoftware = false;
+        break;
+      }
+      case "description": {
+        currentTag = "";
+        break;
+      }
+      case "year": {
+        currentTag = "";
+        break;
+      }
+      case "publisher": {
+        currentTag = "";
+        break;
+      }
+    }
+  });
+
+  // テキストが見つかった
+  parser.on("text", (text) => {
+    if (inSoftware) {
+      switch (currentTag) {
+        case "description": {
+          newSoftware.description = text;
+          break;
+        }
+        case "year": {
+          newSoftware.year = text;
+          break;
+        }
+        case "publisher": {
+          newSoftware.publisher = text;
+          break;
+        }
+      }
+    }
+  });
+
+  // 読み込みが完了した
+  parser.on("finish", () => {
+    console.log("XML parse completed.");
+    console.log("Writing a file.");
+    fs.writeFileSync("./temp/softlist.json", JSON.stringify(softwarelists, null, 1));
+    sendDebug("softlist.json 出力完了");
+  });
+
+  // error
+  parser.on("error", (err) => {
+    console.log(err);
+    return { result: false, error: "xml parser error: " + err };
+  });
+
+  // Streamとパーサーを接続してファイルを読み込んでいく
+  const stream = fs.createReadStream(PATH_LISTSOFT);
+  stream.pipe(parser);
+  sendDebug("listsoft.xml 解析開始");
+  console.log("after pipe");
+  return { result: true };
+});
+
+/**
  * list.xml 解析
  */
 const GameStatus = { gsGood: 0, gsImperfect: 1, gsPreliminary: 2, gsUnknown: 3 };
@@ -621,10 +801,8 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
       this.sounds = "--";
       this.screens = "--";
       this.numscreens = 0;
-      //this.Palettesize = 0; // TODO: 廃止
       this.resx = 0;
       this.resy = 0;
-      //this.ScanRate = 0; // TODO: 廃止
 
       this.palette = GameStatus.gsUnknown; // color -> palette 改名
       this.sound = GameStatus.gsUnknown;

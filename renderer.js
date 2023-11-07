@@ -520,6 +520,10 @@ async function onLoad() {
     let res = await window.retrofireAPI.parseListxml();
     console.log(res);
   });
+  document.querySelector("#btn-item3").addEventListener("click", async () => {
+    let res = await window.retrofireAPI.parseListsoft();
+    console.log(res);
+  });
 
   // 検索欄入力イベント
   document.querySelector("#search").addEventListener("input", (e) => {

@@ -30,8 +30,8 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   // list.xml 解析
   parseListxml: async (args) => await ipcRenderer.invoke("parse-listxml", args),
 
-  // list.xml解析
-  parseListxml: async (args) => await ipcRenderer.invoke("parse-listxml", args),
+  // listsoft.xml解析
+  parseListsoft: async (args) => await ipcRenderer.invoke("parse-listsoft", args),
 
   // デバッグメッセージ返す
   onDebugMessage: (callback) => ipcRenderer.on("debug-message", callback),
