@@ -672,7 +672,7 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
               // (Japan) ~ .... (USA) 型の確認
               let result = /(\(.*?Japan.*?\)) ~ .* \(.*?\).*(\(.*\)|)$/gi.exec(kakko);
               if (result !== null) {
-                newSoftware.alt_title += "" + result[1] + result[2];
+                newSoftware.alt_title += " " + result[1] + result[2];
               } else {
                 // (USA) ~ ... (Japan) 型の確認
                 let result = /\(.*?\) ~ .* (\(.*?Japan.*?\)).*(\(.*\)|)$/gi.exec(kakko);
