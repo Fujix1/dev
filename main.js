@@ -607,7 +607,7 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
         break;
       }
       case "softwarelist": {
-        newSoftwareList = { description: attrs.description, softwares: {} };
+        newSoftwareList = { description: attrs.description, softwares: [] };
         softwarelists[attrs.name] = newSoftwareList;
         console.log("softwarelist:", attrs.name);
         break;
@@ -631,7 +631,7 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
         if (attrs.supported) {
           newSoftware.supported = attrs.supported;
         }
-        newSoftwareList.softwares[attrs.name] = newSoftware;
+        newSoftwareList.softwares.push(newSoftware);
         break;
       }
     }
@@ -667,18 +667,17 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
             newSoftware.alt_title = attrs.value.trim();
 
             // 括弧の移設
-            let kakko = newSoftware.description.match(regex);
-            if (kakko !== null) {
-              // (Japan) ~ .... (USA) 型の確認
-              let result = /(\(.*?Japan.*?\)) ~ .* \(.*?\).*(\(.*\)|)$/gi.exec(kakko);
+            // .... (...) ~ ... (.. Japan ..) (alt) のパターン
+            let result = /^(.*? \(.*?\)) ~ (.*?)( \(.*?Japan.*?\))( \(.*?\)|)$/gi.exec(newSoftware.description);
+            if (result !== null) {
+              newSoftware.alt_title = newSoftware.alt_title + result[3] + " / " + result[1] + result[4];
+            } else {
+              let result = /^(.*?)( \(.*?Japan.*?\)) ~ (.*\(.*\))$/gi.exec(newSoftware.description);
               if (result !== null) {
-                newSoftware.alt_title += " " + result[1] + result[2];
+                newSoftware.alt_title = newSoftware.alt_title + result[2] + " / " + result[3];
               } else {
-                // (USA) ~ ... (Japan) 型の確認
-                let result = /\(.*?\) ~ .* (\(.*?Japan.*\))/gi.exec(kakko);
-                if (result !== null) {
-                  newSoftware.alt_title += " " + result[1];
-                } else {
+                let kakko = newSoftware.description.match(regex);
+                if (kakko !== null) {
                   newSoftware.alt_title += " " + kakko[0];
                 }
               }
@@ -735,6 +734,13 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
   // 読み込みが完了した
   parser.on("finish", () => {
     console.log("XML parse completed.");
+    // ソート
+    sendDebug("ソート中...");
+    for (let prop in softwarelists) {
+      softwarelists[prop].softwares.sort((a, b) => {
+        return a.name > b.name ? 1 : -1;
+      });
+    }
     console.log("Writing a file.");
     fs.writeFileSync("./temp/softlist.json", JSON.stringify(softwarelists, null, 1));
     sendDebug("softlist.json 出力完了");
