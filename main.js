@@ -388,7 +388,8 @@ ipcMain.handle("get-record", async (event, data) => {
 // softlistを返す
 ipcMain.handle("get-softlist", async (event, data) => {
   const res = loadFile(CONSTS.PATH_SOFTLISTS);
-  if (res.result) {
+  console.log("res", res);
+  if (res.result === true) {
     return res.data;
   } else {
     return;
