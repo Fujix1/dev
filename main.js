@@ -11,7 +11,7 @@ const store = new Store();
 const { validateBufferMIMEType } = require("validate-image-type");
 const sizeOf = require("image-size");
 
-const { CONSTS, rfConfig, rfProfiles, rfPath } = require("./rfConfig");
+const { CONSTS, rfConfig, rfProfiles, rfPath, softlistTitleJ } = require("./rfConfig");
 const glob = require("glob");
 const Parser = require("node-xml-stream");
 
@@ -385,6 +385,16 @@ ipcMain.handle("get-record", async (event, data) => {
   }
 });
 
+// softlistを返す
+ipcMain.handle("get-softlist", async (event, data) => {
+  const res = loadFile(CONSTS.PATH_SOFTLISTS);
+  if (res.result) {
+    return res.data;
+  } else {
+    return;
+  }
+});
+
 // mame32j.lstを返す
 ipcMain.handle("get-mame32j", async (event, data) => {
   const res = loadFile(CONSTS.PATH_MAME32J);
@@ -578,6 +588,7 @@ ipcMain.handle("nvcfg-delete", async (event, zipName) => {
 /**
  * listsoft.xml 解析
  */
+
 ipcMain.handle("parse-listsoft", async (event, arg) => {
   sendDebug("listsoft.xml 解析準備");
 
@@ -607,7 +618,10 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
         break;
       }
       case "softwarelist": {
-        newSoftwareList = { description: attrs.description, softwares: [] };
+        for (let i = 0; i < softlistTitleJ.length; i++) {
+          attrs.description = attrs.description.replace(softlistTitleJ[i].from, softlistTitleJ[i].to);
+        }
+        newSoftwareList = { description: unEscape(attrs.description), softwares: [] };
         softwarelists[attrs.name] = newSoftwareList;
         console.log("softwarelist:", attrs.name);
         break;
@@ -659,12 +673,8 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
                 attrs[prop] = attrs[prop].slice(0, -1);
               }
             }
-            attrs.value = attrs.value.replace("（", " (");
-            attrs.value = attrs.value.replace("）", ") ");
-            attrs.value = attrs.value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
-              return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
-            });
-            newSoftware.alt_title = attrs.value.trim();
+            attrs.value = zenToHan(attrs.value);
+            newSoftware.alt_title = unEscape(attrs.value);
 
             // 括弧の移設
             // .... (...) ~ ... (.. Japan ..) (alt) のパターン
@@ -716,7 +726,7 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
     if (inSoftware) {
       switch (currentTag) {
         case "description": {
-          newSoftware.description = text;
+          newSoftware.description = unEscape(text);
           break;
         }
         case "year": {
@@ -724,7 +734,7 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
           break;
         }
         case "publisher": {
-          newSoftware.publisher = text;
+          newSoftware.publisher = zenToHan(unEscape(text));
           break;
         }
       }
@@ -891,7 +901,7 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
   parser.on("opentag", (name, attrs) => {
     switch (name) {
       case "mame": {
-        version = attrs.build;
+        version = attrs.build.slice(0, attrs.build.indexOf(" ("));
         break;
       }
       case "machine": {
@@ -1253,8 +1263,12 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
       }
     }
     //
+    const resource = {
+      version: version,
+      listinfos: listInfos,
+    };
     console.log("Writing a file.");
-    fs.writeFileSync("./temp/resource.json", JSON.stringify(listInfos, null, 1));
+    fs.writeFileSync("./temp/resource.json", JSON.stringify(resource, null, 1));
     sendDebug("resource.json 出力完了");
   });
 
@@ -1271,3 +1285,20 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
   console.log("after pipe");
   return { result: true };
 });
+
+function zenToHan(st) {
+  let han = st.replace(/[！-～]/g, (tmpStr) => {
+    return String.fromCharCode(tmpStr.charCodeAt(0) - 0xfee0);
+  });
+  return han
+    .replace(/”/g, '"')
+    .replace(/’/g, "'")
+    .replace(/‘/g, "`")
+    .replace(/　/g, " ")
+    .replace(/〜/g, "～")
+    .replace(/．/g, ".");
+}
+
+function unEscape(st) {
+  return st.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", '"').replaceAll("&amp;", "&");
+}

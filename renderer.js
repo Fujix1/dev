@@ -7,6 +7,7 @@ let listViewMain; // メインリストビュー
 let listViewSub;
 
 let mamedb; // ゲーム情報管理用オブジェクト
+let softlists; // ソフトリスト
 const mameinfo = {}; // mameinfo.dat 情報
 const history = {}; // history.dat 情報
 
@@ -592,6 +593,9 @@ async function onLoad() {
   mamedb = new Dataset();
   await mamedb.loadFromFile();
   mamedb.filter(config.searchWord, config.searchFields);
+
+  softlists = new Softlists();
+  await softlists.loadFromFile();
 
   // mameinfo.dat読み込み
   var tick = Date.now();

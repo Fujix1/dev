@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   deleteScreenShot: async (args) => await ipcRenderer.invoke("delete-screen-shot", args),
   renameScreenShot: async (args) => await ipcRenderer.invoke("rename-screen-shot", args),
   getRecord: async (args) => await ipcRenderer.invoke("get-record", args),
+  getSoftlist: async (args) => await ipcRenderer.invoke("get-softlist", args),
   getMame32j: async (args) => await ipcRenderer.invoke("get-mame32j", args),
   getMameInfo: async (args) => await ipcRenderer.invoke("get-mameinfo", args),
   getHistory: async (args) => await ipcRenderer.invoke("get-history", args),
