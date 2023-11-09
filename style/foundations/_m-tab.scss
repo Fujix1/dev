@@ -24,8 +24,8 @@
       z-index: 0;
     }
     transition: var(--s-transition);
-    border-bottom: 3px solid var(--cl-tab-content--bg);;
-    &:hover {
+    border-bottom: 3px solid var(--cl-tab-content--bg);
+    &:has(label:hover) {
       border-bottom-color: var(--cl-listheader-hover);
     }
   }

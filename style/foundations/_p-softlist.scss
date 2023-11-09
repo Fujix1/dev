@@ -1,0 +1,19 @@
+.p-softlist {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__dropdown {
+    padding: 2px 5px 5px 5px;
+    flex-basis: 700px;
+  }
+  &__search {
+
+  }
+  &__main {
+    flex-grow: 1;
+  }
+}

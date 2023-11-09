@@ -595,6 +595,7 @@ async function onLoad() {
   mamedb.filter(config.searchWord, config.searchFields);
 
   softlists = new Softlists();
+  softlists.init();
   await softlists.loadFromFile();
 
   // mameinfo.dat読み込み
@@ -960,14 +961,20 @@ async function itemSelectHandler(argDataIndex, argZipName) {
   showInfo(argZipName);
   screenShot.show(argZipName);
   command.show(argZipName);
+
+  softlists.show(Dataset.master[argDataIndex].softlists);
 }
 
+// サブアイテム選択時処理
 async function subItemSelectHandler(argDataIndex) {
   config.zipName = Dataset.master[argDataIndex].zipname;
   dataIndex = argDataIndex;
+
   showInfo(config.zipName);
   screenShot.show(config.zipName);
   command.show(config.zipName);
+
+  softlists.show(Dataset.master[argDataIndex].softlists);
 }
 
 /**

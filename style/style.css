@@ -3259,7 +3259,7 @@ input[type=search]::-webkit-search-results-decoration {
   display: flex;
   z-index: 0;
 }
-.m-tab__labels:hover {
+.m-tab__labels:has(label:hover) {
   border-bottom-color: var(--cl-listheader-hover);
 }
 .m-tab__label {
@@ -3821,4 +3821,21 @@ i.c-y {
 }
 i.c-z {
   background-image: url("../imgs/command/z.svg");
+}
+
+.p-softlist {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.p-softlist__header {
+  display: flex;
+  justify-content: space-between;
+}
+.p-softlist__dropdown {
+  padding: 2px 5px 5px 5px;
+  flex-basis: 700px;
+}
+.p-softlist__main {
+  flex-grow: 1;
 }/*# sourceMappingURL=style.css.map */

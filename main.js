@@ -836,7 +836,7 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
       this.chdnodump = false;
       this.ismechanical = false;
 
-      this.softwarelist = [];
+      this.softlists = [];
       this.cpuList = [];
       this.soundList = [];
       this.screenList = [];
@@ -962,7 +962,7 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
           break;
         }
         case "softwarelist": {
-          newItem.softwarelist.push({ tag: attrs.tag, name: attrs.name });
+          newItem.softlists.push({ tag: attrs.tag, name: attrs.name });
           break;
         }
         case "driver": {
