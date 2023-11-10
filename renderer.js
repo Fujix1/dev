@@ -594,7 +594,7 @@ async function onLoad() {
   await mamedb.loadFromFile();
   mamedb.filter(config.searchWord, config.searchFields);
 
-  softlists = new Softlists();
+  softlists = new Softlists(config.softlist);
   softlists.init();
   await softlists.loadFromFile();
 
@@ -1047,6 +1047,7 @@ function saveFormConfig() {
         config.splitter.push({ id: id, dimension: dimension });
       }
     });
+    config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
 
     // スクリーンショットアスペクト比
     config.keepAspect = screenShot.keepAspect;
@@ -1057,7 +1058,6 @@ function saveFormConfig() {
     // コマンド設定
     config.command = command.getConfig;
 
-    config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
     console.log("フォーム設定 main.js に送信");
   } catch (e) {
     console.log(e);
