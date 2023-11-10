@@ -338,9 +338,13 @@ async function onLoad() {
     if (readConfig.hasOwnProperty("splitter")) {
       config.splitter = readConfig.splitter;
     }
-    // コマンドタブ
+    // 情報タブ
     if (readConfig.hasOwnProperty("infoTab")) {
-      document.querySelector(".m-tab__radio[value='" + readConfig.infoTab + "']").checked = true;
+      document.querySelector(".m-tab--info .m-tab__radio[value='" + readConfig.infoTab + "']").checked = true;
+    }
+    // 下側タブ
+    if (readConfig.hasOwnProperty("bottomTab")) {
+      document.querySelector(".m-tab--bottom .m-tab__radio[value='" + readConfig.bottomTab + "']").checked = true;
     }
     // コマンドオプション
     if (readConfig.hasOwnProperty("command")) {
@@ -1020,6 +1024,7 @@ window.addEventListener("beforeunload", (e) => {
   saveFormConfig();
   listViewMain.saveSettings();
   listViewSub.saveSettings();
+  softlists.saveSettings();
 });
 
 // 検索クリア
@@ -1047,17 +1052,20 @@ function saveFormConfig() {
         config.splitter.push({ id: id, dimension: dimension });
       }
     });
-    config.splitter = window.retrofireAPI.setStoreTemp({ key: "config", val: config });
 
     // スクリーンショットアスペクト比
     config.keepAspect = screenShot.keepAspect;
 
-    // コマンドタブ
-    config.infoTab = parseInt(document.querySelector(".m-tab__radio:checked").value);
+    // 情報タブ
+    config.infoTab = parseInt(document.querySelector(".m-tab--info .m-tab__radio:checked").value);
+
+    // 下側タブ
+    config.bottomTab = parseInt(document.querySelector(".m-tab--bottom .m-tab__radio:checked").value);
 
     // コマンド設定
     config.command = command.getConfig;
 
+    window.retrofireAPI.setStoreTemp({ key: "config", val: config });
     console.log("フォーム設定 main.js に送信");
   } catch (e) {
     console.log(e);
