@@ -3284,7 +3284,7 @@ input[type=search]::-webkit-search-results-decoration {
 .m-tab__label:has(:disabled) {
   color: var(--cl-tab-text--disabled);
 }
-.m-tab__label--command {
+.m-tab__label--command, .m-tab__label--softlist {
   color: var(--cl-tab-text--disabled);
 }
 .m-tab__label.highlight {

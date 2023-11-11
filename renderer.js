@@ -5,11 +5,11 @@ const GameStatus = { gsGood: 0, gsImperfect: 1, gsPreliminary: 2, gsUnknown: 3 }
 
 let listViewMain; // メインリストビュー
 let listViewSub;
+let listViewSoftlist; // ソフトリスト用リストビュー
 
 let mamedb; // ゲーム情報管理用オブジェクト
 let softlists; // ソフトリスト
-const mameinfo = {}; // mameinfo.dat 情報
-const history = {}; // history.dat 情報
+let dats = new Dats(); // mameinfo, history用クラス
 
 const screenShot = new ScreenShot();
 const command = new Command();
@@ -341,10 +341,14 @@ async function onLoad() {
     // 情報タブ
     if (readConfig.hasOwnProperty("infoTab")) {
       document.querySelector(".m-tab--info .m-tab__radio[value='" + readConfig.infoTab + "']").checked = true;
+    } else {
+      document.querySelector(".m-tab--info .m-tab__radio[value='0']").checked = true;
     }
     // 下側タブ
     if (readConfig.hasOwnProperty("bottomTab")) {
       document.querySelector(".m-tab--bottom .m-tab__radio[value='" + readConfig.bottomTab + "']").checked = true;
+    } else {
+      document.querySelector(".m-tab--bottom .m-tab__radio[value='0']").checked = true;
     }
     // コマンドオプション
     if (readConfig.hasOwnProperty("command")) {
@@ -602,62 +606,13 @@ async function onLoad() {
   softlists.init();
   await softlists.loadFromFile();
 
-  // mameinfo.dat読み込み
-  var tick = Date.now();
-  let fileContents = await window.retrofireAPI.getMameInfo();
-  if (fileContents) {
-    let info = "";
-    let st = "";
-
-    fileContents.split(/\r?\n/).forEach((line) => {
-      if (line.startsWith("$info=")) {
-        info = line.substr(6).split(",");
-      } else if (line.startsWith("$mame")) {
-        st = "";
-      } else if (line.startsWith("$end")) {
-        st = st.replace(/\n\n\n/g, "<br><br>");
-        st = st.replace(/\n\n/g, "<br>");
-        info.forEach((item) => {
-          mameinfo[String(item).trim()] = st;
-        });
-      } else {
-        st += line + "\n";
-      }
-    });
-  }
-  fileContents = "";
-
-  // history.dat読み込み
-  var tick = Date.now();
-  fileContents = await window.retrofireAPI.getHistory();
-  if (fileContents) {
-    let info = [];
-    let st = "";
-
-    fileContents.split(/\r?\n/).forEach((line) => {
-      if (line.startsWith("$info=")) {
-        info = line.substr(6).split(",");
-      } else if (line.startsWith("$bio")) {
-        st = "";
-      } else if (line.startsWith("$end")) {
-        st = st.replace(/\n/g, "<br>");
-        info.forEach((item) => {
-          history[String(item).trim()] = st;
-        });
-      } else {
-        st += line + "\n";
-      }
-    });
-  }
-
-  console.log("history:", Date.now() - tick, "ms");
+  // mameinfo, history.dat 読み込み
+  dats.init();
 
   // Command.dat 読み込み
   command.init(config.command);
 
   // リストビュー初期化
-  var tick = Date.now();
-
   listViewMain = new ListView({
     slug: "main",
     target: ".list-view",
@@ -855,6 +810,81 @@ async function onLoad() {
   });
   await listViewSub.init();
 
+  // ソフトリスト listview 初期化
+  listViewSoftlist = new ListView({
+    slug: "softlist",
+    target: ".list-softlist",
+    columns: [
+      {
+        label: "ゲーム名",
+        data: "description",
+        order: 0,
+        width: 380,
+        defaultSort: "asc",
+      },
+      {
+        label: "ZIP名",
+        data: "name",
+        order: 1,
+        width: 100,
+        defaultSort: "asc",
+      },
+      {
+        label: "メーカー",
+        data: "publisher",
+        order: 2,
+        width: 160,
+        defaultSort: "asc",
+      },
+      { label: "年度", data: "year", order: 3, width: 55, defaultSort: "asc" },
+      {
+        label: "マスタ",
+        data: "cloneof",
+        order: 4,
+        width: 100,
+        defaultSort: "asc",
+      },
+    ],
+    orderByIndex: 1,
+    sortDirection: "asc",
+    index: -1,
+    onColumnClick: async (property, direction) => {},
+    onSelect: async (index) => {},
+    onData: (index) => {
+      const row = { classList: ["m-listView__cellIcon"] };
+      Object.assign(row, softlists.getFilteredRecord(index));
+      if (config.language == LANG.JP) {
+        row.description = row.alt_title;
+      }
+      // アイコン
+      if (row.cloneof) {
+        row.classList.push("m-listView__cellIcon--clone");
+      }
+      if (!row.status) {
+        row.classList.push("m-listView__cellIcon--nowork");
+      }
+      return row;
+    },
+    onEnter: (index) => {},
+    onKeyDown: (e) => {
+      switch (e.code) {
+        case "Tab":
+          if (e.shiftKey) {
+            //document.querySelector("#search").focus();
+          }
+          e.preventDefault();
+          break;
+      }
+    },
+    onFocus: (e, index) => {
+      // 起動用のセット名更新
+      //dataIndex = mamedb.getDataIndex(index);
+      //config.zipName = Dataset.master[dataIndex].zipname;
+    },
+  });
+
+  await listViewSoftlist.init();
+
   updateListView();
 
   window.retrofireAPI.windowIsReady();
@@ -921,8 +951,6 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     argZipName = config.zipName;
   }
 
-  //console.log("itemSelectHandler", argZipName);
-
   const masterId = Dataset.master[argDataIndex].masterid;
 
   if (masterId === -1) {
@@ -986,36 +1014,7 @@ async function subItemSelectHandler(argDataIndex) {
  * @param {*} zipName
  */
 async function showInfo(zipName) {
-  const index = Dataset.indexOfZip(zipName);
-  const masterId = Dataset.master[index].masterid;
-  let masterZip = "";
-
-  let st = "";
-
-  if (masterId !== -1) {
-    masterZip = Dataset.master[masterId].zipname;
-  }
-
-  if (history.hasOwnProperty(zipName)) {
-    st += history[zipName];
-  } else {
-    // クローンのときは親を見る
-    if (masterId !== -1 && history.hasOwnProperty(masterZip)) {
-      st += history[masterZip];
-    }
-  }
-  if (st !== "") {
-    st += "<br>";
-  }
-
-  if (mameinfo.hasOwnProperty(zipName)) {
-    st += mameinfo[zipName];
-  } else {
-    // クローンのときは親を見る
-    if (masterId !== -1 && mameinfo.hasOwnProperty(masterZip)) {
-      st += mameinfo[masterZip];
-    }
-  }
+  const st = await dats.getInfo(zipName);
   document.querySelector("#info").innerHTML = st;
 }
 
@@ -1024,6 +1023,7 @@ window.addEventListener("beforeunload", (e) => {
   saveFormConfig();
   listViewMain.saveSettings();
   listViewSub.saveSettings();
+  listViewSoftlist.saveSettings();
   softlists.saveSettings();
 });
 

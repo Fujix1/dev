@@ -50,7 +50,7 @@
     &:has(:disabled) {
       color: var(--cl-tab-text--disabled);
     }
-    &--command {
+    &--command, &--softlist {
       color: var(--cl-tab-text--disabled);
     }
     &.highlight {

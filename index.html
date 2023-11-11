@@ -77,7 +77,7 @@
               <div class="m-tab m-tab--bottom">
                 <div class="m-tab__labels">
                   <label class="m-tab__label m-tab__label--family">
-                    <input type="radio" name="m-tab__bottom" class="m-tab__radio" chekced value="0"><span>Set Family</span>
+                    <input type="radio" name="m-tab__bottom" class="m-tab__radio" checked="true" value="0"><span>Set Family</span>
                   </label>
                   <label class="m-tab__label m-tab__label--softlist">
                     <input type="radio" name="m-tab__bottom" class="m-tab__radio" value="1"><span>Software List</span>
@@ -110,7 +110,10 @@
                         </div>
                       </header>
                       <main class="p-softlist__main">
-                        softlist__main
+                        <div class="l-list" tabindex="-1">
+                          <div class="list-softlist" tabindex="0">
+                          </div>
+                        </div>
                       </main>
                     </div>
                   </div>
@@ -194,5 +197,6 @@
   <script src="./lib/splitter.js"></script>
   <script src="./lib/screenshot.js"></script>
   <script src="./lib/command.js"></script>
+  <script src="./lib/dats.js"></script>
   <script src="./renderer.js"></script>
 </html>
