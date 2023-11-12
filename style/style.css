@@ -3827,6 +3827,7 @@ i.c-z {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow: hidden;
 }
 .p-softlist__header {
   display: flex;
@@ -3838,4 +3839,6 @@ i.c-z {
 }
 .p-softlist__main {
   flex-grow: 1;
+  overflow: hidden;
+  display: flex;
 }/*# sourceMappingURL=style.css.map */

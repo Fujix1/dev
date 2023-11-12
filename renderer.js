@@ -811,7 +811,7 @@ async function onLoad() {
   await listViewSub.init();
 
   // ソフトリスト listview 初期化
-  /*  listViewSoftlist = new ListView({
+  listViewSoftlist = new ListView({
     slug: "softlist",
     target: ".list-softlist",
     columns: [
@@ -882,8 +882,7 @@ async function onLoad() {
       //config.zipName = Dataset.master[dataIndex].zipname;
     },
   });
-*/
-  //await listViewSoftlist.init();
+  await listViewSoftlist.init();
 
   updateListView();
 
