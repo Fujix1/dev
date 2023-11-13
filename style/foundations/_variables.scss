@@ -29,25 +29,26 @@
     --cl-text--main: #222;
     --cl-text--weak: #a7a7a7;
   
-    --cl-theme: #4c98af;
+    --cl-theme: #4c87af;
     --cl-theme--gray: #888;
     
-    --cl-active: #4893aa; //linear-gradient(90deg, #257db3, #25b392);
-    --cl-active--sub: #29acd4;
-    --cl-selected--unfocused: linear-gradient(90deg, #737e85, #5f6665);;
+    --cl-active: linear-gradient(to top, #70a8d58c 3%, transparent 3%),
+      radial-gradient(at center bottom, #5898e1a6, transparent);//linear-gradient(90deg, #257db3, #25b392);
+    --cl-active--sub: #2995d4;
+    --cl-selected--unfocused: linear-gradient(to top, #8ba1b18c 3%, transparent 3%), radial-gradient(at center bottom, #667281a6, transparent); //linear-gradient(90deg, #737e85, #5f6665);;
   
     --cl-text: #eee;
     --cl-text--inactive: #ccc;
-    --cl-listheaderbg : #32373a;
-    --cl-listheadertext: #a4c4dd;
-    --cl-listheader-hover: #3e7383;
+    --cl-listheaderbg : #32363a;
+    --cl-listheadertext: #a4bfdd;
+    --cl-listheader-hover: #3e6283;
     --cl-listheader-text-hover: #eee;
-    --cl-listbg : #26282f;
-    --cl-listheader-border: #4e5458;
-    --cl-listborder: #4e5458;
+    --cl-listbg : linear-gradient(0deg, #1f2023, #313335);
+    --cl-listheader-border: #4e5358;
+    --cl-listborder: #4e5258;
     --cl-list-bg-2n: transparent;
 
-    --cl-input--selection: #1f89b3;
+    --cl-input--selection: #1f70b3;
 
     --cl-debug--bg: #13171a;
     --cl-debug--text: #ccc;
@@ -58,7 +59,7 @@
     --cl-popup--hr: #888;
     --cl-popup--bg-hover: #222;
 
-    --cl-footer--bg: #353c41;
+    --cl-footer--bg: #353b41;
     --cl-footer--text: #bbb;
 
     --cl-command--bg: #031934;

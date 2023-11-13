@@ -27,7 +27,7 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: var(--cl-listbg);
+    background: transparent;
     box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.5);
     user-select: none;
   }
@@ -38,7 +38,7 @@
     user-select: none;
     display: flex;
     position: relative;
-    background-color: var(--cl-listheaderbg);
+    background: var(--cl-listheaderbg);
     color: var(--cl-listheadertext);
     border-bottom: 1px solid var(--cl-theme);
     position: relative;

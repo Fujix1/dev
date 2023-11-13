@@ -605,7 +605,7 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
   }
 
   const parser = new Parser();
-  const softwarelists = [];
+  const softwarelists = {};
   let currentTag = ""; //
   let newSoftwareList;
   let newSoftware;
@@ -622,10 +622,10 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
         for (let i = 0; i < softlistTitleJ.length; i++) {
           attrs.description = attrs.description.replace(softlistTitleJ[i].from, softlistTitleJ[i].to);
         }
-        ///newSoftwareList = { description: unEscape(attrs.description), softwares: [] };
-        newSoftwareList = { name: attrs.name, description: unEscape(attrs.description), softwares: [] };
-        //softwarelists[attrs.name] = newSoftwareList;
-        softwarelists.push(newSoftwareList);
+        newSoftwareList = { description: unEscape(attrs.description), softwares: [] };
+        //newSoftwareList = { name: attrs.name, description: unEscape(attrs.description), softwares: [] };
+        softwarelists[attrs.name] = newSoftwareList;
+        //softwarelists.push(newSoftwareList);
         console.log("softwarelist:", attrs.name);
         break;
       }

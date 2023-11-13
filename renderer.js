@@ -849,7 +849,9 @@ async function onLoad() {
     sortDirection: "asc",
     index: -1,
     onColumnClick: async (property, direction) => {},
-    onSelect: async (index) => {},
+    onSelect: async (itemIndex) => {
+      softlists.selectSoft(itemIndex);
+    },
     onData: (index) => {
       const row = { classList: ["m-listView__cellIcon"] };
       Object.assign(row, softlists.getFilteredRecord(index));
