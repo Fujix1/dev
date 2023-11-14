@@ -19,8 +19,6 @@ let dataSubIndex = -1;
 let dataSubZipname = "";
 let dataSubTable = [];
 
-let updatingListView = false;
-
 const LANG = { JP: 0, EN: 1 };
 let config = {
   language: LANG.JP, // 言語設定
@@ -466,10 +464,8 @@ async function onLoad() {
     switch (e.key) {
       case "F12": // 言語切替
         if (!e.repeat) {
-          config.language = config.language == LANG.JP ? LANG.EN : LANG.JP;
+          changeLanguage(config.language == LANG.JP ? LANG.EN : LANG.JP);
           document.getElementById("language").checked = config.language == LANG.EN;
-          console.log(updatingListView);
-          updateListView();
         }
 
         break;
@@ -502,18 +498,32 @@ async function onLoad() {
 
   // 言語切替
   document.getElementById("language").addEventListener("change", async (e) => {
-    config.language = e.target.checked ? LANG.EN : LANG.JP;
-    updateListView();
+    changeLanguage(e.target.checked ? LANG.EN : LANG.JP);
   });
+
+  // 言語切替処理
+  function changeLanguage(newLanguage) {
+    config.language = newLanguage;
+    updateListView();
+
+    //ソフトリスト更新
+    // データ index
+    const dataIndex = softlists.getDataIndex(listViewSoftlist.itemIndex);
+    softlists.filter();
+    softlists.sort({
+      field: listViewSoftlist.columns[listViewSoftlist.orderByIndex].data,
+      direction: listViewSoftlist.sortDirection,
+    });
+    listViewSoftlist.itemCount = softlists.filteredLength;
+
+    // ソート後の index
+    listViewSoftlist.itemIndex = softlists.filteredTable.indexOf(dataIndex);
+    listViewSoftlist.updateRowTexts();
+    listViewSoftlist.makeVisible();
+  }
 
   // empty the debug output
   document.querySelector("#debug").value = "";
-
-  document.querySelector("#test3").addEventListener("click", () => {
-    executeMAME({ zipName: document.querySelector("#test3").value, softName: "ys2" });
-  });
-
-  document.querySelector("#btn-reset").addEventListener("click", async () => {});
 
   document.querySelector("#btn-dialog").addEventListener("click", async () => {
     // メインプロセスを呼び出し
@@ -848,7 +858,17 @@ async function onLoad() {
     orderByIndex: 1,
     sortDirection: "asc",
     index: -1,
-    onColumnClick: async (property, direction) => {},
+    onColumnClick: async (property, direction) => {
+      if (softlists.filteredLength === 0) return;
+      // データ index
+      const dataIndex = softlists.getDataIndex(listViewSoftlist.itemIndex);
+      softlists.sort({ field: property, direction: direction });
+
+      // ソート後の index
+      listViewSoftlist.itemIndex = softlists.filteredTable.indexOf(dataIndex);
+      listViewSoftlist.updateRowTexts();
+      listViewSoftlist.makeVisible();
+    },
     onSelect: async (itemIndex) => {
       softlists.selectSoft(itemIndex);
     },
@@ -859,20 +879,34 @@ async function onLoad() {
         row.description = row.alt_title;
       }
       // アイコン
-      if (row.cloneof) {
-        row.classList.push("m-listView__cellIcon--clone");
+      row.classList.push("m-listView__interface--" + softlists.currentSoftlist);
+      if (row.interface) {
+        if (row.interface.lastIndexOf("_cass") !== -1) {
+          row.classList.push("m-listView__cellIcon--cass");
+        } else if (row.interface.lastIndexOf("_hdd") !== -1) {
+          row.classList.push("m-listView__cellIcon--hdd");
+        } else if (row.interface.lastIndexOf("_cart") !== -1) {
+          row.classList.push("m-listView__cellIcon--cart");
+        } else if (row.interface.lastIndexOf("_cdrom") !== -1) {
+          row.classList.push("m-listView__cellIcon--cdrom");
+        } else if (row.interface.indexOf("floppy_") !== -1) {
+          row.classList.push("m-listView__cellIcon--floppy");
+        }
+        row.classList.push("m-listView__cellIcon--" + row.interface);
       }
-      if (!row.status) {
-        row.classList.push("m-listView__cellIcon--nowork");
-      }
+
       return row;
     },
-    onEnter: (index) => {},
+    onEnter: (index) => {
+      const row = softlists.getFilteredRecord(index);
+      console.log("Softlist onenter");
+      window.retrofireAPI.executeMAME({ zipName: config.zipName, softName: row.name });
+    },
     onKeyDown: (e) => {
       switch (e.code) {
         case "Tab":
           if (e.shiftKey) {
-            //document.querySelector("#search").focus();
+            document.getElementById("softlistTitle").focus();
           }
           e.preventDefault();
           break;

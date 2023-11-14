@@ -612,6 +612,8 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
   let inSoftware = false;
   const regex = /(\(.*\))$/g;
 
+  const interfaces = [];
+
   // 開始タグが見つかった
   parser.on("opentag", (name, attrs) => {
     switch (name) {
@@ -697,6 +699,11 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
             }
           }
           break;
+        }
+        case "part": {
+          if (attrs.interface) {
+            newSoftware.interface = attrs.interface;
+          }
         }
       }
     }

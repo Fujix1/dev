@@ -194,9 +194,9 @@
     &:before {
       content: "";
       display: block;
-      width: 20px;
+      width: 18px;
       height: 20px;
-      background: url(./pics/ico_rom.png) no-repeat left center;
+      background: url(./pics/ico_rom.png) no-repeat center center;
       background-size: 16px;
       position: absolute;
       left: 3px;
@@ -216,6 +216,59 @@
       &:before {
         background-image: url(./pics/ico_nowork_clone.png);
       }
+    }
+
+    &--floppy_5_25 {
+      &:before {
+        background-image: url(./pics/ico_floppy_5_25.svg);
+      }
+    }
+    &--floppy_3_5, &--floppy_35 {
+      &:before {
+        background-image: url(./pics/ico_floppy_3_5.svg);
+      }
+    }
+    &--floppy_3 {
+      &:before {
+        background-image: url(./pics/ico_floppy_3.svg);
+      }
+    }
+    &--cdrom {
+      &:before {
+        background-image: url(./pics/ico_cdrom.svg);
+      }
+    }
+    &--cass {
+      &:before {
+        background-image: url(./pics/ico_cass.svg);
+      }
+    }
+    &--nes_cart {
+      &:before {
+        background-image: url(./pics/ico_nes-cart.svg);
+      }
+    }
+    &--snes_cart {
+      &:before {
+        background-image: url(./pics/ico_snes_cart.svg);
+      }
+    }
+    &--gba_cart {
+      &:before {
+        background-image: url(./pics/ico_gba_cart.svg);
+      }
+    }
+    &--megadriv_cart {
+      &:before {
+        background-image: url(./pics/ico_megadriv_cart.svg);
+      }
+    }
+  }
+  &__interface--famicom_flop {
+    &.m-listView__cellIcon {
+      &:before {
+        background-image: url(./pics/ico_disksystem.svg);
+     }
     }
   }
 }

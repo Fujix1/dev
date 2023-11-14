@@ -3011,9 +3011,9 @@ input[type=search]::-webkit-search-results-decoration {
 .m-listView__cellIcon:before {
   content: "";
   display: block;
-  width: 20px;
+  width: 18px;
   height: 20px;
-  background: url(./pics/ico_rom.png) no-repeat left center;
+  background: url(./pics/ico_rom.png) no-repeat center center;
   background-size: 16px;
   position: absolute;
   left: 3px;
@@ -3027,6 +3027,36 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-listView__cellIcon--clone.m-listView__cellIcon--nowork:before {
   background-image: url(./pics/ico_nowork_clone.png);
+}
+.m-listView__cellIcon--floppy_5_25:before {
+  background-image: url(./pics/ico_floppy_5_25.svg);
+}
+.m-listView__cellIcon--floppy_3_5:before, .m-listView__cellIcon--floppy_35:before {
+  background-image: url(./pics/ico_floppy_3_5.svg);
+}
+.m-listView__cellIcon--floppy_3:before {
+  background-image: url(./pics/ico_floppy_3.svg);
+}
+.m-listView__cellIcon--cdrom:before {
+  background-image: url(./pics/ico_cdrom.svg);
+}
+.m-listView__cellIcon--cass:before {
+  background-image: url(./pics/ico_cass.svg);
+}
+.m-listView__cellIcon--nes_cart:before {
+  background-image: url(./pics/ico_nes-cart.svg);
+}
+.m-listView__cellIcon--snes_cart:before {
+  background-image: url(./pics/ico_snes_cart.svg);
+}
+.m-listView__cellIcon--gba_cart:before {
+  background-image: url(./pics/ico_gba_cart.svg);
+}
+.m-listView__cellIcon--megadriv_cart:before {
+  background-image: url(./pics/ico_megadriv_cart.svg);
+}
+.m-listView__interface--famicom_flop.m-listView__cellIcon:before {
+  background-image: url(./pics/ico_disksystem.svg);
 }
 
 .m-checkbox {
