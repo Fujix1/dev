@@ -320,7 +320,7 @@ const actCopySoftZipName = new Action({
   },
   onUpdate: async (self) => {
     //const currentTarget = self.caller.currentTarget;
-    self.enabled = listViewSoftlist.itemIndex !== -1;
+    self.enabled = softlists.filteredLength !== 0;
   },
 });
 
