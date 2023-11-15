@@ -308,6 +308,29 @@ document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e
   pmScreenshot.show(e);
 });
 
+//------------------------------------------------------------
+const actCopySoftZipName = new Action({
+  caption: "ZIP名をコピー",
+  keycode: "c",
+  control: true,
+  onExecute: async (self) => {
+    navigator.clipboard.writeText(
+      Softlists.master[softlists.currentSoftlist].softwares[softlists.filteredTable[listViewSoftlist.itemIndex]].name
+    );
+  },
+  onUpdate: async (self) => {
+    //const currentTarget = self.caller.currentTarget;
+    self.enabled = listViewSoftlist.itemIndex !== -1;
+  },
+});
+
+const pmSoftList = new PopupMenu([{ action: actCopySoftZipName }]);
+document.querySelector(".list-softlist").addEventListener("contextmenu", async (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  await pmSoftList.show(e);
+});
+
 //---------------------------------------------------------------------
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
