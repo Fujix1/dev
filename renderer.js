@@ -467,7 +467,6 @@ async function onLoad() {
           changeLanguage(config.language == LANG.JP ? LANG.EN : LANG.JP);
           document.getElementById("language").checked = config.language == LANG.EN;
         }
-
         break;
       case "Backspace": // 検索ボックスフォーカス
         const search = document.getElementById("search");
@@ -505,21 +504,7 @@ async function onLoad() {
   function changeLanguage(newLanguage) {
     config.language = newLanguage;
     updateListView();
-
-    //ソフトリスト更新
-    // データ index
-    const dataIndex = softlists.getDataIndex(listViewSoftlist.itemIndex);
-    softlists.filter();
-    softlists.sort({
-      field: listViewSoftlist.columns[listViewSoftlist.orderByIndex].data,
-      direction: listViewSoftlist.sortDirection,
-    });
-    listViewSoftlist.itemCount = softlists.filteredLength;
-
-    // ソート後の index
-    listViewSoftlist.itemIndex = softlists.filteredTable.indexOf(dataIndex);
-    listViewSoftlist.updateRowTexts();
-    listViewSoftlist.makeVisible();
+    updateListViewSoftlist();
   }
 
   // empty the debug output
@@ -948,10 +933,24 @@ async function updateListView() {
 
   // 項目数表示
   document.getElementById("footerNum").innerText = mamedb.filteredLength + " / " + Dataset.master.length;
-
-  //
-
   console.log("updateListView", Date.now() - tick, "ms");
+}
+
+// ソフトリストのリストビュー更新
+async function updateListViewSoftlist() {
+  // データ index
+  const dataIndex = softlists.getDataIndex(listViewSoftlist.itemIndex);
+  softlists.filter();
+  softlists.sort({
+    field: listViewSoftlist.columns[listViewSoftlist.orderByIndex].data,
+    direction: listViewSoftlist.sortDirection,
+  });
+  listViewSoftlist.itemCount = softlists.filteredLength;
+
+  // ソート後の index
+  listViewSoftlist.itemIndex = softlists.filteredTable.indexOf(dataIndex);
+  listViewSoftlist.updateRowTexts();
+  listViewSoftlist.makeVisible();
 }
 
 // 項目選択時の処理

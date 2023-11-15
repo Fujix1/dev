@@ -19,4 +19,30 @@
     overflow: hidden;
     display: flex;
   }
+  &__footer {
+    margin-top: auto;
+    background-color: var(--cl-footer--bg);
+    color: var(--cl-footer--text);
+    min-height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &Left {
+      text-align: left;
+      width: 100px;
+      line-height: 22px;
+      padding: 0 1.5em;
+    }
+    &Center {
+      text-align: center;
+      line-height: 22px;
+      padding: 0 1.5em;
+    }
+    &Right {
+      text-align: right;
+      width: 100px;
+      line-height: 22px;
+      padding: 0 1.5em;
+    }
+  }
 }

@@ -263,6 +263,11 @@
         background-image: url(./pics/ico_megadriv_cart.svg);
       }
     }
+    &--gameboy_cart {
+      &:before {
+        background-image: url(./pics/ico_gameboy_cart.svg);
+      }
+    }
   }
   &__interface--famicom_flop {
     &.m-listView__cellIcon {
