@@ -268,11 +268,28 @@
         background-image: url(./pics/ico_gameboy_cart.svg);
       }
     }
+    &--a2600_cart {
+      &:before {
+        background-image: url(./pics/ico_a2600_cart.svg);
+      }
+    }
+    &--pce_cart {
+      &:before {
+        background-image: url(./pics/ico_pce_cart.svg);
+      }
+    }
   }
   &__interface--famicom_flop {
     &.m-listView__cellIcon {
       &:before {
         background-image: url(./pics/ico_disksystem.svg);
+     }
+    }
+  }
+  &__interface--psx {
+    &.m-listView__cellIcon {
+      &:before {
+        background-image: url(./pics/ico_pscdrom.svg);
      }
     }
   }

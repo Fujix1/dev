@@ -2613,6 +2613,10 @@ body {
   max-width: 100%;
   font-family: var(--ff-base);
 }
+:focus-visible {
+  outline: none;
+}
+
 textarea {
   box-sizing: border-box;
   cursor: auto;
@@ -3058,8 +3062,17 @@ input[type=search]::-webkit-search-results-decoration {
 .m-listView__cellIcon--gameboy_cart:before {
   background-image: url(./pics/ico_gameboy_cart.svg);
 }
+.m-listView__cellIcon--a2600_cart:before {
+  background-image: url(./pics/ico_a2600_cart.svg);
+}
+.m-listView__cellIcon--pce_cart:before {
+  background-image: url(./pics/ico_pce_cart.svg);
+}
 .m-listView__interface--famicom_flop.m-listView__cellIcon:before {
   background-image: url(./pics/ico_disksystem.svg);
+}
+.m-listView__interface--psx.m-listView__cellIcon:before {
+  background-image: url(./pics/ico_pscdrom.svg);
 }
 
 .m-checkbox {

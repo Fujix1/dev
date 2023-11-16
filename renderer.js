@@ -83,7 +83,7 @@ const actKensaku = new Action({
   caption: "選択文字列をウェブ検索...",
   onExecute: async (self) => {
     const target = self.caller.target;
-    await window.retrofireAPI.openURL("https://duckduckgo.com/?q=" + String(document.getSelection()).trim());
+    await window.retrofireAPI.openURL("https://www.google.co.jp/search?q=" + String(document.getSelection()).trim());
   },
   onUpdate: async (self) => {
     const target = self.caller.target;
@@ -114,9 +114,12 @@ const actRun = new Action({
   iconFont: "fontello",
   iconChar: "E803",
   onExecute: async (self) => {
-    await window.retrofireAPI.executeMAME({
-      zipName: config.zipName,
-    });
+    // ソフトリスト配下がじゃないとき起動
+    if (document.activeElement.closest(".p-softlist") === null) {
+      await window.retrofireAPI.executeMAME({
+        zipName: config.zipName,
+      });
+    }
   },
   onUpdate: async (self) => {
     self.enabled = config.zipName !== "";
@@ -309,6 +312,31 @@ document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e
 });
 
 //------------------------------------------------------------
+const actRunSoft = new Action({
+  caption: "ソフトを起動",
+  keycode: "F5",
+  iconFont: "fontello",
+  iconChar: "E803",
+  onExecute: async (self) => {
+    // ソフトリスト配下がアクティブのときは起動
+    if (document.activeElement.closest(".p-softlist") !== null) {
+      if (softlists.filteredLength === 0) return;
+      const row = softlists.getFilteredRecord(listViewSoftlist.itemIndex);
+      window.retrofireAPI.executeMAME({ zipName: config.zipName, softName: row.name });
+    }
+  },
+  onUpdate: async (self) => {
+    self.enabled = softlists.filteredLength !== 0;
+    self.caption =
+      softlists.filteredLength !== 0
+        ? "「" +
+          Softlists.master[softlists.currentSoftlist].softwares[softlists.filteredTable[listViewSoftlist.itemIndex]]
+            .name +
+          "」を起動"
+        : "ソフトを起動";
+  },
+});
+
 const actCopySoftZipName = new Action({
   caption: "ZIP名をコピー",
   keycode: "c",
@@ -324,7 +352,7 @@ const actCopySoftZipName = new Action({
   },
 });
 
-const pmSoftList = new PopupMenu([{ action: actCopySoftZipName }]);
+const pmSoftList = new PopupMenu([{ action: actRunSoft }, { action: "---" }, { action: actCopySoftZipName }]);
 document.querySelector(".list-softlist").addEventListener("contextmenu", async (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -906,6 +934,7 @@ async function onLoad() {
       return row;
     },
     onEnter: (index) => {
+      if (softlists.filteredLength === 0) return;
       const row = softlists.getFilteredRecord(index);
       console.log("Softlist onenter");
       window.retrofireAPI.executeMAME({ zipName: config.zipName, softName: row.name });
@@ -920,11 +949,7 @@ async function onLoad() {
           break;
       }
     },
-    onFocus: (e, index) => {
-      // 起動用のセット名更新
-      //dataIndex = mamedb.getDataIndex(index);
-      //config.zipName = Dataset.master[dataIndex].zipname;
-    },
+    onFocus: (e, index) => {},
   });
   await listViewSoftlist.init();
 
