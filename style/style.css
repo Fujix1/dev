@@ -3359,12 +3359,23 @@ input[type=search]::-webkit-search-results-decoration {
   bottom: 0;
   display: flex;
 }
+.m-tab__search {
+  align-self: center;
+  margin-left: auto;
+  padding: 0 10px;
+}
 
 .p-search {
   position: relative;
   border-bottom: 1px solid var(--cl-theme--gray);
   transition: var(--s-transition);
   display: flex;
+  box-sizing: border-box;
+  height: 24px;
+}
+.p-search.disabled {
+  opacity: 0.15;
+  pointer-events: none;
 }
 .p-search:focus-within {
   border-bottom: 1px solid var(--cl-theme);
@@ -3375,10 +3386,12 @@ input[type=search]::-webkit-search-results-decoration {
   outline: none;
   background: transparent;
   border-radius: 0;
-  font-size: 130%;
-  line-height: 22px;
+  font-size: 15px;
+  line-height: 23px;
+  height: 23px;
   color: var(--cl-text);
   flex-grow: 1;
+  padding: 0 0.2em;
 }
 .p-search__input::selection {
   background-color: var(--cl-input--selection);
@@ -3392,13 +3405,17 @@ input[type=search]::-webkit-search-results-decoration {
   font-size: 20px;
   text-align: center;
   user-select: none;
-  cursor: pointer;
   transition: color var(--s-transition);
+  color: var(--cl-text);
 }
-.p-search__dropbox:hover .p-search__dropboxIcon {
+.p-search__dropbox.disabled .p-search__dropboxIcon {
+  color: var(--cl-text--weak);
+}
+.p-search__dropbox:not(.disabled):hover .p-search__dropboxIcon {
   color: var(--cl-theme);
+  cursor: pointer;
 }
-.p-search__dropbox:hover .p-search__dropboxStage {
+.p-search__dropbox:not(.disabled):hover .p-search__dropboxStage {
   pointer-events: all;
   opacity: 1;
   visibility: visible;
@@ -3447,6 +3464,7 @@ input[type=search]::-webkit-search-results-decoration {
 .p-search__clear {
   font-family: "microns";
   font-size: 20px;
+  color: var(--cl-text--weak);
   cursor: pointer;
   transition: var(--s-transition);
   user-select: none;
@@ -3882,7 +3900,13 @@ i.c-z {
 }
 .p-softlist__dropdown {
   padding: 2px 5px 5px 5px;
-  flex-basis: 700px;
+  flex-basis: 100%;
+}
+.p-softlist__search {
+  display: flex;
+  padding: 0 10px;
+  flex-direction: column;
+  justify-content: center;
 }
 .p-softlist__main {
   flex-grow: 1;

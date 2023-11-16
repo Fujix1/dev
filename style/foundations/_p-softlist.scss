@@ -9,10 +9,13 @@
   }
   &__dropdown {
     padding: 2px 5px 5px 5px;
-    flex-basis: 700px;
+    flex-basis: 100%;
   }
   &__search {
-
+    display: flex;
+    padding: 0 10px;
+    flex-direction: column;
+    justify-content: center;
   }
   &__main {
     flex-grow: 1;

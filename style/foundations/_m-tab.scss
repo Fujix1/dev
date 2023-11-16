@@ -80,4 +80,10 @@
     bottom: 0;
     display: flex;
   }
+  &__search {
+    align-self: center;
+    margin-left: auto;
+    padding: 0 10px;
+  }
+
 }
