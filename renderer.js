@@ -865,6 +865,7 @@ async function onLoad() {
       }
     },
     onFocus: (e, index) => {
+      console.log("onFocus", index);
       // 起動用のセット名更新
       dataIndex = dataSubTable[index];
       config.zipName = Dataset.master[dataIndex].zipname;
