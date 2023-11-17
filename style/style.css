@@ -3068,6 +3068,12 @@ input[type=search]::-webkit-search-results-decoration {
 .m-listView__cellIcon--pce_cart:before {
   background-image: url(./pics/ico_pce_cart.svg);
 }
+.m-listView__cellIcon--n64_cart:before {
+  background-image: url(./pics/ico_n64_cart.svg);
+}
+.m-listView__cellIcon--vboy_cart:before {
+  background-image: url(./pics/ico_vboy_cart.svg);
+}
 .m-listView__interface--famicom_flop.m-listView__cellIcon:before {
   background-image: url(./pics/ico_disksystem.svg);
 }

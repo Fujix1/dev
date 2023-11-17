@@ -278,6 +278,16 @@
         background-image: url(./pics/ico_pce_cart.svg);
       }
     }
+    &--n64_cart {
+      &:before {
+        background-image: url(./pics/ico_n64_cart.svg);
+      }
+    }
+    &--vboy_cart {
+      &:before {
+        background-image: url(./pics/ico_vboy_cart.svg);
+      }
+    }
   }
   &__interface--famicom_flop {
     &.m-listView__cellIcon {

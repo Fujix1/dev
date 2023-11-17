@@ -520,20 +520,36 @@ async function onLoad() {
         }
         break;
       case "Backspace": // 検索ボックスフォーカス
-        const search = document.getElementById("search");
+        let searchID;
+        // ソフトリスト配下のときはソフトリストの検索ボックスへ
+        if (document.activeElement.closest(".p-softlist") === null) {
+          searchID = "search";
+        } else {
+          searchID = "searchSoft";
+        }
+        const search = document.getElementById(searchID);
         if (e.target !== search) {
           search.focus();
           e.preventDefault();
         }
         break;
       case "f": {
+        // 検索ボックスフォーカス
         if (e.ctrlKey) {
-          const search = document.getElementById("search");
+          let searchID;
+          // ソフトリスト配下のときはソフトリストの検索ボックスへ
+          if (document.activeElement.closest(".p-softlist") === null) {
+            searchID = "search";
+          } else {
+            searchID = "searchSoft";
+          }
+          const search = document.getElementById(searchID);
           if (e.target !== search) {
             search.focus();
+            e.preventDefault();
           }
-          break;
         }
+        break;
       }
       case "Escape": // 検索リセット
         clearSearch();
