@@ -671,16 +671,19 @@ async function onLoad() {
   searchSoft.addEventListener("input", (e) => {
     if (e.target.getAttribute("IME") !== "true") {
       config.searchWordSoft = e.target.value;
-      //updateListView();
+      console.log(e.target.value);
+      updateListViewSoftlist();
     }
   });
   searchSoft.addEventListener("cut", (e) => {
     config.searchWordSoft = e.target.value;
-    //updateListView();
+    console.log(e.target.value);
+    updateListViewSoftlist();
   });
   searchSoft.addEventListener("paste", (e) => {
     config.searchWordSoft = e.target.value;
-    //updateListView();
+    console.log(e.target.value);
+    updateListViewSoftlist();
   });
   searchSoft.addEventListener("keydown", (e) => {
     // ポップアップメニュー あり
@@ -714,7 +717,8 @@ async function onLoad() {
   searchSoft.addEventListener("compositionend", (e) => {
     e.target.setAttribute("IME", false);
     config.searchWordSoft = e.target.value;
-    //updateListView();
+    console.log(e.target.value);
+    updateListViewSoftlist();
   });
 
   //----------------------------------------------------------------------
@@ -1063,7 +1067,7 @@ async function updateListView() {
 async function updateListViewSoftlist() {
   // データ index
   const dataIndex = softlists.getDataIndex(listViewSoftlist.itemIndex);
-  softlists.filter();
+  softlists.filter(config.searchWordSoft);
   softlists.sort({
     field: listViewSoftlist.columns[listViewSoftlist.orderByIndex].data,
     direction: listViewSoftlist.sortDirection,
@@ -1073,7 +1077,7 @@ async function updateListViewSoftlist() {
   // ソート後の index
   listViewSoftlist.itemIndex = softlists.filteredTable.indexOf(dataIndex);
   listViewSoftlist.updateRowTexts();
-  listViewSoftlist.makeVisible();
+  listViewSoftlist.makeVisible(false);
 }
 
 // 項目選択時の処理
