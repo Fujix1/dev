@@ -288,6 +288,11 @@
         background-image: url(./pics/ico_vboy_cart.svg);
       }
     }
+    &--sat_cart {
+      &:before {
+        background-image: url(./pics/ico_sat_cart.svg);
+      }
+    }
   }
   &__interface--famicom_flop {
     &.m-listView__cellIcon {

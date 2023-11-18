@@ -24,6 +24,7 @@ let config = {
   language: LANG.JP, // 言語設定
   searchWord: "", // 検索文字列
   searchFields: "", // 検索対象
+  searchWordSoft: "",
   keepAspect: true, // スクリーンショットアスペクト比
   splitter: [
     // スプリッタの幅高初期値
@@ -407,6 +408,10 @@ async function onLoad() {
     if (readConfig.hasOwnProperty("zipName")) {
       config.zipName = readConfig.zipName;
     }
+    if (readConfig.hasOwnProperty("searchWordSoft")) {
+      config.searchWordSoft = readConfig.searchWordSoft;
+      document.getElementById("searchSoft").value = readConfig.searchWordSoft;
+    }
   }
 
   // スプリッター初期設定
@@ -597,21 +602,22 @@ async function onLoad() {
   });
 
   // 検索欄入力イベント
-  document.querySelector("#search").addEventListener("input", (e) => {
+  const search = document.getElementById("search");
+  search.addEventListener("input", (e) => {
     if (e.target.getAttribute("IME") !== "true") {
       config.searchWord = e.target.value;
       updateListView();
     }
   });
-  document.querySelector("#search").addEventListener("cut", (e) => {
+  search.addEventListener("cut", (e) => {
     config.searchWord = e.target.value;
     updateListView();
   });
-  document.querySelector("#search").addEventListener("paste", (e) => {
+  search.addEventListener("paste", (e) => {
     config.searchWord = e.target.value;
     updateListView();
   });
-  document.querySelector("#search").addEventListener("keydown", (e) => {
+  search.addEventListener("keydown", (e) => {
     // ポップアップメニュー あり
     if (document.body.classList.contains("is-popupmenu-open")) {
       e.preventDefault();
@@ -631,17 +637,17 @@ async function onLoad() {
       }
     }
   });
-  document.querySelector("#search").addEventListener("focus", (e) => {
+  search.addEventListener("focus", (e) => {
     e.target.select();
   });
 
   // IME 変換中
-  document.querySelector("#search").addEventListener("compositionstart", (e) => {
+  search.addEventListener("compositionstart", (e) => {
     e.target.setAttribute("IME", true);
   });
 
   // IME 変換確定
-  document.querySelector("#search").addEventListener("compositionend", (e) => {
+  search.addEventListener("compositionend", (e) => {
     e.target.setAttribute("IME", false);
     config.searchWord = e.target.value;
     updateListView();
@@ -657,6 +663,58 @@ async function onLoad() {
       listViewMain.itemCount = mamedb.filteredLength;
       updateListView();
     });
+  });
+
+  //----------------------------------------------------------------------
+  // ソフトリスト検索入力
+  const searchSoft = document.getElementById("searchSoft");
+  searchSoft.addEventListener("input", (e) => {
+    if (e.target.getAttribute("IME") !== "true") {
+      config.searchWordSoft = e.target.value;
+      //updateListView();
+    }
+  });
+  searchSoft.addEventListener("cut", (e) => {
+    config.searchWordSoft = e.target.value;
+    //updateListView();
+  });
+  searchSoft.addEventListener("paste", (e) => {
+    config.searchWordSoft = e.target.value;
+    //updateListView();
+  });
+  searchSoft.addEventListener("keydown", (e) => {
+    // ポップアップメニュー あり
+    if (document.body.classList.contains("is-popupmenu-open")) {
+      e.preventDefault();
+      return;
+    }
+    if (e.code === "Tab") {
+      listViewSoftlist.makeVisible();
+      e.preventDefault();
+      return;
+    }
+    if (e.target.getAttribute("IME") == "true") {
+    } else {
+      if (e.code === "Enter" || e.code === "NumpadEnter") {
+        listViewSoftlist.makeVisible();
+        e.preventDefault();
+        return;
+      }
+    }
+  });
+  searchSoft.addEventListener("focus", (e) => {
+    e.target.select();
+  });
+  // IME 変換中
+  searchSoft.addEventListener("compositionstart", (e) => {
+    e.target.setAttribute("IME", true);
+  });
+
+  // IME 変換確定
+  searchSoft.addEventListener("compositionend", (e) => {
+    e.target.setAttribute("IME", false);
+    config.searchWordSoft = e.target.value;
+    //updateListView();
   });
 
   //----------------------------------------------------------------------

@@ -3074,6 +3074,9 @@ input[type=search]::-webkit-search-results-decoration {
 .m-listView__cellIcon--vboy_cart:before {
   background-image: url(./pics/ico_vboy_cart.svg);
 }
+.m-listView__cellIcon--sat_cart:before {
+  background-image: url(./pics/ico_sat_cart.svg);
+}
 .m-listView__interface--famicom_flop.m-listView__cellIcon:before {
   background-image: url(./pics/ico_disksystem.svg);
 }
