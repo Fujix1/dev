@@ -692,7 +692,11 @@ async function onLoad() {
       return;
     }
     if (e.code === "Tab") {
-      listViewSoftlist.makeVisible();
+      if (e.shiftKey) {
+        document.getElementById("softlistTitle").focus();
+      } else {
+        listViewSoftlist.makeVisible();
+      }
       e.preventDefault();
       return;
     }
@@ -819,7 +823,7 @@ async function onLoad() {
       switch (e.code) {
         case "Tab":
           if (e.shiftKey) {
-            document.querySelector("#search").focus();
+            document.getElementById("search").focus();
           }
           e.preventDefault();
           break;
@@ -920,7 +924,7 @@ async function onLoad() {
       switch (e.code) {
         case "Tab":
           if (e.shiftKey) {
-            document.querySelector("#search").focus();
+            document.getElementById("search").focus();
           }
           e.preventDefault();
           break;
@@ -1022,7 +1026,7 @@ async function onLoad() {
       switch (e.code) {
         case "Tab":
           if (e.shiftKey) {
-            document.getElementById("softlistTitle").focus();
+            document.getElementById("searchSoft").focus();
           }
           e.preventDefault();
           break;
@@ -1067,7 +1071,7 @@ async function updateListView() {
 async function updateListViewSoftlist() {
   // データ index
   const dataIndex = softlists.getDataIndex(listViewSoftlist.itemIndex);
-  softlists.filter(config.searchWordSoft);
+  softlists.filter({ word: config.searchWordSoft });
   softlists.sort({
     field: listViewSoftlist.columns[listViewSoftlist.orderByIndex].data,
     direction: listViewSoftlist.sortDirection,
