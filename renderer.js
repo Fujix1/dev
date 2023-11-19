@@ -721,7 +721,7 @@ async function onLoad() {
   searchSoft.addEventListener("compositionend", (e) => {
     e.target.setAttribute("IME", false);
     config.searchWordSoft = e.target.value;
-    console.log(e.target.value);
+
     updateListViewSoftlist();
   });
 
@@ -1195,11 +1195,17 @@ window.addEventListener("beforeunload", (e) => {
 // 検索クリア
 document.getElementById("clear").addEventListener("click", clearSearch);
 function clearSearch() {
-  document.querySelector("#search").value = "";
-  //listViewMain.updateListViewSearch({ searchWord: "" });
+  document.getElementById("search").value = "";
   config.searchWord = "";
   updateListView();
 }
+
+// 検索クリアソフト
+document.getElementById("clearSoft").addEventListener("click", (e) => {
+  document.getElementById("searchSoft").value = "";
+  config.searchWordSoft = "";
+  updateListViewSoftlist();
+});
 
 //------------------------------------------------------------------------------
 // フォームの config 送信
