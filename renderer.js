@@ -557,7 +557,18 @@ async function onLoad() {
         break;
       }
       case "Escape": // 検索リセット
-        clearSearch();
+        // ソフトリスト配下がじゃないとき
+        if (document.activeElement.closest(".p-softlist") === null) {
+          clearSearch();
+        } else {
+          // ソフトリスト検索リセット
+          if (softlists.currentSoftlist === "") {
+            return;
+          }
+          document.getElementById("searchSoft").value = "";
+          config.searchWordSoft = "";
+          updateListViewSoftlist();
+        }
         break;
     }
   });
@@ -824,6 +835,12 @@ async function onLoad() {
         case "Tab":
           if (e.shiftKey) {
             document.getElementById("search").focus();
+          } else {
+            if (document.querySelector(".m-tab--bottom .m-tab__radio[value='1']").checked) {
+              document.getElementById("softlistTitle").focus();
+            } else if (document.querySelector(".m-tab--bottom .m-tab__radio[value='0']").checked) {
+              listViewSub.makeVisible();
+            }
           }
           e.preventDefault();
           break;
@@ -1069,6 +1086,10 @@ async function updateListView() {
 
 // ソフトリストのリストビュー更新
 async function updateListViewSoftlist() {
+  if (softlists.currentSoftlist === "") {
+    return;
+  }
+
   // データ index
   const dataIndex = softlists.getDataIndex(listViewSoftlist.itemIndex);
   softlists.filter({ word: config.searchWordSoft });
