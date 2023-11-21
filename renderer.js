@@ -520,7 +520,7 @@ async function onLoad() {
     switch (e.key) {
       case "F12": // 言語切替
         if (!e.repeat) {
-          changeLanguage(config.language == LANG.JP ? LANG.EN : LANG.JP);
+          await changeLanguage(config.language == LANG.JP ? LANG.EN : LANG.JP);
           document.getElementById("language").checked = config.language == LANG.EN;
         }
         break;
@@ -580,14 +580,15 @@ async function onLoad() {
 
   // 言語切替
   document.getElementById("language").addEventListener("change", async (e) => {
-    changeLanguage(e.target.checked ? LANG.EN : LANG.JP);
+    await changeLanguage(e.target.checked ? LANG.EN : LANG.JP);
   });
 
   // 言語切替処理
-  function changeLanguage(newLanguage) {
+  async function changeLanguage(newLanguage) {
+    console.log("channge lang");
     config.language = newLanguage;
-    updateListView();
-    updateListViewSoftlist();
+    await updateListView();
+    updateListViewSoftlist(); // 表示更新に必要
   }
 
   // empty the debug output
@@ -1086,6 +1087,7 @@ async function updateListView() {
 
 // ソフトリストのリストビュー更新
 async function updateListViewSoftlist() {
+  console.log("updateListViewSoftlist");
   if (softlists.currentSoftlist === "") {
     return;
   }
@@ -1124,6 +1126,10 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     dataSubZipname = "";
     dataSubTable = [];
     updateSubList();
+
+    // ソフトウェア
+    softlists.clear();
+    softlists.toggleSearchSoft();
     return;
   }
 
