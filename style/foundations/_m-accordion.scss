@@ -4,6 +4,7 @@
     background: var(--cl-listheaderbg);
     //color: var(--cl-listheadertext);
     padding: 4px 8px ;
+    border-bottom: 1px solid var(--cl-theme);
   }
   &__titletext {
     appearance: none;
@@ -15,6 +16,9 @@
     font-size: 105%;
     padding: 0;
     flex-basis: 15em;
+    &::selection {
+      background-color: var(--cl-input--selection);
+    }
   }
   &__label {
     background-color: #aaa;

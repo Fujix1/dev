@@ -2852,6 +2852,7 @@ input[type=search]::-webkit-search-results-decoration {
   display: flex;
   background: var(--cl-listheaderbg);
   padding: 4px 8px;
+  border-bottom: 1px solid var(--cl-theme);
 }
 .m-accordion__titletext {
   appearance: none;
@@ -2863,6 +2864,9 @@ input[type=search]::-webkit-search-results-decoration {
   font-size: 105%;
   padding: 0;
   flex-basis: 15em;
+}
+.m-accordion__titletext::selection {
+  background-color: var(--cl-input--selection);
 }
 .m-accordion__label {
   background-color: #aaa;
@@ -3614,6 +3618,10 @@ input[type=search]::-webkit-search-results-decoration {
   flex-grow: 1;
   resize: none;
   padding: 7px 8px 0px;
+}
+.p-gameinfo__textarea::selection {
+  background-color: var(--cl-input--selection);
+  color: var(--cl-text);
 }
 
 .p-title {
