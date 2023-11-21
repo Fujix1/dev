@@ -1,0 +1,30 @@
+.m-accordion {
+  &__title {
+    display: flex;
+    background: var(--cl-listheaderbg);
+    //color: var(--cl-listheadertext);
+    padding: 4px 8px ;
+  }
+  &__titletext {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-weight: bold;
+    line-height: 1.5;
+    font-size: 105%;
+    padding: 0;
+    flex-basis: 15em;
+  }
+  &__label {
+    background-color: #aaa;
+    position: relative;
+    flex-grow: 1;
+  }
+  &__content {
+
+  }
+  &__input {
+    display: none;
+  }
+}

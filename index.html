@@ -156,25 +156,29 @@
                   <p class="p-info__text" id="info" tabindex="0"></p>
                 </div>
                 <div class="m-accordion">
-                  <input type="text" class="m_accordion__titletext" id="gameinfo--zip" spellcheck="false">
-                  <label class="m-accordion__title" for="accordioninfo"><input id="accordioninfo" class="m-accordion__input" type="checkbox" checked></label>
+                  <div class="m-accordion__title">
+                    <input type="text" class="m-accordion__titletext" id="gameinfo--zip" spellcheck="false" readonly>
+                    <label class="m-accordion__label" for="accordioninfo">
+                    </label>
+                  </div>
+                  <input id="accordioninfo" class="m-accordion__input" type="checkbox" checked>
                   <div class="m-accordion__content">
                     <div class="p-gameinfo">
                       <div class="p-gameinfo__section p-gameinfo__section--cpu">
-                        <div class="p-gameinfo__title">CPU:</div>
-                        <textarea class="p-gameinfo__textarea" id="gameinfo--cpu" rows="7" spellcheck="false"></textarea>
+                        <div class="p-gameinfo__title">CPU</div>
+                        <textarea class="p-gameinfo__textarea" id="gameinfo--cpu" rows="6" spellcheck="false" readonly></textarea>
                       </div>
                       <div class="p-gameinfo__section p-gameinfo__section--sound">
-                        <div class="p-gameinfo__title">音源:</div>
-                        <textarea class="p-gameinfo__textarea" id="gameinfo--sound" rows="4" spellcheck="false"></textarea>
+                        <div class="p-gameinfo__title">音源</div>
+                        <textarea class="p-gameinfo__textarea" id="gameinfo--sound" rows="4" spellcheck="false" readonly></textarea>
                       </div>
                       <div class="p-gameinfo__section p-gameinfo__section--display">
-                        <div class="p-gameinfo__title">表示:</div>
-                        <textarea class="p-gameinfo__textarea" id="gameinfo--display" rows="2" spellcheck="false"></textarea>
+                        <div class="p-gameinfo__title">表示</div>
+                        <textarea class="p-gameinfo__textarea" id="gameinfo--display" rows="2" spellcheck="false" readonly></textarea>
                       </div>
                       <div class="p-gameinfo__section p-gameinfo__section--driver">
-                        <div class="p-gameinfo__title">ドライバ:</div>
-                        <textarea class="p-gameinfo__textarea" id="gameinfo--driver" rows="1" spellcheck="false"></textarea>
+                        <div class="p-gameinfo__title">ドライバ</div>
+                        <textarea class="p-gameinfo__textarea" id="gameinfo--driver" rows="1" spellcheck="false" readonly></textarea>
                       </div>
                     </div>
                   </div>

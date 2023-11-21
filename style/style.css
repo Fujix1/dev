@@ -2848,6 +2848,31 @@ input[type=search]::-webkit-search-results-decoration {
   border: 1px solid var(--cl-theme);
 }
 
+.m-accordion__title {
+  display: flex;
+  background: var(--cl-listheaderbg);
+  padding: 4px 8px;
+}
+.m-accordion__titletext {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-weight: bold;
+  line-height: 1.5;
+  font-size: 105%;
+  padding: 0;
+  flex-basis: 15em;
+}
+.m-accordion__label {
+  background-color: #aaa;
+  position: relative;
+  flex-grow: 1;
+}
+.m-accordion__input {
+  display: none;
+}
+
 .m-listView {
   display: flex;
   flex-direction: column;
@@ -3506,7 +3531,8 @@ input[type=search]::-webkit-search-results-decoration {
 .p-info {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  overflow: hidden;
+  flex-grow: 1;
 }
 .p-info > *:focus-visible {
   outline: none;
@@ -3565,6 +3591,29 @@ input[type=search]::-webkit-search-results-decoration {
   right: 0;
   bottom: 0;
   z-index: -1;
+}
+
+.p-gameinfo__section {
+  display: flex;
+}
+.p-gameinfo__section:not(:last-of-type) {
+  border-bottom: 1px solid var(--cl-listborder);
+}
+.p-gameinfo__title {
+  white-space: nowrap;
+  font-weight: bold;
+  padding: 7px 8px;
+  color: var(--cl-listheadertext);
+}
+.p-gameinfo__textarea {
+  appearance: none;
+  border-radius: 0;
+  border: none;
+  background: inherit;
+  color: var(--cl-text--weak);
+  flex-grow: 1;
+  resize: none;
+  padding: 7px 8px 0px;
 }
 
 .p-title {

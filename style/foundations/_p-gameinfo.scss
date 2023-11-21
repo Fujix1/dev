@@ -1,0 +1,26 @@
+.p-gameinfo {
+
+  &__section {
+    display: flex;
+    &:not(:last-of-type) {
+      border-bottom: 1px solid var(--cl-listborder);
+    }
+
+  }
+  &__title {
+    white-space: nowrap;
+    font-weight: bold;
+    padding: 7px 8px;
+    color: var(--cl-listheadertext);
+  }
+  &__textarea {
+    appearance: none;
+    border-radius: 0;
+    border: none;
+    background: inherit;
+    color: var(--cl-text--weak);
+    flex-grow: 1;
+    resize: none;
+    padding: 7px 8px 0px;
+  }
+}
