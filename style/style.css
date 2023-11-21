@@ -2617,14 +2617,14 @@ body {
   outline: none;
 }
 
-textarea {
+textarea.debug {
   box-sizing: border-box;
   cursor: auto;
   font-family: var(--ff-mono-space);
   font-size: 12px;
   line-height: 1.2;
 }
-textarea.debug {
+textarea.debug.debug {
   width: 100%;
   display: block;
   background-color: var(--cl-debug--bg);
@@ -2634,7 +2634,7 @@ textarea.debug {
   appearance: none;
   border: none;
 }
-textarea.debug::selection {
+textarea.debug.debug::selection {
   background-color: var(--cl-input--selection);
   color: var(--cl-text);
 }

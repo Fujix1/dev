@@ -19,7 +19,7 @@ body {
   outline: none;
 }
 
-textarea {
+textarea.debug {
   box-sizing: border-box;
   cursor: auto;
   font-family: var(--ff-mono-space);

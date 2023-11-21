@@ -1211,6 +1211,22 @@ async function subItemSelectHandler(argDataIndex) {
 async function showInfo(zipName) {
   const st = await dats.getInfo(zipName);
   document.querySelector("#info").innerHTML = st;
+
+  // gameinfo 部分
+  if (zipName === "") {
+    document.getElementById("gameinfo--zip").value = "";
+    document.getElementById("gameinfo--cpu").value = "";
+    document.getElementById("gameinfo--sound").value = "";
+    document.getElementById("gameinfo--display").value = "";
+    document.getElementById("gameinfo--driver").value = "";
+  } else {
+    document.getElementById("gameinfo--zip").value = zipName;
+    const row = Dataset.master[Dataset.indexOfZip(zipName)];
+    document.getElementById("gameinfo--cpu").value = row.cpus.replaceAll("<br>", "\n");
+    document.getElementById("gameinfo--sound").value = row.sounds.replaceAll("<br>", "\n");
+    document.getElementById("gameinfo--display").value = row.screens.replaceAll("<br>", "\n");
+    document.getElementById("gameinfo--driver").value = row.source;
+  }
 }
 
 // ウインドウ終了前
