@@ -40,7 +40,7 @@ const root = document.querySelector(":root");
 // --------------------------------------------------------------------------
 // アクションのこと
 const actCut = new Action({
-  caption: "切り取り",
+  caption: "カット",
   onExecute: (self) => {
     const target = self.caller.target;
     navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
@@ -67,7 +67,7 @@ const actCopy = new Action({
 });
 
 const actPaste = new Action({
-  caption: "貼り付け",
+  caption: "ペースト",
   onExecute: async (self) => {
     const st = await navigator.clipboard.readText();
     const target = self.caller.target;
@@ -96,6 +96,13 @@ const actKensaku = new Action({
 // 編集用ポップアップメニュー
 const pmEdit = new PopupMenu([{ action: actCut }, { action: actCopy }, { action: actPaste }]);
 document.querySelector("#search").addEventListener("contextmenu", (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  pmEdit.show(e);
+});
+
+const pmEditSoft = new PopupMenu([{ action: actCut }, { action: actCopy }, { action: actPaste }]);
+document.querySelector("#searchSoft").addEventListener("contextmenu", (e) => {
   e.stopPropagation();
   e.preventDefault();
   pmEdit.show(e);
@@ -585,7 +592,6 @@ async function onLoad() {
 
   // 言語切替処理
   async function changeLanguage(newLanguage) {
-    console.log("channge lang");
     config.language = newLanguage;
     await updateListView();
     updateListViewSoftlist(); // 表示更新に必要
@@ -683,18 +689,15 @@ async function onLoad() {
   searchSoft.addEventListener("input", (e) => {
     if (e.target.getAttribute("IME") !== "true") {
       config.searchWordSoft = e.target.value;
-      console.log(e.target.value);
       updateListViewSoftlist();
     }
   });
   searchSoft.addEventListener("cut", (e) => {
     config.searchWordSoft = e.target.value;
-    console.log(e.target.value);
     updateListViewSoftlist();
   });
   searchSoft.addEventListener("paste", (e) => {
     config.searchWordSoft = e.target.value;
-    console.log(e.target.value);
     updateListViewSoftlist();
   });
   searchSoft.addEventListener("keydown", (e) => {
