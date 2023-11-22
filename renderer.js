@@ -405,6 +405,14 @@ async function onLoad() {
     } else {
       document.querySelector(".m-tab--bottom .m-tab__radio[value='0']").checked = true;
     }
+    // アコーディオン
+    if (readConfig.hasOwnProperty("accordions")) {
+      for (let i = 0; i < readConfig.accordions.length; i++) {
+        const item = document.querySelector("#" + readConfig.accordions[i].id + ".m-accordion__input");
+        if (item !== null) item.checked = readConfig.accordions[i].checked;
+      }
+    }
+
     // コマンドオプション
     if (readConfig.hasOwnProperty("command")) {
       config.command = readConfig.command;
@@ -1277,6 +1285,13 @@ function saveFormConfig() {
 
     // 下側タブ
     config.bottomTab = parseInt(document.querySelector(".m-tab--bottom .m-tab__radio:checked").value);
+
+    // アコーディオン
+    config.accordions = [];
+    const accordions = document.querySelectorAll(".m-accordion__input");
+    accordions.forEach((item) => {
+      config.accordions.push({ id: item.id, checked: item.checked });
+    });
 
     // コマンド設定
     config.command = command.getConfig;
