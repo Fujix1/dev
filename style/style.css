@@ -2506,6 +2506,7 @@ template {
   --font-size: 12px;
   --ff-sans-serif: "Helvetica", "Helvetica Neue", "Arial", "Nimbus Sans", "FreeSans", sans-serif;
   --s-transition: 0.2s;
+  --s-transition--long: 0.4s;
   --cl-title--bg: #353c41;
   --cl-title--text: #aaa;
   --cl-control-bg: #1c1e22;
@@ -2860,8 +2861,7 @@ input[type=search]::-webkit-search-results-decoration {
   border: none;
   color: inherit;
   font-weight: bold;
-  line-height: 1.5;
-  font-size: 105%;
+  line-height: 17px;
   padding: 0;
   flex-basis: 15em;
 }
@@ -2869,12 +2869,33 @@ input[type=search]::-webkit-search-results-decoration {
   background-color: var(--cl-input--selection);
 }
 .m-accordion__label {
-  background-color: #aaa;
   position: relative;
   flex-grow: 1;
+  cursor: pointer;
+}
+.m-accordion__label:before {
+  content: "\f006";
+  font-size: 13px;
+  line-height: 19px;
+  font-family: "fontello";
+  display: block;
+  position: absolute;
+  right: 6px;
+  transition: var(--s-transition--long);
+  transform: rotate(-90deg);
 }
 .m-accordion__input {
   display: none;
+}
+.m-accordion__input + .m-accordion__content {
+  max-height: 0;
+  transition: var(--s-transition--long);
+}
+.m-accordion__input:checked + .m-accordion__content {
+  max-height: 300px;
+}
+.m-accordion:has(input.m-accordion__input:checked) .m-accordion__label:before {
+  transform: rotate(90deg);
 }
 
 .m-listView {
@@ -3608,6 +3629,7 @@ input[type=search]::-webkit-search-results-decoration {
   font-weight: bold;
   padding: 7px 8px;
   color: var(--cl-listheadertext);
+  line-height: 1.4;
 }
 .p-gameinfo__textarea {
   appearance: none;
@@ -3618,6 +3640,7 @@ input[type=search]::-webkit-search-results-decoration {
   flex-grow: 1;
   resize: none;
   padding: 7px 8px 0px;
+  line-height: 1.4;
 }
 .p-gameinfo__textarea::selection {
   background-color: var(--cl-input--selection);

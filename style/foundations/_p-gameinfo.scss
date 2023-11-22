@@ -12,6 +12,7 @@
     font-weight: bold;
     padding: 7px 8px;
     color: var(--cl-listheadertext);
+    line-height: 1.4;
   }
   &__textarea {
     appearance: none;
@@ -22,6 +23,7 @@
     flex-grow: 1;
     resize: none;
     padding: 7px 8px 0px;
+    line-height: 1.4;
     &::selection {
       background-color: var(--cl-input--selection);
       color: var(--cl-text);

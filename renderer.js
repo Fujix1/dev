@@ -347,8 +347,6 @@ const actRunSoft = new Action({
 
 const actCopySoftZipName = new Action({
   caption: "ZIP名をコピー",
-  keycode: "c",
-  control: true,
   onExecute: async (self) => {
     navigator.clipboard.writeText(
       Softlists.master[softlists.currentSoftlist].softwares[softlists.filteredTable[listViewSoftlist.itemIndex]].name
@@ -456,6 +454,7 @@ async function onLoad() {
     });
 
   window.addEventListener("keydown", async (e) => {
+    console.log(e);
     // ポップアップメニュー表示中 のキー処理
     if (document.body.classList.contains("is-popupmenu-open")) {
       const popup = PopupMenu.currentPopupMenu; // 現在のポップアップメニュー
