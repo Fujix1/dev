@@ -94,25 +94,15 @@ const actKensaku = new Action({
 });
 
 // 編集用ポップアップメニュー
-const pmEdit = new PopupMenu([{ action: actCut }, { action: actCopy }, { action: actPaste }]);
-document.querySelector("#search").addEventListener("contextmenu", (e) => {
-  e.stopPropagation();
-  e.preventDefault();
-  pmEdit.show(e);
+const pmSearch = new PopupMenu({
+  items: [{ action: actCut }, { action: actCopy }, { action: actPaste }],
+  targets: ["#search", "#searchSoft"],
 });
 
-const pmEditSoft = new PopupMenu([{ action: actCut }, { action: actCopy }, { action: actPaste }]);
-document.querySelector("#searchSoft").addEventListener("contextmenu", (e) => {
-  e.stopPropagation();
-  e.preventDefault();
-  pmEdit.show(e);
-});
-
-const pmInfo = new PopupMenu([{ action: actCopy }, { action: actKensaku }]);
-document.querySelector("#info").addEventListener("contextmenu", (e) => {
-  e.stopPropagation();
-  e.preventDefault();
-  pmInfo.show(e);
+const pmInfo = new PopupMenu({ items: [{ action: actCopy }, { action: actKensaku }], target: "#info" });
+const pmGameinfo = new PopupMenu({
+  items: [{ action: actCopy }],
+  targets: ["#gameinfo--zip", "#gameinfo--cpu", "#gameinfo--sound", "#gameinfo--display", "#gameinfo--driver"],
 });
 
 //------------------------------------------------------------
@@ -245,26 +235,19 @@ const actDeleteNvCfg = new Action({
   },
 });
 
-const pmMainList = new PopupMenu([
-  { action: actRun },
-  { action: "---" },
-  { action: actDriver },
-  { action: actGithub },
-  { action: "---" },
-  {
-    action: actDeleteSettings,
-    children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: "---" }, { action: actDeleteNvCfg }],
-  },
-]);
-document.querySelector(".list-view").addEventListener("contextmenu", async (e) => {
-  e.stopPropagation();
-  e.preventDefault();
-  await pmMainList.show(e);
-});
-document.querySelector(".list-sub").addEventListener("contextmenu", async (e) => {
-  e.stopPropagation();
-  e.preventDefault();
-  await pmMainList.show(e);
+const pmMainList = new PopupMenu({
+  items: [
+    { action: actRun },
+    { action: "---" },
+    { action: actDriver },
+    { action: actGithub },
+    { action: "---" },
+    {
+      action: actDeleteSettings,
+      children: [{ action: actDeleteCfg }, { action: actDeleteNvram }, { action: "---" }, { action: actDeleteNvCfg }],
+    },
+  ],
+  targets: [".list-view", ".list-sub"],
 });
 
 //------------------------------------------------------------
@@ -305,18 +288,15 @@ const actTakeOutFromFolder = new Action({
   },
 });
 
-const pmScreenshot = new PopupMenu([
-  { action: actKeepAspect },
-  { action: "---" },
-  { action: actDeleteScreenShot },
-  { action: "---" },
-  { action: actTakeOutFromFolder },
-]);
-document.querySelector(".p-info__screenshot").addEventListener("contextmenu", (e) => {
-  console.log("contextmenu");
-  e.stopPropagation();
-  e.preventDefault();
-  pmScreenshot.show(e);
+const pmScreenshot = new PopupMenu({
+  items: [
+    { action: actKeepAspect },
+    { action: "---" },
+    { action: actDeleteScreenShot },
+    { action: "---" },
+    { action: actTakeOutFromFolder },
+  ],
+  targets: [".p-info__screenshot"],
 });
 
 //------------------------------------------------------------
@@ -358,11 +338,9 @@ const actCopySoftZipName = new Action({
   },
 });
 
-const pmSoftList = new PopupMenu([{ action: actRunSoft }, { action: "---" }, { action: actCopySoftZipName }]);
-document.querySelector(".list-softlist").addEventListener("contextmenu", async (e) => {
-  e.stopPropagation();
-  e.preventDefault();
-  await pmSoftList.show(e);
+const pmSoftList = new PopupMenu({
+  items: [{ action: actRunSoft }, { action: "---" }, { action: actCopySoftZipName }],
+  targets: [".list-softlist"],
 });
 
 //---------------------------------------------------------------------
@@ -462,7 +440,6 @@ async function onLoad() {
     });
 
   window.addEventListener("keydown", async (e) => {
-    console.log(e);
     // ポップアップメニュー表示中 のキー処理
     if (document.body.classList.contains("is-popupmenu-open")) {
       const popup = PopupMenu.currentPopupMenu; // 現在のポップアップメニュー
