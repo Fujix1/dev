@@ -2537,7 +2537,8 @@ template {
   --cl-listheader-border: #4e5358;
   --cl-listborder: #4e5258;
   --cl-list-bg-2n: transparent;
-  --cl-input--selection: #1f70b3;
+  --cl-input--selection: #4979bb;
+  --cl-input--bg: #1c1d1e;
   --cl-debug--bg: #13171a;
   --cl-debug--text: #ccc;
   --cl-popup--text: #eee;
@@ -3450,6 +3451,38 @@ input[type=search]::-webkit-search-results-decoration {
   padding: 0 10px;
 }
 
+.m-input {
+  appearance: none;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+}
+.m-input[type=text] {
+  color: var(--cl-text);
+  padding: 3px 5px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  border: 1px solid var(--cl-listborder);
+  width: calc(100% - 10px);
+  background: var(--cl-input--bg);
+  transition: border-color 0.2s;
+}
+.m-input[type=text]::selection {
+  background-color: var(--cl-input--selection);
+  color: var(--cl-text);
+}
+.m-input[type=text]:focus {
+  border-color: var(--cl-theme);
+}
+.m-input--readonly[type=text] {
+  background: transparent;
+  color: var(--cl-text--inactive);
+  border-color: transparent;
+}
+.m-input--readonly[type=text]:focus {
+  border-color: transparent;
+}
+
 .p-search {
   position: relative;
   border-bottom: 1px solid var(--cl-theme--gray);
@@ -4061,19 +4094,16 @@ i.c-z {
 .p-edit {
   padding: 5px 10px;
 }
-.p-edit input {
-  appearance: none;
-  border-radius: 0;
-  border: none;
-  background: transparent;
-}
 .p-edit__table {
   width: 100%;
+  border-collapse: separate;
+  border-spacing: 3px;
 }
 .p-edit__table th {
   text-align: right;
   vertical-align: middle;
   width: 1%;
+  padding-right: 5px;
   white-space: nowrap;
   color: var(--cl-listheadertext);
 }

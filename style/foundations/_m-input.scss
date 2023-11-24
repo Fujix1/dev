@@ -1,0 +1,33 @@
+.m-input {
+    appearance: none;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+
+    &[type="text"]{
+      color: var(--cl-text);
+      padding: 3px 5px;
+      font-size: 13.5px;
+      line-height: 1.4;
+      border: 1px solid var(--cl-listborder);
+      width: calc(100% - 10px);
+      background: var(--cl-input--bg);
+      transition: border-color .2s;
+      &::selection {
+        background-color: var(--cl-input--selection);
+        color: var(--cl-text);
+      }
+      &:focus {
+        border-color: var(--cl-theme);
+      }
+    }
+    &--readonly[type="text"] {
+      background: transparent;
+      color: var(--cl-text--inactive);
+      border-color: transparent;
+      &:focus {
+        border-color: transparent;
+      }
+    }
+
+}

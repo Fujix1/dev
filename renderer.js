@@ -1193,6 +1193,11 @@ async function subItemSelectHandler(argDataIndex) {
  * @param {*} zipName
  */
 async function showInfo(zipName) {
+  const row = Dataset.getRowByZip(zipName);
+  document.getElementById("editDescription").value = row.desc;
+  document.getElementById("editDescriptionJ").value = row.descJ;
+  document.getElementById("editKana").value = row.kana;
+
   const st = await dats.getInfo(zipName);
   document.querySelector("#info").innerHTML = st;
 
