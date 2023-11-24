@@ -21,7 +21,13 @@
         </div>
         <div class="l-tree" style="min-width: 160px;max-width: 280px;">
           <div class="l-tree__upper">
-            up
+<div class="l-test">
+
+  <button type="button" id="btn-dialog">ダイアログ</button>
+  <button type="button" id="btn-item2">list.xml</button>
+  <button type="button" id="btn-item3">listsoft.xml</button>
+
+</div>
           </div>
           <div class="l-tree__bottom">
            
@@ -96,13 +102,35 @@
                 </div>
                 <div class="m-tab__contents">
                   <div class="m-tab__content">
-                    <div class="l-test">
-                      <p>
-                        <button type="button" id="btn-dialog">ダイアログ</button>
-                        <button type="button" id="btn-item2">list.xml</button>
-                        <button type="button" id="btn-item3">listsoft.xml</button>
-                      </p>
+
+                    <div class="m-accordion">
+                      <div class="m-accordion__title">
+                        <div class="m-accordion__titleLabel">
+                          Editor
+                        </div>
+                        <label class="m-accordion__label" for="accordionedit"></label>
+                      </div>
+                      <input id="accordionedit" class="m-accordion__input" type="checkbox">
+                      <div class="m-accordion__content">
+                        <div class="m-accordion__inner">
+                          <div class="p-edit">
+                            <table class="p-edit__table">
+                              <tr>
+                                <th>英語名</th><td><input type="text" readonly id="editDescription" spellcheck="false"></td></tr>
+                              <tr>
+                                <th>日本語名</th>
+                                <td><input type="text" id="editDescriptionJ" spellcheck="false"></td>
+                              </tr>
+                              <tr>
+                                <th>よみがな</th>
+                                <td><input type="text" id="editKana" spellcheck="false"></td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+
                     <div class="l-list" tabindex="-1">
                       <div class="list-sub" tabindex="0">
                       </div>
@@ -163,14 +191,14 @@
                   </div>
                   <input id="accordioninfo" class="m-accordion__input" type="checkbox">
                   <div class="m-accordion__content">
-                    <div class="p-gameinfo">
+                    <div class="m-accordion__inner p-gameinfo">
                       <div class="p-gameinfo__section p-gameinfo__section--cpu">
                         <div class="p-gameinfo__title">CPU</div>
-                        <textarea class="p-gameinfo__textarea" id="gameinfo--cpu" rows="6" spellcheck="false" readonly></textarea>
+                        <textarea class="p-gameinfo__textarea" id="gameinfo--cpu" rows="5" spellcheck="false" readonly></textarea>
                       </div>
                       <div class="p-gameinfo__section p-gameinfo__section--sound">
                         <div class="p-gameinfo__title">音源</div>
-                        <textarea class="p-gameinfo__textarea" id="gameinfo--sound" rows="4" spellcheck="false" readonly></textarea>
+                        <textarea class="p-gameinfo__textarea" id="gameinfo--sound" rows="5" spellcheck="false" readonly></textarea>
                       </div>
                       <div class="p-gameinfo__section p-gameinfo__section--display">
                         <div class="p-gameinfo__title">表示</div>
@@ -237,5 +265,6 @@
   <script src="./lib/screenshot.js"></script>
   <script src="./lib/command.js"></script>
   <script src="./lib/dats.js"></script>
+  <script src="./lib/accordion.js"></script>
   <script src="./renderer.js"></script>
 </html>

@@ -2863,20 +2863,26 @@ input[type=search]::-webkit-search-results-decoration {
   font-weight: bold;
   line-height: 17px;
   padding: 0;
-  flex-basis: 15em;
+  flex-grow: 0;
+  width: 9em;
 }
 .m-accordion__titletext::selection {
   background-color: var(--cl-input--selection);
 }
+.m-accordion__titleLabel {
+  color: inherit;
+  line-height: 17px;
+}
 .m-accordion__label {
   position: relative;
   flex-grow: 1;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 .m-accordion__label:before {
   content: "\f006";
-  font-size: 13px;
-  line-height: 19px;
+  font-size: 12px;
   font-family: "fontello";
   display: block;
   position: absolute;
@@ -2888,11 +2894,10 @@ input[type=search]::-webkit-search-results-decoration {
   display: none;
 }
 .m-accordion__input + .m-accordion__content {
-  max-height: 0;
   transition: var(--s-transition--long);
 }
-.m-accordion__input:checked + .m-accordion__content {
-  max-height: 300px;
+.m-accordion__input:not(:checked) + .m-accordion__content {
+  max-height: 0 !important;
 }
 .m-accordion:has(input.m-accordion__input:checked) .m-accordion__label:before {
   transform: rotate(90deg);
@@ -3618,6 +3623,9 @@ input[type=search]::-webkit-search-results-decoration {
   z-index: -1;
 }
 
+.p-gameinfo {
+  font-size: 92%;
+}
 .p-gameinfo__section {
   display: flex;
 }
@@ -4048,4 +4056,27 @@ i.c-z {
   width: 100px;
   line-height: 22px;
   padding: 0 1.5em;
+}
+
+.p-edit {
+  padding: 5px 10px;
+}
+.p-edit input {
+  appearance: none;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+}
+.p-edit__table {
+  width: 100%;
+}
+.p-edit__table th {
+  text-align: right;
+  vertical-align: middle;
+  width: 1%;
+  white-space: nowrap;
+  color: var(--cl-listheadertext);
+}
+.p-edit__table td {
+  vertical-align: middle;
 }/*# sourceMappingURL=style.css.map */

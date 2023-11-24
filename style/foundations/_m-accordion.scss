@@ -13,19 +13,25 @@
     font-weight: bold;
     line-height: 17px;
     padding: 0;
-    flex-basis: 15em;
+    flex-grow: 0;
+    width: 9em;
     &::selection {
       background-color: var(--cl-input--selection);
     }
   }
+  &__titleLabel {
+    color: inherit;
+    line-height: 17px;
+  }
   &__label {
     position: relative;
     flex-grow: 1;
+    display: flex;
+    align-items: center;
     cursor: pointer;
     &:before {
       content: "\f006";
-      font-size: 13px;
-      line-height: 19px;
+      font-size: 12px;
       font-family: "fontello";
       display: block;
       position: absolute;
@@ -40,11 +46,13 @@
   &__input {
     display: none;
     & + .m-accordion__content {
-      max-height: 0;
       transition: var(--s-transition--long);
     }
     &:checked + .m-accordion__content {
-      max-height: 300px;
+      //max-height: 300px;
+    }
+    &:not(:checked) + .m-accordion__content {
+      max-height: 0 !important;
     }
   }
   &:has(input.m-accordion__input:checked) .m-accordion__label {

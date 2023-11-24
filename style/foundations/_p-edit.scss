@@ -1,0 +1,26 @@
+.p-edit {
+  padding: 5px 10px;
+  input {
+    appearance: none;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+  }
+  &__table {
+    width: 100%;
+    tr {
+
+    }
+    th {
+      text-align: right;
+      vertical-align: middle;
+      width: 1%;
+      white-space: nowrap;
+      color: var(--cl-listheadertext);
+    }
+    td {
+      vertical-align: middle;
+      
+    }
+  }
+}
