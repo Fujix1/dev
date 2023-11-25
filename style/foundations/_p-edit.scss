@@ -20,4 +20,10 @@
       
     }
   }
+  &__translated {
+    visibility: hidden;
+    &.is-visible {
+      visibility: visible;
+    }
+  }
 }

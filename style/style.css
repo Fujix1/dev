@@ -3459,7 +3459,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .m-input[type=text] {
   color: var(--cl-text);
-  padding: 3px 5px;
+  padding: 3px 3px;
   font-size: 13.5px;
   line-height: 1.4;
   border: 1px solid var(--cl-listborder);
@@ -4109,4 +4109,10 @@ i.c-z {
 }
 .p-edit__table td {
   vertical-align: middle;
+}
+.p-edit__translated {
+  visibility: hidden;
+}
+.p-edit__translated.is-visible {
+  visibility: visible;
 }/*# sourceMappingURL=style.css.map */

@@ -18,6 +18,7 @@ let dataIndex = -1;
 let dataSubIndex = -1;
 let dataSubZipname = "";
 let dataSubTable = [];
+let currentRow;
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -96,13 +97,20 @@ const actKensaku = new Action({
 // 編集用ポップアップメニュー
 const pmSearch = new PopupMenu({
   items: [{ action: actCut }, { action: actCopy }, { action: actPaste }],
-  targets: ["#search", "#searchSoft"],
+  targets: ["#search", "#searchSoft", "#editDescriptionJ", "#editKana"],
 });
 
 const pmInfo = new PopupMenu({ items: [{ action: actCopy }, { action: actKensaku }], target: "#info" });
 const pmGameinfo = new PopupMenu({
   items: [{ action: actCopy }],
-  targets: ["#gameinfo--zip", "#gameinfo--cpu", "#gameinfo--sound", "#gameinfo--display", "#gameinfo--driver"],
+  targets: [
+    "#gameinfo--zip",
+    "#gameinfo--cpu",
+    "#gameinfo--sound",
+    "#gameinfo--display",
+    "#gameinfo--driver",
+    "#editDescription",
+  ],
 });
 
 //------------------------------------------------------------
@@ -251,6 +259,7 @@ const pmMainList = new PopupMenu({
 });
 
 //------------------------------------------------------------
+// スクリーンショット操作
 const actKeepAspect = new Action({
   caption: "アスペクト比を保持",
   onExecute: async (self) => {
@@ -605,17 +614,7 @@ async function onLoad() {
 
   // 検索欄入力イベント
   const search = document.getElementById("search");
-  search.addEventListener("input", (e) => {
-    if (e.target.getAttribute("IME") !== "true") {
-      config.searchWord = e.target.value;
-      updateListView();
-    }
-  });
-  search.addEventListener("cut", (e) => {
-    config.searchWord = e.target.value;
-    updateListView();
-  });
-  search.addEventListener("paste", (e) => {
+  search.addEventListener("inputex", (e) => {
     config.searchWord = e.target.value;
     updateListView();
   });
@@ -630,8 +629,7 @@ async function onLoad() {
       e.preventDefault();
       return;
     }
-    if (e.target.getAttribute("IME") == "true") {
-    } else {
+    if (e.target.getAttribute("IME") !== "true") {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
         listViewMain.makeVisible();
         e.preventDefault();
@@ -641,18 +639,6 @@ async function onLoad() {
   });
   search.addEventListener("focus", (e) => {
     e.target.select();
-  });
-
-  // IME 変換中
-  search.addEventListener("compositionstart", (e) => {
-    e.target.setAttribute("IME", true);
-  });
-
-  // IME 変換確定
-  search.addEventListener("compositionend", (e) => {
-    e.target.setAttribute("IME", false);
-    config.searchWord = e.target.value;
-    updateListView();
   });
 
   // 検索対象
@@ -670,17 +656,7 @@ async function onLoad() {
   //----------------------------------------------------------------------
   // ソフトリスト検索入力
   const searchSoft = document.getElementById("searchSoft");
-  searchSoft.addEventListener("input", (e) => {
-    if (e.target.getAttribute("IME") !== "true") {
-      config.searchWordSoft = e.target.value;
-      updateListViewSoftlist();
-    }
-  });
-  searchSoft.addEventListener("cut", (e) => {
-    config.searchWordSoft = e.target.value;
-    updateListViewSoftlist();
-  });
-  searchSoft.addEventListener("paste", (e) => {
+  searchSoft.addEventListener("inputex", (e) => {
     config.searchWordSoft = e.target.value;
     updateListViewSoftlist();
   });
@@ -699,8 +675,7 @@ async function onLoad() {
       e.preventDefault();
       return;
     }
-    if (e.target.getAttribute("IME") == "true") {
-    } else {
+    if (e.target.getAttribute("IME") !== "true") {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
         listViewSoftlist.makeVisible();
         e.preventDefault();
@@ -710,18 +685,6 @@ async function onLoad() {
   });
   searchSoft.addEventListener("focus", (e) => {
     e.target.select();
-  });
-  // IME 変換中
-  searchSoft.addEventListener("compositionstart", (e) => {
-    e.target.setAttribute("IME", true);
-  });
-
-  // IME 変換確定
-  searchSoft.addEventListener("compositionend", (e) => {
-    e.target.setAttribute("IME", false);
-    config.searchWordSoft = e.target.value;
-
-    updateListViewSoftlist();
   });
 
   //----------------------------------------------------------------------
@@ -1100,8 +1063,8 @@ async function itemSelectHandler(argDataIndex, argZipName) {
   dataIndex = argDataIndex;
   let masterZip = "";
 
-  // 項目なし
   if (mamedb.filteredLength === 0) {
+    // 項目なし
     document.querySelector("#info").innerHTML = "";
     screenShot.show("");
     command.show("");
@@ -1112,68 +1075,67 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     dataSubIndex = -1;
     dataSubZipname = "";
     dataSubTable = [];
-    updateSubList();
+    updateSubList("", "");
 
     // ソフトウェア
     softlists.clear();
     softlists.toggleSearchSoft();
-    return;
-  }
 
-  // 選択肢ない場合は選択リセット
-  if (argDataIndex === -1) {
-    const row = mamedb.getFilteredRecord(0);
-    config.zipName = row.zipname;
-    dataIndex = mamedb.getDataIndex(0);
-    listViewMain.itemIndex = 0;
-    argDataIndex = dataIndex;
-    argZipName = config.zipName;
-  }
-
-  const masterId = Dataset.master[argDataIndex].masterid;
-
-  if (masterId === -1) {
-    masterZip = Dataset.master[argDataIndex].zipname;
+    showInfo("");
   } else {
-    masterZip = Dataset.master[masterId].zipname;
-  }
-
-  updateSubList();
-
-  async function updateSubList() {
-    // サブリスト更新
-    if (masterZip === "") {
-      listViewSub.itemCount = dataSubTable.length;
-      listViewSub.updateRowTexts();
-    } else {
-      if (dataSubZipname !== masterZip) {
-        dataSubZipname = masterZip;
-        dataSubIndex = masterId;
-
-        // ファミリ抽出
-        dataSubTable = [masterId];
-        for (let i = 0; i < Dataset.master.length; i++) {
-          if (Dataset.master[i].master === false && Dataset.master[i].masterid === masterId) {
-            dataSubTable.push(i);
-          }
-        }
-        listViewSub.itemCount = dataSubTable.length;
-      }
-
-      // サブリストの選択項目が見つからない場合は選び直し
-      if (listViewSub.itemIndex !== dataSubTable.indexOf(dataIndex)) {
-        listViewSub.itemIndex = dataSubTable.indexOf(dataIndex);
-        listViewSub.makeVisible(false);
-      }
-      listViewSub.updateRowTexts();
+    // 項目あり
+    // 選択肢ない場合は選択リセット
+    if (argDataIndex === -1) {
+      const row = mamedb.getFilteredRecord(0);
+      config.zipName = row.zipname;
+      dataIndex = mamedb.getDataIndex(0);
+      listViewMain.itemIndex = 0;
+      argDataIndex = dataIndex;
+      argZipName = config.zipName;
     }
+    const masterId = Dataset.master[argDataIndex].masterid;
+
+    if (masterId === -1) {
+      masterZip = Dataset.master[argDataIndex].zipname;
+    } else {
+      masterZip = Dataset.master[masterId].zipname;
+    }
+
+    updateSubList(masterZip, masterId);
+    screenShot.show(argZipName);
+    command.show(argZipName);
+    softlists.show(Dataset.master[argDataIndex].softlists);
+    showInfo(argZipName);
   }
+}
 
-  showInfo(argZipName);
-  screenShot.show(argZipName);
-  command.show(argZipName);
+// サブリスト更新
+async function updateSubList(masterZip, masterId) {
+  if (masterZip === "") {
+    listViewSub.itemCount = dataSubTable.length;
+    listViewSub.updateRowTexts();
+  } else {
+    if (dataSubZipname !== masterZip) {
+      dataSubZipname = masterZip;
+      dataSubIndex = masterId;
 
-  softlists.show(Dataset.master[argDataIndex].softlists);
+      // ファミリ抽出
+      dataSubTable = [masterId];
+      for (let i = 0; i < Dataset.master.length; i++) {
+        if (Dataset.master[i].master === false && Dataset.master[i].masterid === masterId) {
+          dataSubTable.push(i);
+        }
+      }
+      listViewSub.itemCount = dataSubTable.length;
+    }
+
+    // サブリストの選択項目が見つからない場合は選び直し
+    if (listViewSub.itemIndex !== dataSubTable.indexOf(dataIndex)) {
+      listViewSub.itemIndex = dataSubTable.indexOf(dataIndex);
+      listViewSub.makeVisible(false);
+    }
+    listViewSub.updateRowTexts();
+  }
 }
 
 // サブアイテム選択時処理
@@ -1193,24 +1155,39 @@ async function subItemSelectHandler(argDataIndex) {
  * @param {*} zipName
  */
 async function showInfo(zipName) {
-  const row = Dataset.getRowByZip(zipName);
-  document.getElementById("editDescription").value = row.desc;
-  document.getElementById("editDescriptionJ").value = row.descJ;
-  document.getElementById("editKana").value = row.kana;
-
-  const st = await dats.getInfo(zipName);
-  document.querySelector("#info").innerHTML = st;
-
   // gameinfo 部分
   if (zipName === "") {
+    currentRow = null;
+    document.querySelector("#info").innerHTML = "";
+
+    document.getElementById("editDescription").value = "";
+    document.getElementById("editDescriptionJ").value = "";
+    document.getElementById("editKana").value = "";
+    document.getElementById("editDescription").disabled = true;
+    document.getElementById("editDescriptionJ").disabled = true;
+    document.getElementById("editKana").disabled = true;
+    checkTranslated();
+
     document.getElementById("gameinfo--zip").value = "";
     document.getElementById("gameinfo--cpu").value = "";
     document.getElementById("gameinfo--sound").value = "";
     document.getElementById("gameinfo--display").value = "";
     document.getElementById("gameinfo--driver").value = "";
   } else {
+    const st = await dats.getInfo(zipName);
+    document.querySelector("#info").innerHTML = st;
+
+    const row = Dataset.getRowByZip(zipName);
+    currentRow = row;
+    document.getElementById("editDescription").value = row.desc;
+    document.getElementById("editDescriptionJ").value = row.descJ;
+    document.getElementById("editKana").value = row.kana;
+    document.getElementById("editDescription").disabled = false;
+    document.getElementById("editDescriptionJ").disabled = false;
+    document.getElementById("editKana").disabled = false;
+    checkTranslated();
+
     document.getElementById("gameinfo--zip").value = zipName;
-    const row = Dataset.master[Dataset.indexOfZip(zipName)];
     document.getElementById("gameinfo--cpu").value = row.cpus.replaceAll("<br>", "\n");
     document.getElementById("gameinfo--sound").value = row.sounds.replaceAll("<br>", "\n");
     document.getElementById("gameinfo--display").value = row.screens.replaceAll("<br>", "\n");
@@ -1242,7 +1219,41 @@ document.getElementById("clearSoft").addEventListener("click", (e) => {
   updateListViewSoftlist();
 });
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+// 編集欄
+document.getElementById("editDescriptionJ").addEventListener("dblclick", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const text = e.target.value;
+  console.log(text);
+
+  // 左括弧
+  let pos = text.indexOf(" (");
+  if (pos === -1) pos = text.indexOf("(");
+  if (pos !== -1) {
+    e.target.setSelectionRange(0, pos);
+  }
+});
+
+document.getElementById("editDescriptionJ").addEventListener("inputex", (e) => {});
+document.getElementById("editKana").addEventListener("inputex", (e) => {});
+document.getElementById("editKana").addEventListener("change", (e) => {
+  if (e.target.value === "") {
+    e.target.value = currentRow.desc;
+  }
+});
+
+function checkTranslated() {
+  const desc = document.getElementById("editDescription").value;
+  const descJ = document.getElementById("editDescriptionJ").value;
+  if (desc === descJ) {
+    document.querySelector(".p-edit__translated").classList.remove("is-visible");
+  } else {
+    document.querySelector(".p-edit__translated").classList.add("is-visible");
+  }
+}
+
+//--------------------------------------------------------------------------
 // フォームの config 送信
 function saveFormConfig() {
   try {

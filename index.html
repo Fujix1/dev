@@ -65,7 +65,7 @@
                     </label>
                   </div>
                 </div>
-                <input class="p-search__input" id="search" type="search" maxlength="20" size="16" value="" spellcheck="false">
+                <input class="p-search__input ime-input" id="search" type="search" maxlength="20" size="16" value="" spellcheck="false">
                 <div class="p-search__clear" tooltip="クリア(ESC)" id="clear">&#xe75c</div>
               </div>
             </div>
@@ -95,7 +95,7 @@
                           &#xe744;
                         </div>
                       </div>
-                      <input class="p-search__input" id="searchSoft" type="search" maxlength="20" size="16" value="" spellcheck="false" disabled>
+                      <input class="p-search__input ime-input" id="searchSoft" type="search" maxlength="20" size="16" value="" spellcheck="false" disabled>
                       <div class="p-search__clear" tooltip="クリア(ESC)" id="clearSoft">&#xe75c</div>
                     </div>
                   </div>
@@ -116,14 +116,14 @@
                           <div class="p-edit">
                             <table class="p-edit__table">
                               <tr>
-                                <th>英語名</th><td><input type="text" readonly id="editDescription" spellcheck="false" class="m-input m-input--readonly"></td></tr>
+                                <th><span class="p-edit__translated">*</span> 英語名</th><td><input type="text" readonly id="editDescription" spellcheck="false" class="m-input m-input--readonly"></td></tr>
                               <tr>
                                 <th>日本語名</th>
-                                <td><input type="text" id="editDescriptionJ" spellcheck="false" class="m-input"></td>
+                                <td><input type="text" id="editDescriptionJ" spellcheck="false" class="m-input ime-input"></td>
                               </tr>
                               <tr>
                                 <th>よみがな</th>
-                                <td><input type="text" id="editKana" spellcheck="false" class="m-input"></td>
+                                <td><input type="text" id="editKana" spellcheck="false" class="m-input ime-input"></td>
                               </tr>
                             </table>
                           </div>
@@ -266,5 +266,6 @@
   <script src="./lib/command.js"></script>
   <script src="./lib/dats.js"></script>
   <script src="./lib/accordion.js"></script>
+  <script src="./lib/input.js"></script>
   <script src="./renderer.js"></script>
 </html>
