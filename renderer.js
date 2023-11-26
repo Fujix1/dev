@@ -43,10 +43,11 @@ const root = document.querySelector(":root");
 const actCut = new Action({
   caption: "カット",
   onExecute: (self) => {
-    const target = self.caller.target;
-    navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
-    target.value = target.value.substr(0, target.selectionStart) + target.value.substr(target.selectionEnd);
-    target.dispatchEvent(new Event("cut"));
+    //const target = self.caller.target;
+    //navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
+    //target.value = target.value.substr(0, target.selectionStart) + target.value.substr(target.selectionEnd);
+    //target.dispatchEvent(new Event("cut"));
+    window.retrofireAPI.cut();
   },
   onUpdate: (self) => {
     const target = self.caller.target;
@@ -58,8 +59,9 @@ const actCopy = new Action({
   caption: "コピー",
   onExecute: (self) => {
     const target = self.caller.target;
-    navigator.clipboard.writeText(document.getSelection());
-    target.dispatchEvent(new Event("copy"));
+    //navigator.clipboard.writeText(document.getSelection());
+    //target.dispatchEvent(new Event("copy"));
+    window.retrofireAPI.copy();
   },
   onUpdate: (self) => {
     const target = self.caller.target;
@@ -70,10 +72,11 @@ const actCopy = new Action({
 const actPaste = new Action({
   caption: "ペースト",
   onExecute: async (self) => {
-    const st = await navigator.clipboard.readText();
-    const target = self.caller.target;
-    target.value = target.value.substr(0, target.selectionStart) + st + target.value.substr(target.selectionEnd);
-    target.dispatchEvent(new Event("paste"));
+    //const st = await navigator.clipboard.readText();
+    //const target = self.caller.target;
+    //target.value = target.value.substr(0, target.selectionStart) + st + //target.value.substr(target.selectionEnd);
+    //target.dispatchEvent(new Event("paste"));
+    window.retrofireAPI.paste();
   },
   onUpdate: async (self) => {
     const st = await navigator.clipboard.readText();

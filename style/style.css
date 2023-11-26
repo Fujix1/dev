@@ -2873,6 +2873,7 @@ input[type=search]::-webkit-search-results-decoration {
 .m-accordion__titleLabel {
   color: inherit;
   line-height: 17px;
+  user-select: none;
 }
 .m-accordion__label {
   position: relative;
@@ -4106,6 +4107,7 @@ i.c-z {
   padding-right: 5px;
   white-space: nowrap;
   color: var(--cl-listheadertext);
+  user-select: none;
 }
 .p-edit__table td {
   vertical-align: middle;

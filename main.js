@@ -111,6 +111,12 @@ const createWindow = () => {
   mainWindow.on("focus", async () => {
     mainWindow.webContents.send("focus");
   });
+
+  // コンテキストメニューイベント
+  mainWindow.webContents.on("context-menu", (event, args) => {
+    console.log("context-menu");
+    mainWindow.webContents.send("context-menu", args);
+  });
 };
 
 /**
@@ -267,6 +273,34 @@ function sendDebug(text) {
 //------------------------------------
 // ipc通信
 //------------------------------------
+
+// コンテキストメニュー
+ipcMain.handle("cut", async (event, data) => {
+  console.log("cut");
+  return mainWindow.webContents.cut();
+});
+ipcMain.handle("copy", async (event, data) => {
+  console.log("copy");
+  return mainWindow.webContents.copy();
+});
+ipcMain.handle("paste", async (event, data) => {
+  console.log("paste");
+  return mainWindow.webContents.paste();
+});
+ipcMain.handle("delete", async (event, data) => {
+  console.log("delete");
+  return mainWindow.webContents.delete();
+});
+ipcMain.handle("selectAll", async (event, data) => {
+  console.log("selectAll");
+  return mainWindow.webContents.selectAll();
+});
+ipcMain.handle("undo", async (event, data) => {
+  console.log("undo");
+  return mainWindow.webContents.undo();
+});
+
+//
 ipcMain.handle("window-reset", async (event, data) => {
   /*  console.log(data);
   mainWindow.setSize(MAIN_FORM_DEFAULT.width, MAIN_FORM_DEFAULT.height);
@@ -388,7 +422,6 @@ ipcMain.handle("get-record", async (event, data) => {
 // softlistを返す
 ipcMain.handle("get-softlist", async (event, data) => {
   const res = loadFile(CONSTS.PATH_SOFTLISTS);
-  console.log("res", res);
   if (res.result === true) {
     return res.data;
   } else {

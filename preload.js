@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("retrofireAPI", {
   executeMAME: async (args) => await ipcRenderer.invoke("execute-MAME", args),
-  resetWindow: async (args) => await ipcRenderer.invoke("window-reset", args),
+
   windowIsReady: async (args) => await ipcRenderer.invoke("window-is-ready", args),
   getStore: async (args) => await ipcRenderer.invoke("get-store", args),
   setStore: async (args) => await ipcRenderer.invoke("set-store", args),
@@ -40,4 +40,15 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   // focus
   onBlur: (callback) => ipcRenderer.on("blur", callback),
   onFocus: (callback) => ipcRenderer.on("focus", callback),
+
+  // コンテキストメニュー処理
+  copy: async (args) => await ipcRenderer.invoke("copy", args),
+  paste: async (args) => await ipcRenderer.invoke("paste", args),
+  cut: async (args) => await ipcRenderer.invoke("cut", args),
+  undo: async (args) => await ipcRenderer.invoke("undo", args),
+  delete: async (args) => await ipcRenderer.invoke("delete", args),
+  selectAll: async (args) => await ipcRenderer.invoke("selectAll", args),
+
+  // コンテキストメニューイベント返し
+  onContextMenu: (callback) => ipcRenderer.on("context-menu", callback),
 });
