@@ -103,7 +103,7 @@ const pmSearch = new PopupMenu({
   targets: ["#search", "#searchSoft", "#editDescriptionJ", "#editKana"],
 });
 
-const pmInfo = new PopupMenu({ items: [{ action: actCopy }, { action: actKensaku }], target: "#info" });
+const pmInfo = new PopupMenu({ items: [{ action: actCopy }, { action: actKensaku }], targets: ["#info"] });
 const pmGameinfo = new PopupMenu({
   items: [{ action: actCopy }],
   targets: [
