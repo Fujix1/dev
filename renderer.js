@@ -1200,7 +1200,7 @@ async function showInfo(zipName) {
     document.getElementById("gameinfo--sound").value = "";
     document.getElementById("gameinfo--display").value = "";
     document.getElementById("gameinfo--driver").value = "";
-    document.getElementById("footer-desc").value = "";
+    document.getElementById("footer--desc").value = "";
   } else {
     const st = await dats.getInfo(zipName);
     document.querySelector("#info").innerHTML = st;
