@@ -276,28 +276,25 @@ function sendDebug(text) {
 
 // コンテキストメニュー
 ipcMain.handle("cut", async (event, data) => {
-  console.log("cut");
   return mainWindow.webContents.cut();
 });
 ipcMain.handle("copy", async (event, data) => {
-  console.log("copy");
   return mainWindow.webContents.copy();
 });
 ipcMain.handle("paste", async (event, data) => {
-  console.log("paste");
   return mainWindow.webContents.paste();
 });
 ipcMain.handle("delete", async (event, data) => {
-  console.log("delete");
   return mainWindow.webContents.delete();
 });
 ipcMain.handle("selectAll", async (event, data) => {
-  console.log("selectAll");
   return mainWindow.webContents.selectAll();
 });
 ipcMain.handle("undo", async (event, data) => {
-  console.log("undo");
   return mainWindow.webContents.undo();
+});
+ipcMain.handle("redo", async (event, data) => {
+  return mainWindow.webContents.redo();
 });
 
 //

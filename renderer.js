@@ -39,44 +39,64 @@ let config = {
 const root = document.querySelector(":root");
 
 // --------------------------------------------------------------------------
-// アクションのこと
+// アクション
 const actCut = new Action({
-  caption: "カット",
+  caption: "切り取り",
   onExecute: (self) => {
     window.retrofireAPI.cut();
   },
   onUpdate: (self) => {
-    const target = self.caller.target;
-    self.enabled = target.selectionEnd - target.selectionStart > 0;
+    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canCut;
   },
 });
 
 const actCopy = new Action({
   caption: "コピー",
   onExecute: (self) => {
-    const target = self.caller.target;
-    //navigator.clipboard.writeText(document.getSelection());
-    //target.dispatchEvent(new Event("copy"));
     window.retrofireAPI.copy();
   },
   onUpdate: (self) => {
-    const target = self.caller.target;
-    self.enabled = String(document.getSelection()).length > 0;
+    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canCopy;
   },
 });
 
 const actPaste = new Action({
-  caption: "ペースト",
+  caption: "貼り付け",
   onExecute: async (self) => {
-    //const st = await navigator.clipboard.readText();
-    //const target = self.caller.target;
-    //target.value = target.value.substr(0, target.selectionStart) + st + //target.value.substr(target.selectionEnd);
-    //target.dispatchEvent(new Event("paste"));
     window.retrofireAPI.paste();
   },
   onUpdate: async (self) => {
-    const st = await navigator.clipboard.readText();
-    self.enabled = st !== "";
+    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canPaste;
+  },
+});
+
+const actUndo = new Action({
+  caption: "元に戻す",
+  onExecute: async (self) => {
+    window.retrofireAPI.undo();
+  },
+  onUpdate: async (self) => {
+    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canUndo;
+  },
+});
+
+const actRedo = new Action({
+  caption: "やり直し",
+  onExecute: async (self) => {
+    window.retrofireAPI.redo();
+  },
+  onUpdate: async (self) => {
+    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canRedo;
+  },
+});
+
+const actSelectAll = new Action({
+  caption: "全て選択",
+  onExecute: async (self) => {
+    window.retrofireAPI.selectAll();
+  },
+  onUpdate: async (self) => {
+    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canSelectAll;
   },
 });
 
@@ -95,7 +115,15 @@ const actKensaku = new Action({
 
 // 編集用ポップアップメニュー
 const pmSearch = new PopupMenu({
-  items: [{ action: actCut }, { action: actCopy }, { action: actPaste }],
+  items: [
+    { action: actUndo },
+    { action: "---" },
+    { action: actCut },
+    { action: actCopy },
+    { action: actPaste },
+    { action: "---" },
+    { action: actSelectAll },
+  ],
   targets: ["#search", "#searchSoft", "#editDescriptionJ", "#editKana"],
 });
 

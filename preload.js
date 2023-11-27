@@ -46,6 +46,7 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   paste: async (args) => await ipcRenderer.invoke("paste", args),
   cut: async (args) => await ipcRenderer.invoke("cut", args),
   undo: async (args) => await ipcRenderer.invoke("undo", args),
+  redo: async (args) => await ipcRenderer.invoke("redo", args),
   delete: async (args) => await ipcRenderer.invoke("delete", args),
   selectAll: async (args) => await ipcRenderer.invoke("selectAll", args),
 
