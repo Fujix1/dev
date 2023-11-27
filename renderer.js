@@ -43,10 +43,6 @@ const root = document.querySelector(":root");
 const actCut = new Action({
   caption: "カット",
   onExecute: (self) => {
-    //const target = self.caller.target;
-    //navigator.clipboard.writeText(target.value.substr(target.selectionStart, target.selectionEnd));
-    //target.value = target.value.substr(0, target.selectionStart) + target.value.substr(target.selectionEnd);
-    //target.dispatchEvent(new Event("cut"));
     window.retrofireAPI.cut();
   },
   onUpdate: (self) => {
