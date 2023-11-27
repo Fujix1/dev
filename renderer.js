@@ -1200,6 +1200,7 @@ async function showInfo(zipName) {
     document.getElementById("gameinfo--sound").value = "";
     document.getElementById("gameinfo--display").value = "";
     document.getElementById("gameinfo--driver").value = "";
+    document.getElementById("footer-desc").value = "";
   } else {
     const st = await dats.getInfo(zipName);
     document.querySelector("#info").innerHTML = st;
@@ -1219,6 +1220,7 @@ async function showInfo(zipName) {
     document.getElementById("gameinfo--sound").value = row.sounds.replaceAll("<br>", "\n");
     document.getElementById("gameinfo--display").value = row.screens.replaceAll("<br>", "\n");
     document.getElementById("gameinfo--driver").value = row.source;
+    document.getElementById("footer--desc").innerText = row.desc;
   }
 }
 
