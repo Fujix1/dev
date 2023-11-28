@@ -42,61 +42,79 @@ const root = document.querySelector(":root");
 // アクション
 const actCut = new Action({
   caption: "切り取り",
+  keycode: "x",
+  control: true,
+  isEditItem: true,
   onExecute: (self) => {
     window.retrofireAPI.cut();
   },
   onUpdate: (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canCut;
+    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canCut;
   },
 });
 
 const actCopy = new Action({
   caption: "コピー",
+  keycode: "c",
+  control: true,
+  isEditItem: true,
   onExecute: (self) => {
     window.retrofireAPI.copy();
   },
   onUpdate: (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canCopy;
+    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canCopy;
   },
 });
 
 const actPaste = new Action({
   caption: "貼り付け",
+  keycode: "v",
+  control: true,
+  isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.paste();
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canPaste;
+    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canPaste;
   },
 });
 
 const actUndo = new Action({
   caption: "元に戻す",
+  keycode: "z",
+  control: true,
+  isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.undo();
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canUndo;
+    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canUndo;
   },
 });
 
 const actRedo = new Action({
   caption: "やり直し",
+  keycode: "y",
+  control: true,
+  isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.redo();
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canRedo;
+    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canRedo;
   },
 });
 
 const actSelectAll = new Action({
   caption: "全て選択",
+  keycode: "a",
+  control: true,
+  isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.selectAll();
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs.editFlags.canSelectAll;
+    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canSelectAll;
   },
 });
 
@@ -466,9 +484,11 @@ async function onLoad() {
         (e) => {
           switch (e.key) {
             case "F12":
+            case "Backspace":
+              e.stopPropagation();
               break;
             default:
-              e.stopPropagation();
+            //e.stopPropagation();
           }
         },
         false
