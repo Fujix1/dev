@@ -29,8 +29,8 @@ const rfConfig = {
 const rfProfiles = [
   {
     title: "テスト",
-    exePath: "C:\\Users\\tfuji\\Desktop\\mame\\mame.exe",
-    workDir: "C:\\Users\\tfuji\\Desktop\\mame\\",
+    exePath: "d:\\mame\\mame.exe",
+    workDir: "d:\\mame\\",
     option: "-mouse",
     optEnabled: false,
   },
@@ -38,9 +38,9 @@ const rfProfiles = [
 
 const rfPath = {
   dats: "./dats",
-  snap: "C:\\Users\\tfuji\\Desktop\\mame\\snap\\",
-  cfg: "C:\\Users\\tfuji\\Desktop\\mame\\cfg",
-  nvram: "C:\\Users\\tfuji\\Desktop\\mame\\nvram",
+  snap: "d:\\mame\\snap\\",
+  cfg: "d:\\mame\\cfg",
+  nvram: "d:\\mame\\nvram",
 };
 
 const softlistTitleJ = [

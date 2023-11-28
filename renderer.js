@@ -1086,9 +1086,7 @@ async function updateListViewSoftlist() {
 }
 
 // 項目選択時の処理
-async function itemSelectHandler(argDataIndex, argZipName) {
-  config.zipName = argZipName;
-  dataIndex = argDataIndex;
+async function itemSelectHandler(argDataIndex) {
   let masterZip = "";
 
   if (mamedb.filteredLength === 0) {
@@ -1119,7 +1117,6 @@ async function itemSelectHandler(argDataIndex, argZipName) {
       dataIndex = mamedb.getDataIndex(0);
       listViewMain.itemIndex = 0;
       argDataIndex = dataIndex;
-      argZipName = config.zipName;
     }
     const masterId = Dataset.master[argDataIndex].masterid;
 
@@ -1130,10 +1127,10 @@ async function itemSelectHandler(argDataIndex, argZipName) {
     }
 
     updateSubList(masterZip, masterId);
-    screenShot.show(argZipName);
-    command.show(argZipName);
+    screenShot.show(config.zipName);
+    command.show(config.zipName);
     softlists.show(Dataset.master[argDataIndex].softlists);
-    showInfo(argZipName);
+    showInfo(config.zipName);
   }
 }
 
@@ -1201,7 +1198,7 @@ async function showInfo(zipName) {
     document.getElementById("gameinfo--sound").value = "";
     document.getElementById("gameinfo--display").value = "";
     document.getElementById("gameinfo--driver").value = "";
-    document.getElementById("footer--desc").value = "";
+    document.getElementById("footer--desc").innerText = "";
   } else {
     const st = await dats.getInfo(zipName);
     document.querySelector("#info").innerHTML = st;
