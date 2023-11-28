@@ -52,4 +52,7 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
 
   // コンテキストメニューイベント返し
   onContextMenu: (callback) => ipcRenderer.on("context-menu", callback),
+
+  // beep
+  beep: async (args) => await ipcRenderer.invoke("beep", args),
 });

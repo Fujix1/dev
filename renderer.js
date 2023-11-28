@@ -785,9 +785,8 @@ async function onLoad() {
     },
     onSelect: async (index) => {
       if (index === -1) return;
-      const row = mamedb.getFilteredRecord(index);
       const dataIndex = mamedb.getDataIndex(index);
-      await itemSelectHandler(dataIndex, row.zipname);
+      await itemSelectHandler(dataIndex);
     },
     onData: (index) => {
       const row = { classList: ["m-listView__cellIcon"], cloneof: "" };
@@ -815,10 +814,20 @@ async function onLoad() {
           if (e.shiftKey) {
             document.getElementById("search").focus();
           } else {
-            if (document.querySelector(".m-tab--bottom .m-tab__radio[value='1']").checked) {
+            // アクティブな部分により分ける
+            if (document.querySelector(".m-tab--bottom .m-tab__radio[value='0']").checked) {
+              // タブ Family
+              if (document.getElementById("accordionedit").checked) {
+                // 編集欄有効のとき
+                const editJ = document.getElementById("editDescriptionJ");
+                editJ.focus();
+                editJ.select();
+              } else {
+                listViewSub.makeVisible();
+              }
+            } else if (document.querySelector(".m-tab--bottom .m-tab__radio[value='1']").checked) {
+              // タブ ソフトリスト
               document.getElementById("softlistTitle").focus();
-            } else if (document.querySelector(".m-tab--bottom .m-tab__radio[value='0']").checked) {
-              listViewSub.makeVisible();
             }
           }
           e.preventDefault();
@@ -920,7 +929,18 @@ async function onLoad() {
       switch (e.code) {
         case "Tab":
           if (e.shiftKey) {
-            document.getElementById("search").focus();
+            // アクティブな部分により分ける
+            if (document.getElementById("accordionedit").checked) {
+              // 編集欄有効のとき
+              const editKana = document.getElementById("editKana");
+              editKana.focus();
+              editKana.select();
+            } else {
+              listViewMain.makeVisible();
+            }
+          } else {
+            //document.getElementById("search").focus();
+            window.retrofireAPI.beep();
           }
           e.preventDefault();
           break;
@@ -1055,7 +1075,7 @@ async function updateListView() {
   await listViewMain.updateRowTexts();
 
   // 項目再選択
-  await itemSelectHandler(mamedb.getDataIndex(listViewMain.itemIndex), config.zipName);
+  await itemSelectHandler(mamedb.getDataIndex(listViewMain.itemIndex));
   await listViewMain.makeVisible(false);
 
   // 項目数表示
@@ -1111,13 +1131,17 @@ async function itemSelectHandler(argDataIndex) {
   } else {
     // 項目あり
     // 選択肢ない場合は選択リセット
+    let row;
     if (argDataIndex === -1) {
-      const row = mamedb.getFilteredRecord(0);
-      config.zipName = row.zipname;
+      row = mamedb.getFilteredRecord(0);
       dataIndex = mamedb.getDataIndex(0);
-      listViewMain.itemIndex = 0;
       argDataIndex = dataIndex;
+      listViewMain.itemIndex = 0;
+    } else {
+      row = Dataset.master[argDataIndex];
     }
+
+    config.zipName = row.zipname;
     const masterId = Dataset.master[argDataIndex].masterid;
 
     if (masterId === -1) {
@@ -1128,9 +1152,9 @@ async function itemSelectHandler(argDataIndex) {
 
     updateSubList(masterZip, masterId);
     screenShot.show(config.zipName);
+    showInfo(config.zipName);
     command.show(config.zipName);
     softlists.show(Dataset.master[argDataIndex].softlists);
-    showInfo(config.zipName);
   }
 }
 
@@ -1252,7 +1276,6 @@ document.getElementById("editDescriptionJ").addEventListener("dblclick", (e) => 
   e.preventDefault();
   e.stopPropagation();
   const text = e.target.value;
-  console.log(text);
 
   // 左括弧
   let pos = text.indexOf(" (");
@@ -1262,11 +1285,32 @@ document.getElementById("editDescriptionJ").addEventListener("dblclick", (e) => 
   }
 });
 
+// フォーカス取得時の選択範囲
+document.getElementById("editDescriptionJ").addEventListener("keydown", (e) => {
+  if (e.code === "Space" && e.ctrlKey) {
+    const text = e.target.value;
+    // 左括弧
+    let pos = text.indexOf(" (");
+    if (pos === -1) pos = text.indexOf("(");
+    if (pos !== -1) {
+      e.target.setSelectionRange(0, pos);
+    } else {
+      e.target.select();
+    }
+  }
+});
+
 document.getElementById("editDescriptionJ").addEventListener("inputex", (e) => {});
 document.getElementById("editKana").addEventListener("inputex", (e) => {});
 document.getElementById("editKana").addEventListener("change", (e) => {
   if (e.target.value === "") {
     e.target.value = currentRow.desc;
+  }
+});
+document.getElementById("editKana").addEventListener("keydown", (e) => {
+  if (e.code === "Tab" && e.shiftKey === false) {
+    listViewSub.makeVisible();
+    e.preventDefault();
   }
 });
 

@@ -14,6 +14,7 @@ const sizeOf = require("image-size");
 const { CONSTS, rfConfig, rfProfiles, rfPath, softlistTitleJ } = require("./rfConfig");
 const glob = require("glob");
 const Parser = require("node-xml-stream");
+const { javascript } = require("webpack");
 
 //-------------------------------------------------------------------
 // 初期設定
@@ -273,6 +274,11 @@ function sendDebug(text) {
 //------------------------------------
 // ipc通信
 //------------------------------------
+
+// beep
+ipcMain.handle("beep", async (event, data) => {
+  shell.beep();
+});
 
 // コンテキストメニュー
 ipcMain.handle("cut", async (event, data) => {
