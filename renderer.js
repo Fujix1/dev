@@ -643,6 +643,7 @@ async function onLoad() {
   const search = document.getElementById("search");
   search.addEventListener("inputex", (e) => {
     config.searchWord = e.target.value;
+    console.log("inputex");
     updateListView();
   });
   search.addEventListener("keydown", (e) => {
