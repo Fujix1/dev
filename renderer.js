@@ -1366,19 +1366,29 @@ document.getElementById("editDescriptionJ").addEventListener("keydown", (e) => {
 document.getElementById("editDescriptionJ").addEventListener("inputex", (e) => {
   currentRow.descJ = e.target.value.trim();
   listViewMain.updateRowTexts();
-  listViewSoftlist.updateRowTexts();
+  listViewSub.updateRowTexts();
   checkEdited(true);
 });
+document.getElementById("editDescriptionJ").addEventListener("change", (e) => {
+  if (e.target.value === "") {
+    e.target.value = currentRow.desc;
+    currentRow.descJ = e.target.value.trim();
+    listViewMain.updateRowTexts();
+    listViewSub.updateRowTexts();
+    checkEdited(true);
+  }
+});
+
 document.getElementById("editKana").addEventListener("inputex", (e) => {
   currentRow.kana = e.target.value.trim();
-  listViewSoftlist.updateRowTexts();
+  listViewSub.updateRowTexts();
   checkEdited(true);
 });
 document.getElementById("editKana").addEventListener("change", (e) => {
   if (e.target.value === "") {
     e.target.value = currentRow.desc;
     currentRow.kana = currentRow.desc;
-    listViewSoftlist.updateRowTexts();
+    listViewSub.updateRowTexts();
   }
   checkEdited(true);
 });
