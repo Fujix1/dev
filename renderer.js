@@ -1368,6 +1368,7 @@ document.getElementById("editDescriptionJ").addEventListener("inputex", (e) => {
   listViewMain.updateRowTexts();
   listViewSub.updateRowTexts();
   checkEdited(true);
+  checkTranslated();
 });
 document.getElementById("editDescriptionJ").addEventListener("change", (e) => {
   if (e.target.value === "") {
@@ -1376,6 +1377,7 @@ document.getElementById("editDescriptionJ").addEventListener("change", (e) => {
     listViewMain.updateRowTexts();
     listViewSub.updateRowTexts();
     checkEdited(true);
+    checkTranslated();
   }
 });
 
