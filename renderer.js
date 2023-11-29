@@ -19,6 +19,7 @@ let dataSubIndex = -1;
 let dataSubZipname = "";
 let dataSubTable = [];
 let currentRow;
+let isEdited = false; // ゲーム名など更新済み
 
 const LANG = { JP: 0, EN: 1 };
 let config = {
@@ -47,6 +48,7 @@ const actCut = new Action({
   isEditItem: true,
   onExecute: (self) => {
     window.retrofireAPI.cut();
+    console.log("切り取り");
   },
   onUpdate: (self) => {
     self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canCut;
@@ -60,6 +62,7 @@ const actCopy = new Action({
   isEditItem: true,
   onExecute: (self) => {
     window.retrofireAPI.copy();
+    console.log("コピー");
   },
   onUpdate: (self) => {
     self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canCopy;
@@ -73,6 +76,7 @@ const actPaste = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.paste();
+    console.log("貼り付け");
   },
   onUpdate: async (self) => {
     self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canPaste;
@@ -86,6 +90,7 @@ const actUndo = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.undo();
+    console.log("元に戻す");
   },
   onUpdate: async (self) => {
     self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canUndo;
@@ -99,6 +104,7 @@ const actRedo = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.redo();
+    console.log("やり直し");
   },
   onUpdate: async (self) => {
     self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canRedo;
@@ -112,6 +118,7 @@ const actSelectAll = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.selectAll();
+    console.log("全て選択");
   },
   onUpdate: async (self) => {
     self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canSelectAll;
@@ -482,112 +489,117 @@ async function onLoad() {
       item.addEventListener(
         "keydown",
         (e) => {
+          //console.log("keydown", e.key);
           switch (e.key) {
             case "F12":
             case "Backspace":
               e.stopPropagation();
               break;
             default:
-            //e.stopPropagation();
           }
         },
-        false
+        true
       );
     });
 
-  window.addEventListener("keydown", async (e) => {
-    // ポップアップメニュー表示中 のキー処理
-    if (document.body.classList.contains("is-popupmenu-open")) {
-      const popup = PopupMenu.currentPopupMenu; // 現在のポップアップメニュー
-      const activeIndex = popup.getAttribute("activeIndex") ? parseInt(popup.getAttribute("activeIndex")) : -1; // 選択中の有効なアクション Index
-      const actionLength = parseInt(popup.getAttribute("length")); // メニュー内の有効アクション数
-      let targetAction; // 選択されているアクションオブジェクト
-      for (let i = 0; i < popup.actions.length; i++) {
-        if (popup.actions[i].index === activeIndex) {
-          targetAction = popup.actions[i].action;
-        }
-      }
+  window.addEventListener(
+    "keydown",
+    async (e) => {
+      // ポップアップメニュー表示中 のキー処理
+      if (document.body.classList.contains("is-popupmenu-open")) {
+        const popup = PopupMenu.currentPopupMenu; // 現在のポップアップメニュー
 
-      switch (e.key) {
-        case "Enter":
-          if (targetAction) targetAction.execute();
-          break;
-        case "ArrowUp": {
-          if (activeIndex === -1) {
-            popup.setAttribute("activeIndex", actionLength - 1);
-          } else {
-            popup.setAttribute("activeIndex", mod(activeIndex - 1, actionLength));
+        const activeIndex = popup.getAttribute("activeIndex") ? parseInt(popup.getAttribute("activeIndex")) : -1; // 選択中の有効なアクション Index
+
+        const actionLength = parseInt(popup.getAttribute("length")); // メニュー内の有効アクション数
+
+        let targetAction; // 選択されているアクションオブジェクト
+
+        for (let i = 0; i < popup.actions.length; i++) {
+          if (popup.actions[i].index === activeIndex) {
+            targetAction = popup.actions[i].action;
           }
-          Action.highLight(popup);
-          break;
         }
-        case "ArrowDown": {
-          if (activeIndex === -1) {
-            popup.setAttribute("activeIndex", 0);
-          } else {
-            popup.setAttribute("activeIndex", mod(activeIndex + 1, actionLength));
+
+        switch (e.key) {
+          case "Enter":
+            if (targetAction) targetAction.execute(e);
+            e.preventDefault();
+            e.stopPropagation();
+            break;
+          case "ArrowUp": {
+            if (activeIndex === -1) {
+              popup.setAttribute("activeIndex", actionLength - 1);
+            } else {
+              popup.setAttribute("activeIndex", mod(activeIndex - 1, actionLength));
+            }
+            Action.highLight(popup);
+            e.preventDefault();
+            e.stopPropagation();
+            break;
           }
-          Action.highLight(popup);
-          break;
-        }
-        case "ArrowRight": {
-          // 子メニューを開く
-          if (activeIndex !== -1) {
-            if (targetAction.parent) {
-              await targetAction.li.showChildren();
-              // 先頭を選択
-              const childUL = targetAction.li.querySelector(":scope>ul.m-popup");
-              if (childUL && childUL.getAttribute("length") > 0) {
-                childUL.setAttribute("activeIndex", 0);
-                Action.highLight(childUL);
+          case "ArrowDown": {
+            if (activeIndex === -1) {
+              popup.setAttribute("activeIndex", 0);
+            } else {
+              popup.setAttribute("activeIndex", mod(activeIndex + 1, actionLength));
+            }
+            Action.highLight(popup);
+            e.preventDefault();
+            e.stopPropagation();
+            break;
+          }
+          case "ArrowRight": {
+            // 子メニューを開く
+            if (activeIndex !== -1) {
+              if (targetAction.parent) {
+                await targetAction.li.showChildren();
+                // 先頭を選択
+                const childUL = targetAction.li.querySelector(":scope>ul.m-popup");
+                if (childUL && childUL.getAttribute("length") > 0) {
+                  childUL.setAttribute("activeIndex", 0);
+                  Action.highLight(childUL);
+                }
               }
             }
+            e.preventDefault();
+            e.stopPropagation();
+            break;
           }
-          break;
-        }
-        case "ArrowLeft": {
-          // 子自分メニューを閉じる
-          const parentItem = popup.parentNode;
-          if (parentItem.tagName !== "BODY") {
-            parentItem.classList.remove("is-child-open");
-            popup.classList.remove("is-open");
-            popup.setAttribute("activeIndex", -1);
-            PopupMenu.currentPopupMenu = parentItem.parentNode;
+          case "ArrowLeft": {
+            // 子自分メニューを閉じる
+            const parentItem = popup.parentNode;
+            if (parentItem.tagName !== "BODY") {
+              parentItem.classList.remove("is-child-open");
+              popup.classList.remove("is-open");
+              popup.setAttribute("activeIndex", -1);
+              PopupMenu.currentPopupMenu = parentItem.parentNode;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            break;
           }
-          break;
+          case "Escape":
+            PopupMenu.close();
+            e.preventDefault();
+            e.stopPropagation();
+            break;
+          default:
+            e.preventDefault();
+            e.stopPropagation();
         }
-        case "Escape":
-          PopupMenu.close();
-          break;
+        return;
       }
-      return;
-    }
 
-    // 平時
-    switch (e.key) {
-      case "F12": // 言語切替
-        if (!e.repeat) {
-          await changeLanguage(config.language == LANG.JP ? LANG.EN : LANG.JP);
-          document.getElementById("language").checked = config.language == LANG.EN;
-        }
-        break;
-      case "Backspace": // 検索ボックスフォーカス
-        let searchID;
-        // ソフトリスト配下のときはソフトリストの検索ボックスへ
-        if (document.activeElement.closest(".p-softlist") === null) {
-          searchID = "search";
-        } else {
-          searchID = "searchSoft";
-        }
-        const search = document.getElementById(searchID);
-        if (e.target !== search) {
-          search.focus();
-          e.preventDefault();
-        }
-        break;
-      case "f": {
-        // 検索ボックスフォーカス
-        if (e.ctrlKey) {
+      // 平時
+      switch (e.key) {
+        case "F12": // 言語切替
+          if (!e.repeat) {
+            await changeLanguage(config.language == LANG.JP ? LANG.EN : LANG.JP);
+            document.getElementById("language").checked = config.language == LANG.EN;
+          }
+          break;
+        case "Backspace": // 検索ボックスフォーカス
           let searchID;
           // ソフトリスト配下のときはソフトリストの検索ボックスへ
           if (document.activeElement.closest(".p-softlist") === null) {
@@ -600,23 +612,41 @@ async function onLoad() {
             search.focus();
             e.preventDefault();
           }
-        }
-        break;
-      }
-      case "Escape": // 検索リセット
-        // ソフトリスト配下がじゃないとき
-        if (document.activeElement.closest(".p-softlist") === null) {
-          clearSearch();
-        } else {
-          // ソフトリスト検索リセット
-          if (softlists.currentSoftlist === "") {
-            return;
+          break;
+        case "f": {
+          // 検索ボックスフォーカス
+          if (e.ctrlKey) {
+            let searchID;
+            // ソフトリスト配下のときはソフトリストの検索ボックスへ
+            if (document.activeElement.closest(".p-softlist") === null) {
+              searchID = "search";
+            } else {
+              searchID = "searchSoft";
+            }
+            const search = document.getElementById(searchID);
+            if (e.target !== search) {
+              search.focus();
+              e.preventDefault();
+            }
           }
-          clearSearchSoft();
+          break;
         }
-        break;
-    }
-  });
+        case "Escape": // 検索リセット
+          // ソフトリスト配下がじゃないとき
+          if (document.activeElement.closest(".p-softlist") === null) {
+            clearSearch();
+          } else {
+            // ソフトリスト検索リセット
+            if (softlists.currentSoftlist === "") {
+              return;
+            }
+            clearSearchSoft();
+          }
+          break;
+      }
+    },
+    false
+  );
 
   // ウィンドウリサイズ
   window.addEventListener("resize", (e) => {
@@ -691,7 +721,7 @@ async function onLoad() {
   document.getElementsByName("searchRadio").forEach((item) => {
     item.addEventListener("change", (e) => {
       config.searchFields = document.querySelector('input[name="searchRadio"]:checked').value;
-      config.searchWord = document.querySelector("#search").value;
+      config.searchWord = document.getElementById("search").value;
       mamedb.filter({ word: config.searchWord, fields: config.searchFields });
       mamedb.sort();
       listViewMain.itemCount = mamedb.filteredLength;
@@ -965,7 +995,7 @@ async function onLoad() {
       }
     },
     onFocus: (e, index) => {
-      console.log("onFocus", index);
+      //console.log("onFocus", index);
       // 起動用のセット名更新
       dataIndex = dataSubTable[index];
       config.zipName = Dataset.master[dataIndex].zipname;
@@ -1297,6 +1327,14 @@ function clearSearchSoft() {
 
 //--------------------------------------------------------------------------
 // 編集欄
+document.getElementById("editDescription").addEventListener("keydown", (e) => {
+  if (e.code === "Tab" && e.shiftKey) {
+    listViewMain.makeVisible();
+    e.preventDefault();
+    return;
+  }
+});
+
 document.getElementById("editDescriptionJ").addEventListener("dblclick", (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -1325,12 +1363,24 @@ document.getElementById("editDescriptionJ").addEventListener("keydown", (e) => {
   }
 });
 
-document.getElementById("editDescriptionJ").addEventListener("inputex", (e) => {});
-document.getElementById("editKana").addEventListener("inputex", (e) => {});
+document.getElementById("editDescriptionJ").addEventListener("inputex", (e) => {
+  currentRow.descJ = e.target.value.trim();
+  listViewMain.updateRowTexts();
+  listViewSoftlist.updateRowTexts();
+  checkEdited(true);
+});
+document.getElementById("editKana").addEventListener("inputex", (e) => {
+  currentRow.kana = e.target.value.trim();
+  listViewSoftlist.updateRowTexts();
+  checkEdited(true);
+});
 document.getElementById("editKana").addEventListener("change", (e) => {
   if (e.target.value === "") {
     e.target.value = currentRow.desc;
+    currentRow.kana = currentRow.desc;
+    listViewSoftlist.updateRowTexts();
   }
+  checkEdited(true);
 });
 document.getElementById("editKana").addEventListener("keydown", (e) => {
   if (e.code === "Tab" && e.shiftKey === false) {
@@ -1349,12 +1399,20 @@ function checkTranslated() {
   }
 }
 
+/**
+ * 変更があるときの処理
+ */
+function checkEdited(edited) {
+  isEdited = edited;
+  document.getElementById("footerUpdated").innerText = isEdited ? "更新あり" : "";
+}
+
 //--------------------------------------------------------------------------
 // フォームの config 送信
 function saveFormConfig() {
   try {
     // 検索文字列
-    config.searchWord = document.querySelector("#search").value.trim();
+    config.searchWord = document.getElementById("search").value.trim();
 
     // スプリッター設定
     config.splitter = [];

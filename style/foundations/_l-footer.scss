@@ -10,4 +10,10 @@
     line-height: 22px;
     padding: 0 1.5em;
   }
+  &__left {
+    display: flex;
+  }
+  &__right {
+    display: flex;
+  }
 }

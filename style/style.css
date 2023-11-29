@@ -2829,6 +2829,12 @@ input[type=search]::-webkit-search-results-decoration {
   line-height: 22px;
   padding: 0 1.5em;
 }
+.l-footer__left {
+  display: flex;
+}
+.l-footer__right {
+  display: flex;
+}
 
 .m-select {
   width: 100%;

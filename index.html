@@ -65,7 +65,7 @@
                     </label>
                   </div>
                 </div>
-                <input class="p-search__input ime-input" id="search" type="search" maxlength="20" size="16" value="" spellcheck="false">
+                <input class="p-search__input ime-input" id="search" type="search" maxlength="24" size="20" value="" spellcheck="false">
                 <div class="p-search__clear" tooltip="クリア(ESC)" id="clear">&#xe75c</div>
               </div>
             </div>
@@ -95,7 +95,7 @@
                           &#xe744;
                         </div>
                       </div>
-                      <input class="p-search__input ime-input" id="searchSoft" type="search" maxlength="20" size="16" value="" spellcheck="false" disabled>
+                      <input class="p-search__input ime-input" id="searchSoft" type="search" maxlength="24" size="20" value="" spellcheck="false" disabled>
                       <div class="p-search__clear" tooltip="クリア(ESC)" id="clearSoft">&#xe75c</div>
                     </div>
                   </div>
@@ -119,11 +119,11 @@
                                 <th><span class="p-edit__translated">*</span> 英語名</th><td><input type="text" readonly id="editDescription" spellcheck="false" class="m-input m-input--readonly"></td></tr>
                               <tr>
                                 <th>日本語名</th>
-                                <td><input type="text" id="editDescriptionJ" spellcheck="false" class="m-input ime-input"></td>
+                                <td><input type="text" id="editDescriptionJ" spellcheck="false" class="m-input ime-input" maxlength="512"></td>
                               </tr>
                               <tr>
                                 <th>よみがな</th>
-                                <td><input type="text" id="editKana" spellcheck="false" class="m-input ime-input"></td>
+                                <td><input type="text" id="editKana" spellcheck="false" class="m-input ime-input" maxlength="512"></td>
                               </tr>
                             </table>
                           </div>
@@ -248,6 +248,7 @@
       <div class="l-footer" tooltip="ぼくはまちちゃんX！" style="-webkit-app-region: drag;">
         <div class="l-footer__left">
           <div class="l-footer__item" id="footerNum">-/-</div>
+          <div class="l-footer__item" id="footerUpdated"></div>
         </div>
         <div class="l-footer__center">
           <div class="l-footer__item" id="footer--desc"></div>
