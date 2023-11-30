@@ -1310,8 +1310,8 @@ function clearSearch() {
   document.getElementById("search").focus();
   document.getElementById("search").select();
   window.retrofireAPI.delete();
-  config.searchWord = "";
-  updateListView();
+  //config.searchWord = "";
+  //updateListView();
 }
 
 // 検索クリアソフト
@@ -1321,8 +1321,8 @@ function clearSearchSoft() {
   document.getElementById("searchSoft").focus();
   document.getElementById("searchSoft").select();
   window.retrofireAPI.delete();
-  config.searchWordSoft = "";
-  updateListViewSoftlist();
+  //config.searchWordSoft = "";
+  //updateListViewSoftlist();
 }
 
 //--------------------------------------------------------------------------
