@@ -404,6 +404,23 @@ const pmSoftList = new PopupMenu({
   targets: [".list-softlist"],
 });
 
+//------------------------------------------------------------
+// メイン処理トリガ
+const actSaveMame32j = new Action({
+  caption: "mame32jを保存...",
+  keycode: "s",
+  control: true,
+  iconFont: "fontello",
+  iconChar: "E80B",
+  onExecute: async (self) => {
+    console.log("save");
+    window.retrofireAPI.saveMame32j();
+  },
+  onUpdate: async (self) => {
+    self.enabled = true;
+  },
+});
+
 //---------------------------------------------------------------------
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);

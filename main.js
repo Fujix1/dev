@@ -444,6 +444,15 @@ ipcMain.handle("open-dialog", async (event, data) => {
   }
 });
 
+ipcMain.handle("save-mame32j", async (event, data) => {
+  const result = await dialog.showSaveDialogSync(mainWindow, {
+    title: "mame32j.lstを保存",
+    defaultPath: "mame32j.lst",
+    filters: [{ name: "mame32j.lst", extensions: ["lst"] }],
+  });
+  console.log(result);
+});
+
 // スクリーンショット削除
 ipcMain.handle("delete-screen-shot", async (event, data) => {
   const result = dialog.showMessageBoxSync(mainWindow, {

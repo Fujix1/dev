@@ -53,6 +53,9 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   // コンテキストメニューイベント返し
   onContextMenu: (callback) => ipcRenderer.on("context-menu", callback),
 
+  // mame32j 保存
+  saveMame32j: async (args) => await ipcRenderer.invoke("save-mame32j", args),
+
   // beep
   beep: async (args) => await ipcRenderer.invoke("beep", args),
 });
