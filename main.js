@@ -450,7 +450,15 @@ ipcMain.handle("save-mame32j", async (event, data) => {
     defaultPath: "mame32j.lst",
     filters: [{ name: "mame32j.lst", extensions: ["lst"] }],
   });
-  console.log(result);
+  if (result !== null) {
+    try {
+      fs.writeFileSync(result, data.join("\n"));
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
 });
 
 // スクリーンショット削除

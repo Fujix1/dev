@@ -405,7 +405,7 @@ const pmSoftList = new PopupMenu({
 });
 
 //------------------------------------------------------------
-// メイン処理トリガ
+// メイン処理
 const actSaveMame32j = new Action({
   caption: "mame32jを保存...",
   keycode: "s",
@@ -413,8 +413,17 @@ const actSaveMame32j = new Action({
   iconFont: "fontello",
   iconChar: "E80B",
   onExecute: async (self) => {
-    console.log("save");
-    window.retrofireAPI.saveMame32j();
+    const mame32j = [];
+    for (let i = 0; i < Dataset.master.length; i++) {
+      if (Dataset.master[i].desc !== Dataset.master[i].descJ || Dataset.master[i].desc !== Dataset.master[i].kana) {
+        mame32j.push(
+          Dataset.master[i].zipname + "\t" + Dataset.master[i].descJ.trim() + "\t" + Dataset.master[i].kana.trim()
+        );
+      }
+    }
+    if ((await window.retrofireAPI.saveMame32j(mame32j)) === true) {
+      checkEdited(false);
+    }
   },
   onUpdate: async (self) => {
     self.enabled = true;
