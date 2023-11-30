@@ -1306,23 +1306,17 @@ window.addEventListener("beforeunload", (e) => {
 // 検索クリア
 document.getElementById("clear").addEventListener("click", clearSearch);
 function clearSearch() {
-  //document.getElementById("search").value = "";
   document.getElementById("search").focus();
   document.getElementById("search").select();
   window.retrofireAPI.delete();
-  //config.searchWord = "";
-  //updateListView();
 }
 
 // 検索クリアソフト
 document.getElementById("clearSoft").addEventListener("click", clearSearchSoft);
 function clearSearchSoft() {
-  //document.getElementById("searchSoft").value = "";
   document.getElementById("searchSoft").focus();
   document.getElementById("searchSoft").select();
   window.retrofireAPI.delete();
-  //config.searchWordSoft = "";
-  //updateListViewSoftlist();
 }
 
 //--------------------------------------------------------------------------
