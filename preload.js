@@ -62,6 +62,9 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
   // mame32j データリクエスト
   onRequestMame32j: (callback) => ipcRenderer.on("request-mame32j", callback),
 
+  // mame32j データ返信
+  sendMame32j: async (args) => await ipcRenderer.invoke("send-mame32j", args),
+
   // 編集済み送信
   sendEditCondition: async (args) => await ipcRenderer.invoke("send-edit-condition", args),
 

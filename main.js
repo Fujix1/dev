@@ -47,6 +47,8 @@ let settingsToBeStored = {};
 // 編集済み
 let isEdited = false;
 
+let pathMame32j = ""; // mame32j 保存先
+
 // メインメニュー
 const isMac = process.platform === "darwin";
 const template = [
@@ -449,34 +451,45 @@ ipcMain.handle("open-dialog", async (event, data) => {
   }
 });
 
+// Mame32j.lst 保存処理開始
 ipcMain.handle("save-mame32j", async (event, data) => {
-  return await saveMame32j(data);
-});
-
-async function saveMame32j(data) {
   const result = await dialog.showSaveDialogSync(mainWindow, {
     title: "mame32j.lstを保存",
     defaultPath: "mame32j.lst",
     filters: [{ name: "mame32j.lst", extensions: ["lst"] }],
   });
+
   if (result !== null) {
-    try {
-      fs.writeFileSync(result, data.join("\n"));
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
+    // renderer にデータリクエスト
+    pathMame32j = result;
+    mainWindow.webContents.send("request-mame32j");
+    return true;
+  } else return false;
+});
+
+// renderer から mame32j データ受け取り
+ipcMain.handle("send-mame32j", async (event, data) => {
+  await saveMame32j(data);
+});
+
+async function saveMame32j(data) {
+  try {
+    fs.writeFileSync(pathMame32j, data.join("\n"));
+    pathMame32j = "";
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
   }
-  return false;
 }
 
 // 編集済み受信
 ipcMain.handle("send-edit-condition", async (event, data) => {
-  if (data.isEdited) {
+  console.log("send-edit-condition", data);
+  if (data.hasOwnProperty("isEdited")) {
     isEdited = data.isEdited;
   }
-  console.log("編集済み", isEdited);
+  console.log("send-edit-condition", isEdited);
 });
 
 // 終了

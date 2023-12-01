@@ -407,7 +407,8 @@ const actSaveMame32j = new Action({
   iconFont: "fontello",
   iconChar: "E80B",
   onExecute: async (self) => {
-    if ((await window.retrofireAPI.saveMame32j(makeMame32j())) === true) {
+    const res = await window.retrofireAPI.saveMame32j();
+    if (res) {
       checkEdited(false);
     }
   },
@@ -1536,6 +1537,12 @@ window.retrofireAPI.onFocus((_event, text) => {
   console.log("onFocus");
   // スクリーンショット読み直す
   screenShot.show(config.zipName);
+});
+
+// mame32jデータリクエスト
+window.retrofireAPI.onRequestMame32j((_event, text) => {
+  console.log("mame32j requested");
+  window.retrofireAPI.sendMame32j(makeMame32j());
 });
 
 // -------------------------------------
