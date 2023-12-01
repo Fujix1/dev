@@ -1,0 +1,37 @@
+.p-menu {
+  background-color: var(--cl-control-bg);
+  display: flex;
+  flex-direction: column;
+  &__button {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 0;
+    background: none;
+    font-family: "fontello";
+    cursor: pointer;
+    display: block;
+    font-size: 24px;
+    line-height: 24px;
+    height: 50px;
+    width: 54px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, var(--cl-theme--gray), var(--cl-theme--gray));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: var(--s-transition);
+    &--mame {
+      font-size: 29px;
+
+    }
+    &:hover {
+      background: linear-gradient(135deg, #6ccce5, #208db5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &:focus {
+
+    }
+  }
+}

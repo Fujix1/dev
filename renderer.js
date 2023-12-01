@@ -48,10 +48,9 @@ const actCut = new Action({
   isEditItem: true,
   onExecute: (self) => {
     window.retrofireAPI.cut();
-    console.log("切り取り");
   },
   onUpdate: (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canCut;
+    self.enabled = PopupMenu.contextMenuEventArgs ? PopupMenu.contextMenuEventArgs.editFlags.canCut : true;
   },
 });
 
@@ -62,10 +61,9 @@ const actCopy = new Action({
   isEditItem: true,
   onExecute: (self) => {
     window.retrofireAPI.copy();
-    console.log("コピー");
   },
   onUpdate: (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canCopy;
+    self.enabled = PopupMenu.contextMenuEventArgs ? PopupMenu.contextMenuEventArgs.editFlags.canCopy : true;
   },
 });
 
@@ -76,10 +74,9 @@ const actPaste = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.paste();
-    console.log("貼り付け");
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canPaste;
+    self.enabled = PopupMenu.contextMenuEventArgs ? PopupMenu.contextMenuEventArgs.editFlags.canPaste : true;
   },
 });
 
@@ -90,10 +87,9 @@ const actUndo = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.undo();
-    console.log("元に戻す");
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canUndo;
+    self.enabled = PopupMenu.contextMenuEventArgs ? PopupMenu.contextMenuEventArgs.editFlags.canUndo : true;
   },
 });
 
@@ -104,10 +100,9 @@ const actRedo = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.redo();
-    console.log("やり直し");
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canRedo;
+    self.enabled = PopupMenu.contextMenuEventArgs ? PopupMenu.contextMenuEventArgs.editFlags.canRedo : true;
   },
 });
 
@@ -118,10 +113,9 @@ const actSelectAll = new Action({
   isEditItem: true,
   onExecute: async (self) => {
     window.retrofireAPI.selectAll();
-    console.log("全て選択");
   },
   onUpdate: async (self) => {
-    self.enabled = PopupMenu.contextMenuEventArgs && PopupMenu.contextMenuEventArgs.editFlags.canSelectAll;
+    self.enabled = PopupMenu.contextMenuEventArgs ? PopupMenu.contextMenuEventArgs.editFlags.canSelectAll : true;
   },
 });
 
@@ -405,7 +399,7 @@ const pmSoftList = new PopupMenu({
 });
 
 //------------------------------------------------------------
-// メイン処理
+// メインメニュー
 const actSaveMame32j = new Action({
   caption: "mame32jを保存...",
   keycode: "s",
@@ -413,15 +407,7 @@ const actSaveMame32j = new Action({
   iconFont: "fontello",
   iconChar: "E80B",
   onExecute: async (self) => {
-    const mame32j = [];
-    for (let i = 0; i < Dataset.master.length; i++) {
-      if (Dataset.master[i].desc !== Dataset.master[i].descJ || Dataset.master[i].desc !== Dataset.master[i].kana) {
-        mame32j.push(
-          Dataset.master[i].zipname + "\t" + Dataset.master[i].descJ.trim() + "\t" + Dataset.master[i].kana.trim()
-        );
-      }
-    }
-    if ((await window.retrofireAPI.saveMame32j(mame32j)) === true) {
+    if ((await window.retrofireAPI.saveMame32j(makeMame32j())) === true) {
       checkEdited(false);
     }
   },
@@ -430,6 +416,38 @@ const actSaveMame32j = new Action({
   },
 });
 
+const actQuit = new Action({
+  caption: "終了",
+  keycode: "q",
+  control: true,
+  onExecute: async (self) => {
+    let mame32j = [];
+    if (isEdited) {
+      mame32j = makeMame32j();
+    }
+    window.retrofireAPI.quit({
+      isEdited: isEdited,
+      mame32j: mame32j,
+    });
+  },
+  onUpdate: async (self) => {
+    self.enabled = true;
+  },
+});
+
+function makeMame32j() {
+  const mame32j = [];
+  for (let i = 0; i < Dataset.master.length; i++) {
+    if (Dataset.master[i].desc !== Dataset.master[i].descJ || Dataset.master[i].desc !== Dataset.master[i].kana) {
+      mame32j.push(
+        Dataset.master[i].zipname + "\t" + Dataset.master[i].descJ.trim() + "\t" + Dataset.master[i].kana.trim()
+      );
+    }
+  }
+  return mame32j;
+}
+// --------------------------------------------------------------------
+Action.addShortCuts(); // ショートカットまとめて登録
 //---------------------------------------------------------------------
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);

@@ -1,19 +1,107 @@
 @font-face {
   font-family: 'fontello';
-  src: url('fonts/fontello.woff2?4827975') format('woff2');
+  src: url('fonts/fontello.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
+
 /* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
 /* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
 /*
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'fontello';
-    src: url('../font/fontello.svg?4827975#fontello') format('svg');
+    src: url('../font/fontello.svg?19405954#fontello') format('svg');
   }
 }
-*/
+*/[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.icon-ico-ja:before { content: '\e800'; } /* '' */
+.icon-ico-en:before { content: '\e801'; } /* '' */
+.icon-search:before { content: '\e802'; } /* '' */
+.icon-play:before { content: '\e803'; } /* '' */
+.icon-check:before { content: '\e804'; } /* '' */
+.icon-cancel-circle:before { content: '\e805'; } /* '' */
+.icon-folder-open:before { content: '\e806'; } /* '' */
+.icon-picture:before { content: '\e807'; } /* '' */
+.icon-palette:before { content: '\e808'; } /* '' */
+.icon-sound:before { content: '\e809'; } /* '' */
+.icon-lock:before { content: '\e80a'; } /* '' */
+.icon-floppy:before { content: '\e80b'; } /* '' */
+.icon-gear:before { content: '\e80c'; } /* '' */
+.icon-cloud:before { content: '\e80d'; } /* '' */
+.icon-right-open:before { content: '\f006'; } /* '' */
+.icon-menu:before { content: '\f008'; } /* '' */
+.icon-github-circled:before { content: '\f09b'; } /* '' */
+.icon-github:before { content: '\f308'; } /* '' */
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
 [class^="icon-"]:before, [class*=" icon-"]:before {
   font-family: "fontello";
   font-style: normal;
@@ -61,6 +149,11 @@
 .icon-sound:before { content: '\e809'; } /* '' */
 .icon-lock:before { content: '\e80a'; } /* '' */
 .icon-floppy:before { content: '\e80b'; } /* '' */
+.icon-gear:before { content: '\e80c'; } /* '' */
+.icon-cloud:before { content: '\e80d'; } /* '' */
+.icon-mame:before { content: '\e80e'; } /* '' */
 .icon-right-open:before { content: '\f006'; } /* '' */
+.icon-menu:before { content: '\f008'; } /* '' */
 .icon-github-circled:before { content: '\f09b'; } /* '' */
 .icon-github:before { content: '\f308'; } /* '' */
+

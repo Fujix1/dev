@@ -69,7 +69,7 @@ const template = [
   // { role: 'fileMenu' }
   {
     label: "File",
-    submenu: [isMac ? { role: "close" } : { role: "quit" }],
+    //submenu: [isMac ? { role: "close" } : { role: "quit" }],
   },
   // { role: 'editMenu' }
   {
@@ -117,9 +117,9 @@ const template = [
     submenu: [
       { role: "minimize" },
       { role: "zoom" },
-      ...(isMac
+      /*...(isMac
         ? [{ type: "separator" }, { role: "front" }, { type: "separator" }, { role: "window" }]
-        : [{ role: "close" }]),
+        : [{ role: "close" }]),*/
     ],
   },
   {
@@ -178,8 +178,10 @@ const createWindow = () => {
   });
 
   // ウインドウ閉じる直前
-  mainWindow.on("close", async () => {
-    console.log("mainwindow on close");
+  mainWindow.on("close", async (e) => {
+    e.preventDefault();
+    console.log("mainwindow ONCLOSE");
+
     store.set("mainWindow.pos", mainWindow.getPosition()); // ウィンドウの座標を記録
     store.set("mainWindow.size", mainWindow.getSize()); // ウィンドウのサイズを記録
     store.set("mainWindow.maximized", mainWindow.isMaximized());
@@ -445,6 +447,10 @@ ipcMain.handle("open-dialog", async (event, data) => {
 });
 
 ipcMain.handle("save-mame32j", async (event, data) => {
+  return await saveMame32j(data);
+});
+
+async function saveMame32j(data) {
   const result = await dialog.showSaveDialogSync(mainWindow, {
     title: "mame32j.lstを保存",
     defaultPath: "mame32j.lst",
@@ -459,6 +465,27 @@ ipcMain.handle("save-mame32j", async (event, data) => {
       return false;
     }
   }
+  return false;
+}
+
+// 終了
+ipcMain.handle("quit", async (event, data) => {
+  // 変更ある場合
+  if (data.isEdited) {
+    const result = await dialog.showMessageBoxSync(mainWindow, {
+      title: "確認",
+      message: "ゲーム名が編集されています。\n\n変更を mame32j.lst に保存しますか?",
+      buttons: ["Yes", "No", "Cancel"],
+      type: "question",
+      defaultId: 0,
+      cancelId: 2,
+    });
+    if (result == 2) {
+      return;
+    }
+  }
+
+  app.quit();
 });
 
 // スクリーンショット削除

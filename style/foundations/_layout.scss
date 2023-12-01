@@ -8,16 +8,13 @@
   z-index: 0;
 }
 
-.l-upper {
+.l-left {
   display: flex;
   flex-grow: 1;
   flex-shrink: 1;
   overflow: hidden;
 }
 
-.l-control {
-  background-color: var(--cl-control-bg);
-}
 .l-tree {
   display: flex;
   flex-direction: column;
