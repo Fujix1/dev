@@ -66,7 +66,7 @@ const template = [
             { role: "hideOthers" },
             { role: "unhide" },
             { type: "separator" },
-            { role: "quit" },
+            //{ role: "quit" },
           ],
         },
       ]
@@ -184,8 +184,34 @@ const createWindow = () => {
 
   // ウインドウ閉じる直前
   mainWindow.on("close", async (e) => {
-    e.preventDefault();
-    console.log("mainwindow ONCLOSE");
+    console.log("CLOSE", "isEdited", isEdited);
+    if (isEdited) {
+      const result = dialog.showMessageBoxSync(mainWindow, {
+        title: "確認",
+        message: "ゲーム名が編集されています。\n\n変更を mame32j.lst に保存しますか?",
+        buttons: ["Yes", "No", "Cancel"],
+        type: "question",
+        defaultId: 0,
+        cancelId: 2,
+      });
+
+      switch (result) {
+        case 0: {
+          break;
+        }
+        case 1: {
+          break;
+        }
+        case 2: {
+          e.preventDefault();
+          break;
+        }
+        default: {
+          e.preventDefault();
+        }
+      }
+      console.log(result);
+    }
 
     store.set("mainWindow.pos", mainWindow.getPosition()); // ウィンドウの座標を記録
     store.set("mainWindow.size", mainWindow.getSize()); // ウィンドウのサイズを記録
@@ -255,6 +281,11 @@ app.whenReady().then(async () => {
       createWindow();
     }
   });
+});
+
+// 終了前
+app.on("before-quit", async (e) => {
+  console.log("BEFORE QUIT");
 });
 
 // すべてのウィンドウが閉じられたときの処理
@@ -494,22 +525,8 @@ ipcMain.handle("send-edit-condition", async (event, data) => {
 
 // 終了
 ipcMain.handle("quit", async (event, data) => {
-  // 変更ある場合
-  if (data.isEdited) {
-    const result = await dialog.showMessageBoxSync(mainWindow, {
-      title: "確認",
-      message: "ゲーム名が編集されています。\n\n変更を mame32j.lst に保存しますか?",
-      buttons: ["Yes", "No", "Cancel"],
-      type: "question",
-      defaultId: 0,
-      cancelId: 2,
-    });
-    if (result == 2) {
-      return;
-    }
-  }
-
-  app.quit();
+  mainWindow.close();
+  //app.quit();
 });
 
 // スクリーンショット削除
@@ -656,7 +673,7 @@ ipcMain.handle("set-store", async (event, data) => {
  * Store の値を一時保持
  */
 ipcMain.handle("set-store-temp", async (event, data) => {
-  console.log("setting received", data);
+  //console.log("setting received", data);
   settingsToBeStored[data.key] = data.val;
 });
 
