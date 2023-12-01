@@ -1455,6 +1455,7 @@ function checkTranslated() {
 function checkEdited(edited) {
   isEdited = edited;
   document.getElementById("footerUpdated").innerText = isEdited ? "更新あり" : "";
+  window.retrofireAPI.sendEditCondition({ isEdited: isEdited });
 }
 
 //--------------------------------------------------------------------------

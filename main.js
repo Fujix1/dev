@@ -44,6 +44,9 @@ let mainWindow;
 // 受信した設定
 let settingsToBeStored = {};
 
+// 編集済み
+let isEdited = false;
+
 // メインメニュー
 const isMac = process.platform === "darwin";
 const template = [
@@ -467,6 +470,14 @@ async function saveMame32j(data) {
   }
   return false;
 }
+
+// 編集済み受信
+ipcMain.handle("send-edit-condition", async (event, data) => {
+  if (data.isEdited) {
+    isEdited = data.isEdited;
+  }
+  console.log("編集済み", isEdited);
+});
 
 // 終了
 ipcMain.handle("quit", async (event, data) => {
