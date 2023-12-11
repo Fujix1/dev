@@ -21,12 +21,17 @@ let dataSubTable = [];
 let currentRow;
 let isEdited = false; // ゲーム名など更新済み
 
-const LANG = { JP: 0, EN: 1 };
+const MAXSEARCHHISTORY = 5; // 検索ヒストリの保存数
+
+const LANG = { JP: 0, EN: 1, FR: 3, IT: 4, DE: 5, TW: 6, KR: 7, SC: 8 };
+
 let config = {
   language: LANG.JP, // 言語設定
   searchWord: "", // 検索文字列
   searchFields: "", // 検索対象
   searchWordSoft: "",
+  searchHistory: [], // 検索ヒストリ
+  searchHistorySoft: [], // ソフト検索ヒストリ
   keepAspect: true, // スクリーンショットアスペクト比
   splitter: [
     // スプリッタの幅高初期値
@@ -452,6 +457,7 @@ Action.addShortCuts(); // ショートカットまとめて登録
 //---------------------------------------------------------------------
 // Window Onload
 window.addEventListener("DOMContentLoaded", onLoad);
+
 async function onLoad() {
   // 設定読み込みと適用
   const readConfig = await window.retrofireAPI.getStore("config");
@@ -505,9 +511,18 @@ async function onLoad() {
     if (readConfig.hasOwnProperty("zipName")) {
       config.zipName = readConfig.zipName;
     }
+    // ソフト検索文字列
     if (readConfig.hasOwnProperty("searchWordSoft")) {
       config.searchWordSoft = readConfig.searchWordSoft;
       document.getElementById("searchSoft").value = readConfig.searchWordSoft;
+    }
+    // 検索ヒストリ
+    if (readConfig.hasOwnProperty("searchHistory")) {
+      config.searchHistory = Array.from(new Set(readConfig.searchHistory));
+    }
+    // ソフト検索ヒストリ
+    if (readConfig.hasOwnProperty("searchHistorySoft")) {
+      config.searchHistorySoft = Array.from(new Set(readConfig.searchHistorySoft));
     }
   }
 
@@ -754,12 +769,38 @@ async function onLoad() {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
         listViewMain.makeVisible();
         e.preventDefault();
-        return;
+      } else if (e.code === "ArrowDown") {
+        if (search.historyIndex < config.searchHistory.length - 1) {
+          search.historyIndex++;
+          search.value = config.searchHistory[search.historyIndex];
+          search.select();
+          config.searchWord = search.value;
+          updateListView();
+          e.preventDefault();
+        }
+      } else if (e.code === "ArrowUp") {
+        if (search.historyIndex > 0) {
+          search.historyIndex--;
+          search.value = config.searchHistory[search.historyIndex];
+          search.select();
+          config.searchWord = search.value;
+          updateListView();
+          e.preventDefault();
+        }
       }
     }
   });
   search.addEventListener("focus", (e) => {
     e.target.select();
+    search.historyIndex = -1;
+  });
+
+  search.addEventListener("blur", (e) => {
+    // 検索ヒストリ登録
+    if (e.target.value.trim() !== "") {
+      config.searchHistory.unshift(e.target.value.trim());
+      config.searchHistory = Array.from(new Set(config.searchHistory)).slice(0, MAXSEARCHHISTORY);
+    }
   });
 
   // 検索対象
@@ -800,12 +841,38 @@ async function onLoad() {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
         listViewSoftlist.makeVisible();
         e.preventDefault();
-        return;
+      } else if (e.code === "ArrowDown") {
+        if (searchSoft.historyIndex < config.searchHistorySoft.length - 1) {
+          searchSoft.historyIndex++;
+          searchSoft.value = config.searchHistorySoft[searchSoft.historyIndex];
+          searchSoft.select();
+          config.searchWordSoft = searchSoft.value;
+          updateListViewSoftlist();
+          e.preventDefault();
+        }
+      } else if (e.code === "ArrowUp") {
+        if (searchSoft.historyIndex > 0) {
+          searchSoft.historyIndex--;
+          searchSoft.value = config.searchHistorySoft[searchSoft.historyIndex];
+          searchSoft.select();
+          config.searchWordSoft = searchSoft.value;
+          updateListViewSoftlist();
+          e.preventDefault();
+        }
       }
     }
   });
   searchSoft.addEventListener("focus", (e) => {
     e.target.select();
+    searchSoft.historyIndex = -1;
+  });
+
+  searchSoft.addEventListener("blur", (e) => {
+    // 検索ヒストリ登録
+    if (e.target.value.trim() !== "") {
+      config.searchHistorySoft.unshift(e.target.value.trim());
+      config.searchHistorySoft = Array.from(new Set(config.searchHistorySoft)).slice(0, MAXSEARCHHISTORY);
+    }
   });
 
   //----------------------------------------------------------------------
