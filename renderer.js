@@ -754,42 +754,48 @@ async function onLoad() {
     console.log("inputex");
     updateListView();
   });
-  search.addEventListener("keydown", (e) => {
-    // ポップアップメニュー あり
-    if (document.body.classList.contains("is-popupmenu-open")) {
-      e.preventDefault();
-      return;
-    }
-    if (e.code === "Tab") {
-      listViewMain.makeVisible();
-      e.preventDefault();
-      return;
-    }
-    if (e.target.getAttribute("IME") !== "true") {
-      if (e.code === "Enter" || e.code === "NumpadEnter") {
+  search.addEventListener(
+    "keydown",
+    (e) => {
+      // ポップアップメニュー あり
+      if (document.body.classList.contains("is-popupmenu-open")) {
+        e.preventDefault();
+        return;
+      }
+      if (e.code === "Tab") {
         listViewMain.makeVisible();
         e.preventDefault();
-      } else if (e.code === "ArrowDown") {
-        if (search.historyIndex < config.searchHistory.length - 1) {
-          search.historyIndex++;
-          search.value = config.searchHistory[search.historyIndex];
-          search.select();
-          config.searchWord = search.value;
-          updateListView();
+        return;
+      } else if (e.code === "Delete") {
+        e.stopPropagation();
+      }
+      if (e.target.getAttribute("IME") !== "true") {
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
+          listViewMain.makeVisible();
           e.preventDefault();
-        }
-      } else if (e.code === "ArrowUp") {
-        if (search.historyIndex > 0) {
-          search.historyIndex--;
-          search.value = config.searchHistory[search.historyIndex];
-          search.select();
-          config.searchWord = search.value;
-          updateListView();
-          e.preventDefault();
+        } else if (e.code === "ArrowDown") {
+          if (search.historyIndex < config.searchHistory.length - 1) {
+            search.historyIndex++;
+            search.value = config.searchHistory[search.historyIndex];
+            search.select();
+            config.searchWord = search.value;
+            updateListView();
+            e.preventDefault();
+          }
+        } else if (e.code === "ArrowUp") {
+          if (search.historyIndex > 0) {
+            search.historyIndex--;
+            search.value = config.searchHistory[search.historyIndex];
+            search.select();
+            config.searchWord = search.value;
+            updateListView();
+            e.preventDefault();
+          }
         }
       }
-    }
-  });
+    },
+    false
+  );
   search.addEventListener("focus", (e) => {
     e.target.select();
     search.historyIndex = -1;
@@ -836,6 +842,8 @@ async function onLoad() {
       }
       e.preventDefault();
       return;
+    } else if (e.code === "Delete") {
+      e.stopPropagation();
     }
     if (e.target.getAttribute("IME") !== "true") {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
