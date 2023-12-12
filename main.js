@@ -490,7 +490,7 @@ ipcMain.handle("save-mame32j", async (event, data) => {
     filters: [{ name: "mame32j.lst", extensions: ["lst"] }],
   });
 
-  if (result !== null) {
+  if (result !== undefined) {
     // renderer にデータリクエスト
     pathMame32j = result;
     mainWindow.webContents.send("request-mame32j");
@@ -526,7 +526,12 @@ ipcMain.handle("send-edit-condition", async (event, data) => {
 // 終了
 ipcMain.handle("quit", async (event, data) => {
   mainWindow.close();
-  //app.quit();
+});
+
+// 最小化
+ipcMain.handle("minimize", async (event, data) => {
+  console.log("minimize");
+  mainWindow.minimize();
 });
 
 // スクリーンショット削除

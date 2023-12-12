@@ -55,6 +55,7 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
 
   // メインメニュー
   quit: async (args) => await ipcRenderer.invoke("quit", args),
+  minimize: async (args) => await ipcRenderer.invoke("minimize", args),
 
   // mame32j 保存
   saveMame32j: async (args) => await ipcRenderer.invoke("save-mame32j", args),
