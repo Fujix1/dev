@@ -328,6 +328,12 @@ async function onLoad() {
     }
   });
 
+  document.querySelector("#btn-item1").addEventListener("mousedown", (e) => {
+    setTimeout(() => {
+      window.retrofireAPI.minimize();
+    }, 200);
+  });
+
   document.querySelector("#btn-item2").addEventListener("click", async () => {
     let res = await window.retrofireAPI.parseListxml();
     console.log(res);

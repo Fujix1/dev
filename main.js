@@ -530,7 +530,6 @@ ipcMain.handle("quit", async (event, data) => {
 
 // 最小化
 ipcMain.handle("minimize", async (event, data) => {
-  console.log("minimize");
   mainWindow.minimize();
 });
 
