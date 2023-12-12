@@ -834,6 +834,7 @@ async function onLoad() {
       e.preventDefault();
       return;
     }
+
     if (e.code === "Tab") {
       if (e.shiftKey) {
         document.getElementById("softlistTitle").focus();
@@ -841,10 +842,12 @@ async function onLoad() {
         listViewSoftlist.makeVisible();
       }
       e.preventDefault();
+      e.stopPropagation();
       return;
     } else if (e.code === "Delete") {
       e.stopPropagation();
     }
+
     if (e.target.getAttribute("IME") !== "true") {
       if (e.code === "Enter" || e.code === "NumpadEnter") {
         listViewSoftlist.makeVisible();
