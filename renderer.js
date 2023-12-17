@@ -852,7 +852,6 @@ async function updateListView() {
 
 // ソフトリストのリストビュー更新
 async function updateListViewSoftlist() {
-  console.log("updateListViewSoftlist");
   if (softlists.currentSoftlist === "") {
     return;
   }

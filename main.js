@@ -20,6 +20,7 @@ const Parser = require("node-xml-stream");
 //-------------------------------------------------------------------
 app.disableHardwareAcceleration(); // ハードウェアアクセラレーション無効
 const APPNAME = "Retrofire Dev";
+const APPVERSION = "0.00";
 
 //-------------------------------------------------------------------
 // 定数
@@ -40,6 +41,7 @@ const PATH_LISTSOFT = "./temp/listsoft.xml";
 //-------------------------------------------------------------------
 // ウインドウ管理
 let mainWindow;
+let frmAbout;
 
 // 受信した設定
 let settingsToBeStored = {};
@@ -826,8 +828,6 @@ ipcMain.handle("parse-listsoft", async (event, arg) => {
   let inSoftware = false;
   const regex = /(\(.*\))$/g;
 
-  const interfaces = [];
-
   // 開始タグが見つかった
   parser.on("opentag", (name, attrs) => {
     switch (name) {
@@ -1516,3 +1516,59 @@ function zenToHan(st) {
 function unEscape(st) {
   return st.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", '"').replaceAll("&amp;", "&");
 }
+
+///----------------------------------------------------------------------------------
+/// About フォーム
+function makeFromAbout() {
+  // About メニュー
+  frmAbout = new BrowserWindow({
+    parent: mainWindow,
+    modal: true,
+    show: false,
+    minWidth: 640,
+    minHeight: 480,
+    width: 640,
+    height: 480,
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+    fullscreenable: false,
+    title: "About",
+    titleBarStyle: "hidden",
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
+  // frmAbout.removeMenu();
+  frmAbout.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("http")) {
+      shell.openExternal(url);
+    }
+    return { action: "deny" };
+  });
+
+  frmAbout.loadFile("about.html");
+  frmAbout.once("ready-to-show", () => {
+    frmAbout.webContents.send("show-process-info", {
+      appname: APPNAME,
+      appversion: APPVERSION,
+      platform: process.platform,
+      node: process.version,
+      chrome: process.versions.chrome,
+      electron: process.versions.electron,
+      os: require("os").release(),
+      type: require("os").type(),
+    });
+    frmAbout.show();
+  });
+}
+
+ipcMain.handle("show-form-about", async (event, arg) => {
+  makeFromAbout();
+});
+
+ipcMain.handle("close-form-about", async (event, arg) => {
+  frmAbout.close();
+});

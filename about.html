@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="script-src 'self'">
+    <title>About</title>
+    <link rel="stylesheet" type="text/css" href="./style/style.css">
+  </head>
+  <body>
+    <div class="l-about">
+      <div class="p-about">
+        <div class="p-about__title" id="appname">
+          
+        </div>
+        <div class="p-about__version">
+          Version <span id="appversion"></span> by Fujix 2004 - <span id="year"></span>
+        </div>
+        <dl class="p-about__info">
+          <dt>Web</dt><dd><a href="https://e2j.net/" target="_blank">https://e2j.net/</a></dd>
+          <dt>Github</dt><dd><a href="https://github.com/Fujix1/" target="_blank">https://github.com/Fujix1/</a></dd>
+
+        </dl>
+        <dl class="p-about__versions">
+          <dt>Platform</dt><dd id="platform"></dd>
+          <dt>OS</dt><dd><span id="type"></span> <span id="os"></span></dd>
+          <dt>Node</dt><dd id="node"></dd>
+          <dt>Chromium</dt><dd id="chrome"></dd>
+          <dt>Electron</dt><dd id="electron"></dd>
+        </dl>
+      </div>
+    </div>
+  </body>
+
+  <script src="./lib/input.js"></script>
+  <script src="./renderer-about.js"></script>
+
+</html>

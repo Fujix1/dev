@@ -38,7 +38,7 @@
     justify-content: center;
     align-items: center;
     padding: 10px 15px 0px;
-    color: var(--cl-theme);
+    color: var(--cl-text--highlight);
     transition: var(--s-transition);
     &>span {
       display: block;
@@ -55,12 +55,12 @@
       }
     }
     &:has(input:checked) {
-      color: var(--cl-listheadertext);
+      color: var(--cl-theme);
       //background-color: var(--cl-tab-content--bg);
       &>span:after {
         height: 2px;
         width: 100%;
-        background-color: var(--cl-listheadertext);
+        background-color: var(--cl-theme);
       }
     }
     &:has(:not(:disabled)) {
@@ -80,7 +80,7 @@
       color: var(--cl-tab-text--disabled);
     }
     &.highlight {
-      color: var(--cl-listheadertext);
+      color: var(--cl-text--highlight);
 
     }
   }

@@ -10,9 +10,15 @@ body {
   height: 100%;
   max-width: 100%;
   font-family: var(--ff-base);
+  background: var(--cl-body);
+  color: var(--cl-text);
   &.is-menu-open {
    
   }
+}
+
+a {
+  color: var(--cl-a);
 }
 
 :focus-visible {

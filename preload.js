@@ -71,4 +71,9 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
 
   // beep
   beep: async (args) => await ipcRenderer.invoke("beep", args),
+
+  // About フォーム用
+  showFormAbout: async (args) => await ipcRenderer.invoke("show-form-about", args),
+  onShowProcessInfo: (callback) => ipcRenderer.on("show-process-info", callback),
+  closeFormAbout: async (args) => await ipcRenderer.invoke("close-form-about", args),
 });
