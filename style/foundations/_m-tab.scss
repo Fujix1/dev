@@ -38,7 +38,7 @@
     justify-content: center;
     align-items: center;
     padding: 10px 15px 0px;
-    color: var(--cl-text--highlight);
+    color: var(--cl-tab-text);
     transition: var(--s-transition);
     &>span {
       display: block;
@@ -78,10 +78,6 @@
     }
     &--command, &--softlist {
       color: var(--cl-tab-text--disabled);
-    }
-    &.highlight {
-      color: var(--cl-text--highlight);
-
     }
   }
   &__radio {

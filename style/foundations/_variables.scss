@@ -13,6 +13,8 @@
     --cl-body: #232326;
     --cl-text: #eee;
     --cl-text--inactive: #ccc;
+    --cl-text--main: #222;
+    --cl-text--weak: #a7a7a7;
 
     --cl-a: #d79a4b;
     
@@ -23,6 +25,7 @@
 
     --cl-tab--bg: #17181a;
     --cl-tab-content--bg: #232326;
+    --cl-tab-text: #ccc;
     --cl-tab-text--disabled: #444; 
 
     --cl-scrollbar-track: #313233;
@@ -32,11 +35,7 @@
     --cl-ui-boxshadow: 1px 1px 2px 2px rgba(0,0,0,.3);
 
     --cl-l-head-bg: #1f2124;
-
-    --cl-text--highlight: #bbb;
-    --cl-text--main: #222;
-    --cl-text--weak: #a7a7a7;
-  
+ 
     --cl-theme: #4c87af;
     --cl-theme--light: #6dabd4;
     --cl-theme--gray: #888;
@@ -72,32 +71,7 @@
     --cl-footer--text: #bbb;
 
     --cl-command--bg: #031934;
-
-    /*
-    --cl-scrollbar-track: #fff;
-    --cl-scrollbar-thumb: #aaa;
-    --cl-scrollbar-thumb-hover: #76bdff;
-
-    --cl-text--highlight: #bbb;
-    --cl-text--main: #eee;
-    --cl-text--weak: #a7a7a7; //#666;
-  
-    --cl-theme: #bcdaf7;
-    
-    --cl-active: #deefff;
-    --cl-active--sub: #bcdaf7;
-    --cl-disactive: #e3e3e3;
-  
-    --cl-text: #111;
-    --cl-text--inactive: #333;
-    --cl-listheaderbg : #fff;
-    --cl-listheadertext: #3a434b;
-    --cl-listheader-text-hover: #111;
-    --cl-listbg : #fff;
-    --cl-listheader-border: #f0f0f0;
-    --cl-listborder: transparent;
-    --cl-list-bg-2n: #fafafa;
-*/  
+ 
 //  }
 /*
   @media (prefers-color-scheme: dark) {
@@ -105,7 +79,6 @@
     --cl-scrollbar-thumb: #7a8083;
     --cl-scrollbar-thumb-hover: #999;
 
-    --cl-text--highlight: #bbb;
     --cl-text--main: #222;
     --cl-text--weak: #a7a7a7; //#666;
   
