@@ -2656,6 +2656,7 @@ template {
   --cl-text--main: #222;
   --cl-text--weak: #a7a7a7;
   --cl-theme: #4c87af;
+  --cl-theme--light: #6dabd4;
   --cl-theme--gray: #888;
   --cl-active: linear-gradient(to top, #70a8d58c 3%, transparent 3%),
     radial-gradient(at center bottom, #5898e1a6, transparent);
@@ -4316,6 +4317,7 @@ i.c-z {
 .p-about__title {
   font-size: 25px;
   font-family: "montserrat";
+  animation: title 10s infinite;
 }
 .p-about__version {
   font-size: 17px;
@@ -4356,6 +4358,37 @@ i.c-z {
   padding: 0;
 }
 .p-about__footer {
-  height: 30px;
   border-top: 1px solid var(--cl-theme);
+  background-color: var(--cl-listheaderbg);
+}
+
+.m-button {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+.m-button__right {
+  margin-left: auto;
+}
+.m-button__left {
+  margin-right: auto;
+}
+.m-button__btn {
+  appearance: none;
+  border: none;
+  border-radius: 0px;
+  font-size: inherit;
+  padding: 9px 15px;
+  line-height: 1;
+  background-color: var(--cl-theme);
+  color: var(--cl-text);
+  transition: background-color var(--s-transition);
+  box-sizing: border-box;
+  min-width: 90px;
+}
+.m-button__btn:not(:disabled):hover {
+  background-color: var(--cl-theme--light);
+}
+.m-button__btn:disabled {
+  background-color: var(--cl-theme--gray);
 }/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,30 @@
+.m-button {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  &__right {
+    margin-left: auto;
+  }
+  &__left {
+    margin-right: auto;
+  }
+  &__btn {
+    appearance: none;
+    border: none;
+    border-radius: 0px;
+    font-size: inherit;
+    padding: 9px 15px;
+    line-height: 1;
+    background-color: var(--cl-theme);
+    color: var(--cl-text);
+    transition: background-color var(--s-transition);
+    box-sizing: border-box;
+    min-width: 90px;
+    &:not(:disabled):hover {
+      background-color: var(--cl-theme--light);
+    }
+    &:disabled {
+      background-color: var(--cl-theme--gray);
+    }
+  }
+}

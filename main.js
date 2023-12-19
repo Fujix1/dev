@@ -19,8 +19,8 @@ const Parser = require("node-xml-stream");
 // 初期設定
 //-------------------------------------------------------------------
 app.disableHardwareAcceleration(); // ハードウェアアクセラレーション無効
-const APPNAME = "Retrofire Dev";
-const APPVERSION = "0.00";
+const APPNAME = "RETROFIRE DEVELOPMENT";
+const APPVERSION = "0.00a";
 
 //-------------------------------------------------------------------
 // 定数
