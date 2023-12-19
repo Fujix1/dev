@@ -1551,19 +1551,22 @@ function makeFromAbout() {
 
   frmAbout.loadFile("about.html");
   frmAbout.once("ready-to-show", () => {
-    frmAbout.webContents.send("show-process-info", {
-      appname: APPNAME,
-      appversion: APPVERSION,
-      platform: process.platform,
-      node: process.version,
-      chrome: process.versions.chrome,
-      electron: process.versions.electron,
-      os: require("os").release(),
-      type: require("os").type(),
-    });
     frmAbout.show();
   });
 }
+
+ipcMain.handle("get-process-info", async (event, arg) => {
+  return {
+    appname: APPNAME,
+    appversion: APPVERSION,
+    platform: process.platform,
+    node: process.version,
+    chrome: process.versions.chrome,
+    electron: process.versions.electron,
+    os: require("os").release(),
+    type: require("os").type(),
+  };
+});
 
 ipcMain.handle("show-form-about", async (event, arg) => {
   makeFromAbout();

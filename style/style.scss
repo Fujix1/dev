@@ -1,7 +1,10 @@
 @use "packages/normalize.css";
+
 @use "fonts/microns.scss";
 @use "fonts/themify";
 @use "fonts/fontello";
+@use "fonts/webfonts";
+
 @use "foundations/variables";
 @use "foundations/base";
 @use "foundations/layout";
@@ -23,3 +26,4 @@
 @use "foundations/p-softlist";
 @use "foundations/p-edit";
 @use "foundations/p-menu";
+@use "foundations/p-about";

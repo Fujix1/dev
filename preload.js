@@ -74,6 +74,6 @@ contextBridge.exposeInMainWorld("retrofireAPI", {
 
   // About フォーム用
   showFormAbout: async (args) => await ipcRenderer.invoke("show-form-about", args),
-  onShowProcessInfo: (callback) => ipcRenderer.on("show-process-info", callback),
   closeFormAbout: async (args) => await ipcRenderer.invoke("close-form-about", args),
+  getProcessInfo: async (args) => await ipcRenderer.invoke("get-process-info", args),
 });

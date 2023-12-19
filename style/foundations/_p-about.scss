@@ -1,0 +1,64 @@
+.p-about {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  * {
+    user-select: none;
+  }
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--cl-theme);
+    padding: 15px;
+    background-color: var(--cl-listheaderbg);
+  }
+  &__title {
+    font-size: 25px;
+    font-family: "montserrat";
+  }
+  &__version {
+    font-size: 17px;
+    text-align: right;
+  }
+  &__main {
+    flex-grow: 1;
+    padding: 10px 15px;
+  }
+  &__info {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 15px;
+    line-height: 1.5;
+    dt{
+      width: 18%;
+      font-weight: bold;
+    }
+    dd {
+      width: 82%;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  &__versions {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 13px;
+    line-height: 1.5;
+    dt {
+      width: 18%;
+      font-weight: bold;
+    }
+  
+    dd {
+      width: 82%;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  &__footer {
+    height: 30px;
+    border-top: 1px solid var(--cl-theme);
+  }
+}

@@ -8,19 +8,23 @@
     <link rel="stylesheet" type="text/css" href="./style/style.css">
   </head>
   <body>
-    <div class="l-about">
-      <div class="p-about">
+
+    <div class="p-about">
+      <div class="p-about__top">
         <div class="p-about__title" id="appname">
-          
         </div>
-        <div class="p-about__version">
-          Version <span id="appversion"></span> by Fujix 2004 - <span id="year"></span>
+        <div class="p-about__right">
+          <div class="p-about__version">
+            v<span id="appversion"></span>
+          </div>
+          <div class="p-about__copy">&copy; Fujix 2004 - <span id="year"></span></div>
         </div>
+      </div>
+      <div class="p-about__main">
         <dl class="p-about__info">
           <dt>Web</dt><dd><a href="https://e2j.net/" target="_blank">https://e2j.net/</a></dd>
           <dt>Github</dt><dd><a href="https://github.com/Fujix1/" target="_blank">https://github.com/Fujix1/</a></dd>
-
-        </dl>
+          </dl>
         <dl class="p-about__versions">
           <dt>Platform</dt><dd id="platform"></dd>
           <dt>OS</dt><dd><span id="type"></span> <span id="os"></span></dd>
@@ -29,7 +33,11 @@
           <dt>Electron</dt><dd id="electron"></dd>
         </dl>
       </div>
+      <footer class="p-about__footer">
+        <button id="close">閉じる</button>
+      </footer>
     </div>
+
   </body>
 
   <script src="./lib/input.js"></script>

@@ -2622,6 +2622,14 @@ template {
 .icon-github:before {
   content: "\f308";
 } /* '' */
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 900;
+  font-display: swap;
+  src: url("fonts/montserrat_italic_900.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 :root {
   --ff-base: "Meiryo", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro","Noto Sans CJK JP", "Noto Sans",san-serif;
   --ff-mono-space: "ＭＳ ゴシック", "Consolas", "Menlo", monospace;
@@ -4287,4 +4295,67 @@ i.c-z {
   background: linear-gradient(135deg, #6ccce5, #208db5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+.p-about {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.p-about * {
+  user-select: none;
+}
+.p-about__top {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--cl-theme);
+  padding: 15px;
+  background-color: var(--cl-listheaderbg);
+}
+.p-about__title {
+  font-size: 25px;
+  font-family: "montserrat";
+}
+.p-about__version {
+  font-size: 17px;
+  text-align: right;
+}
+.p-about__main {
+  flex-grow: 1;
+  padding: 10px 15px;
+}
+.p-about__info {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.p-about__info dt {
+  width: 18%;
+  font-weight: bold;
+}
+.p-about__info dd {
+  width: 82%;
+  margin: 0;
+  padding: 0;
+}
+.p-about__versions {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.p-about__versions dt {
+  width: 18%;
+  font-weight: bold;
+}
+.p-about__versions dd {
+  width: 82%;
+  margin: 0;
+  padding: 0;
+}
+.p-about__footer {
+  height: 30px;
+  border-top: 1px solid var(--cl-theme);
 }/*# sourceMappingURL=style.css.map */
