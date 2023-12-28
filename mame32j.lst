@@ -3308,7 +3308,6 @@ ccmk2	Chess Champion: MK II (ver. 1)	ちぇすちゃんぴおんまーく2
 ccmk2a	Chess Champion: MK II (ver. 2)	ちぇすちゃんぴおんまーく2
 ccmk5	Chess Champion: Mark V	ちぇすちゃんぴおんまーくふぁいぶ
 ccmk6	Chess Champion: Mark VI/Philidor	ちぇすちゃんぴおんまーくしっくす
-ccompan	Chess Companion	ちぇすこんぱにおん
 ccorsario	Corsarios (Cirsa slot machine)	こるさりおす
 ccruise	Caribbean Cruise	かりびあんくるーず
 ccs2422	CCS Model 2422B FDC card	しーしーえすもでる2422
@@ -3507,7 +3506,8 @@ chickna5v	Chicken (01J01886, Venezuela)	ちきん
 chikij	チキチキボーイズ (日本版 900619)	ちきちきぼーいず
 chiller	Chiller (version 3.0)	ちらー
 chillicc	Chilli Con Cash (set 1)	ちりこんきゃっしゅ
-chimerab	キメラビースト (日本版, プロトタイプ)	きめらびーすと
+chimerab	キメラビースト (日本版, プロトタイプ, set 1)	きめらびーすと
+chimeraba	キメラビースト (日本版, プロトタイプ, set 2)	きめらびーすと
 chinagat	西遊降魔録 -流棒妖技ノ章- / China Gate (US版)	さいゆうごうまろく_u
 chinatow	China Town (Ver 1B, Dino4 HW)	ちゃいなたうん
 chinatwn	チャイナタウン (日本版)	ちゃいなたうん
@@ -6363,6 +6363,7 @@ enigma2a	Enigma II (スペースインベーダー基板)	えにぐま2
 enigma2b	Phantoms II (スペースインベーダー基板)	ふぁんとむず2
 enmadaio	えんま大王 (日本版)	えんまだいおう1_
 enmirage	Mirage DMS-8	みらーじゅ
+enterp	Enterprise &quot;S&quot;	Enterprise &quot;S&quot;
 eott	Eyes of the Tiger (10002011, NSW/ACT)	あいおぶざたいがー
 ep128	Enterprise One Two Eight	えんたーぷらいずわんつーえいと
 ep64	Enterprise Sixty Four	えんたーぷらいずしっくすてぃふぉー
@@ -7279,7 +7280,6 @@ excalibrf	Excalibur (フランス版)	えくすかりばー_f
 excalibrg	Excalibur (ドイツ版)	えくすかりばー_g
 excelsr	Excelsior (set 1)	えくせるしあ_1
 excelsra	Excelsior (set 2)	えくせるしあ_2
-exchess	Executive Chess	えぐぜくてぃぶちぇす
 excitbj	エキサイティングブラックジャック	えきさいてぃんぐぶらっくじゃっく
 excitebk	VS. エキサイトバイク (set EB4-3 E)	ぶいえすえきさいとばいく_
 excitebkj	VS. エキサイトバイク (set EB4-4 A)	ぶいえすえきさいとばいく_
@@ -13413,6 +13413,7 @@ levers	Levers	ればーず
 lexifit	TV Fitness Center (Lexibook)	てぃーびーふぃっとねすせんたー
 lexipcm	LexiPC Mega 2000 (Germany)	れきしぴーしーめが2000
 lexiseal	Seal 50-in-1	しーる50いんわん
+lexitvsprt	TV Sports Plug &amp; Play 5-in-1 (JG7000)	TV Sports Plug &amp; Play 5-in-1 (JG7000)
 lexizeus	Zeus IG900 20-in-1 (US?)	ぜうすあいじー900
 lft1230	A1230 186 Master Processor	えー1230
 lft1510	A1510 186 User Processor	えー1510
@@ -26717,7 +26718,6 @@ rad_hnt3p	Connectv Huntin' 3	こねくてぃーびーはんてぃん3
 rad_jcon	Play TV Jr. Construction	ぷれいてぃーびーじゅにあこんすとらくしょん
 rad_madf	EA Sports Madden Football (NTSC)	いーえーすぽーつまっでんふっとぼーる
 rad_md1	Mega Drive Collection Volume 1 (Radica, Arcade Legends) (Europe)	めがどらいぶこれくしょんぼりゅーむ1
-rad_md2	Mega Drive Collection Volume 2 (Radica, Arcade Legends) (UK)	めがどらいぶこれくしょんぼりゅーむ2
 rad_mtrk	Play TV Monster Truck (NTSC)	ぷれいてぃーびーもんすたーとらっく
 rad_mtrkp	ConnecTV Monster Truck (PAL)	こねくてぃーびーもんすたーとらっく
 rad_opus	Play TV Opus (NTSC)	ぷれいてぃーびーおーぱす
@@ -26729,7 +26729,6 @@ rad_rsg	Play TV Real Swing Golf	ぷれいてぃーびーりあるすうぃんぐ
 rad_rsgp	Connectv Real Swing Golf	こねくてぃーびーりあるすうぃんぐごるふ
 rad_sbw	Play TV Snowboarder (White) (NTSC)	ぷれいてぃーびーすのーぼーだー
 rad_sf2	Street Fighter II: Special Champion Edition [Ghouls'n Ghosts] (Radica, Arcade Legends) (USA)	すとりーとふぁいたー2すぺしゃるちゃんぴおんえでぃしょん
-rad_sf2p	Street Fighter II: Special Champion Edition [Ghouls'n Ghosts] (Radica, Arcade Legends) (UK)	すとりーとふぁいたー2すぺしゃるちゃんぴおんえでぃしょん
 rad_sinv	Space Invaders [Lunar Rescue, Colony 7, Qix, Phoenix] (Radica, Arcade Legends TV Game)	すぺーすいんべーだーず
 rad_skat	Play TV Skateboarder (NTSC)	ぷれいてぃーびーすけーとぼーだー
 rad_skatp	Connectv Skateboarder (PAL)	こねくてぃーびーすけーとぼーだー
@@ -26738,7 +26737,7 @@ rad_snow	Play TV Snowboarder (Blue) (NTSC)	ぷれいてぃーびーすのーぼ�
 rad_snowp	ConnecTV Snowboarder (Blue) (PAL)	こねくとてぃーびーすのーぼーだー
 rad_socr	Play TV Soccer	ぷれいてぃーびーさっかー
 rad_sonic	Super Sonic Gold (Radica Plug & Play) (USA)	すーぱーそにっくごーるど
-rad_sonicp	Super Sonic Gold (Radica Plug & Play) (UK)	すーぱーそにっくごーるど
+rad_sonicuk	Super Sonic Gold (Radica Plug &amp; Play) (UK)	Super Sonic Gold (Radica Plug &amp; Play) (UK)
 rad_ssoc	Sensible Soccer plus [Cannon Fodder, Mega lo Mania] (Radica, Arcade Legends) (UK)	せんしぶるさっかーぷらす
 rad_ssx	Play TV SSX Snowboarder (NTSC)	ぷれいてぃーびーえすえすえっくすすのーぼーだー
 rad_ssxp	ConnecTV SSX Snowboarder (PAL)	こねくてぃーびーえすえすえっくすすのーぼーだー

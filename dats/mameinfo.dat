@@ -2,7 +2,7 @@
 #                                        #
 #     Mameinfo.dat 日本語版              #
 #                                        #
-#     October 19, 2023                   #
+#     December 12, 2023                  #
 #                                        #
 #                                        #
 #     MAME Bug Database J                #
@@ -479,6 +479,11 @@ $mame
 【バグ】
 
 - カクテルモードが有効にならない。(#07721, v0.222, samsho2)
+
+
+【実機の仕様・バグ】
+
+- ReverseとThrustが同じ入力になっておりReverseが無視される。(#08780, v0.259, ICEknight)
 $end
 
 $info=dirtfoxj
@@ -1765,6 +1770,9 @@ $mame
 
 【バグ】
 
+- [64bit限定] Steven Tylerのシーンで色がおかしい。(#08799, v0.261, yoshi200213)
+
+
 - Skull Bombを使った後のSkull Jumpscareの画像が表示されない。(#07905, v0.229, alphabeta2)
 $end
 
@@ -1936,6 +1944,11 @@ $mame
 【FAQ】
 
 - テストモードに入るには、P2スタートを押しながら起動。 (FAQ #150)
+
+
+【バグ】
+
+- 実機に比べてPCM音量が低い。(#08785, v0.260, danylopez123)
 $end
 
 $info=simpbowl
@@ -6041,6 +6054,13 @@ $mame
 - オートツモをONにすると、アタリ牌が出てもオートツモが止まらない。(#03681, v0.136u1, Fujix)
 $end
 
+$info=gemini
+$mame
+【バグ】
+
+- 実機に比べてPCM音量が低い。(#08785, v0.260, danylopez123)
+$end
+
 $info=genesis
 $mame
 【バグ】
@@ -7470,6 +7490,13 @@ $mame
 - カクテルモードのDIPスイッチが動作しない。またプレイヤー2用の操作もマッピングされていない。(#00323, v0.106u2)
 $end
 
+$info=krull
+$mame
+【バグ】
+
+- リセットするとクラッシュする。(#08794, v0.260, 80sRay)
+$end
+
 $info=kurikint
 $mame
 【バグ】
@@ -7695,6 +7722,13 @@ $mame
 - ゲームの第2部に入って、ターミナルを破壊したあと、効果音が再生されない。(#00187, v0.101u5, RansAckeR)
 $end
 
+$info=lostwsga
+$mame
+【バグ】
+
+- メモリテストでCROMがBADとなる。(#08790, v0.260, VasiliyFamiliya)
+$end
+
 $info=lottof2
 $mame
 【バグ】
@@ -7741,6 +7775,13 @@ $mame
 
 
 - [ddragon] イントロ画面で待つとスタートできない。(#07383, v0.211, trj)
+$end
+
+$info=m5
+$mame
+【バグ】
+
+- 36K RAMが必要なカセットが起動しない。(#08796, v0.260, Blindpk)
 $end
 
 $info=mach3
@@ -8698,13 +8739,6 @@ $mame
 - 参照用の実機映像。(#03997, Smitdogg)
 $end
 
-$info=neocdz
-$mame
-【バグ】
-
-- [aof] ボーナスステージ後にサウンドがこわれる。(#08693, v0.256, Foxhack)
-$end
-
 $info=neogeo
 $mame
 【バグ】
@@ -8982,6 +9016,9 @@ $end
 $info=othunder
 $mame
 【バグ】
+
+- サウンドはモノラル出力か？(#08788, v0.260, danylopez123)
+
 
 - 照準が画面からずれている。(#06860, v0.194, NekoEd)
 
@@ -9318,6 +9355,9 @@ $end
 $info=pdrift
 $mame
 【バグ】
+
+- ステージ最初で黒画面になる。(#08783, v0.259, umeyar)
+
 
 - コースBをクリアするとゲームが再起動する。(#06240, v0.174, Scagazza)
 $end
@@ -10329,6 +10369,13 @@ $mame
 - 画面反転のDIPスイッチが動作しない。(#00302, v0.122u3)
 $end
 
+$info=revxp5
+$mame
+【バグ】
+
+- [64bit限定] Steven Tylerのシーンで色がおかしい。(#08799, v0.261, yoshi200213)
+$end
+
 $info=rezon
 $mame
 【バグ】
@@ -10371,6 +10418,13 @@ $mame
 【バグ】
 
 - ゲームオーバーの画面が正しく表示されない。(#00494, v0.37b1)
+$end
+
+$info=riotcity
+$mame
+【バグ】
+
+- メモリテストでA6とA8がBADになる。(#08782, v0.259, VasiliyFamiliya)
 $end
 
 $info=rm380z
@@ -10951,6 +11005,13 @@ $mame
 - 実機に比べるとデモシーンが速すぎる。(#07906, v0.229, Fortuna)
 $end
 
+$info=sfex2p
+$mame
+【バグ】
+
+- クラッカージャックのメテオコンボ後に無関係な音が鳴る。(#08795, v0.259, Dumple)
+$end
+
 $info=sfexp
 $mame
 【バグ】
@@ -11277,35 +11338,11 @@ $mame
 - 表示領域が狭い。(#06892, v0.194, ICEknight)
 $end
 
-$info=sms1
-$mame
-【バグ】
-
-- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
-$end
-
-$info=sms1br
-$mame
-【バグ】
-
-- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
-$end
-
 $info=sms1pal
 $mame
 【バグ】
 
-- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
-
-
 - PAL版のアスペクト比が違う。(#08425, v0.247, ICEknight)
-$end
-
-$info=sms1paln
-$mame
-【バグ】
-
-- "Master System I"となっているが、"I"は要らない。(#08754, v0.258, ICEknight)
 $end
 
 $info=smspal
@@ -11903,33 +11940,6 @@ $mame
 【バグ】
 
 - 参照用の実機ビデオ。(#03010, v0.129u6, Smitdogg)
-$end
-
-$info=stdragon
-$mame
-【バグ】
-
-- プレイヤー1のスタート画面でテキストがスクロールしない。(#05423, v0.152, rcoltrane)
-
-
-【実機の仕様・バグ】
-
-- 実機では3面のボスが毎回現れる。(#05464, v0.152, rcoltrane)
-
-
-- 3面のボスが登場せずに4面に進むことがある。(#05098, v0.147, richardctvrty)
-$end
-
-$info=stdragona
-$mame
-【バグ】
-
-- プレイヤー1のスタート画面でテキストがスクロールしない。(#05423, v0.152, rcoltrane)
-
-
-【実機の仕様・バグ】
-
-- 実機では3面のボスが毎回現れる。(#05464, v0.152, rcoltrane)
 $end
 
 $info=steeltal
@@ -12967,9 +12977,6 @@ $info=tshingen
 $mame
 【バグ】
 
-- 2面でクラッシュする。(#08541, v0.251, Dumple)
-
-
 - 流鏑馬の面でアイテムと武器が馬とプレイヤーの手前に表示される。アトラクトモードで確認できる。(#00078, v0.104u2)
 $end
 
@@ -13171,6 +13178,13 @@ $mame
 【バグ】
 
 - MAMEでは敵のショット音がカスカスになっている。(#03363, v0.133, Gyrovision)
+$end
+
+$info=vaportra
+$mame
+【バグ】
+
+- スプライトタイル #$1024と#$1027が空白になっている。(#08786, v0.260, VasiliyFamiliya)
 $end
 
 $info=vaportrx
@@ -16321,6 +16335,23 @@ $mame
 【実機の仕様・バグ】
 
 - サービスモードのテストが途中でリセットして最初に戻る。(#03462, v0.134, TrevEB)
+$end
+
+$info=stdragon
+$mame
+【実機の仕様・バグ】
+
+- 実機では3面のボスが毎回現れる。(#05464, v0.152, rcoltrane)
+
+
+- 3面のボスが登場せずに4面に進むことがある。(#05098, v0.147, richardctvrty)
+$end
+
+$info=stdragona
+$mame
+【実機の仕様・バグ】
+
+- 実機では3面のボスが毎回現れる。(#05464, v0.152, rcoltrane)
 $end
 
 $info=stoneage
