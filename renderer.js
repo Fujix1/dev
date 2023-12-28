@@ -550,10 +550,10 @@ async function onLoad() {
       listViewMain.updateRowTexts();
       listViewMain.makeVisible();
     },
-    onSelect: async (index) => {
+    onSelect: (index) => {
       if (index === -1) return;
       const dataIndex = mamedb.getDataIndex(index);
-      await itemSelectHandler(dataIndex);
+      itemSelectHandler(dataIndex);
     },
     onData: (index) => {
       const row = { classList: ["m-listView__cellIcon"], cloneof: "" };
@@ -842,7 +842,7 @@ async function updateListView() {
   await listViewMain.updateRowTexts();
 
   // 項目再選択
-  await itemSelectHandler(mamedb.getDataIndex(listViewMain.itemIndex));
+  itemSelectHandler(mamedb.getDataIndex(listViewMain.itemIndex));
   await listViewMain.makeVisible(false);
 
   // 項目数表示
@@ -872,7 +872,7 @@ async function updateListViewSoftlist() {
 }
 
 // 項目選択時の処理
-async function itemSelectHandler(argDataIndex) {
+function itemSelectHandler(argDataIndex) {
   let masterZip = "";
 
   if (mamedb.filteredLength === 0) {
