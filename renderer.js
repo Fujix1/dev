@@ -979,7 +979,8 @@ document.getElementById("clear").addEventListener("click", clearSearch);
 function clearSearch() {
   document.getElementById("search").focus();
   document.getElementById("search").select();
-  window.retrofireAPI.delete();
+  document.execCommand("delete");
+  //  window.retrofireAPI.delete();
 }
 
 // 検索クリアソフト
@@ -987,7 +988,8 @@ document.getElementById("clearSoft").addEventListener("click", clearSearchSoft);
 function clearSearchSoft() {
   document.getElementById("searchSoft").focus();
   document.getElementById("searchSoft").select();
-  window.retrofireAPI.delete();
+  document.execCommand("delete");
+  //window.retrofireAPI.delete();
 }
 
 //--------------------------------------------------------------------------
@@ -1174,4 +1176,13 @@ window.retrofireAPI.onRequestMame32j((_event, text) => {
 // -------------------------------------
 function mod(i, j) {
   return i % j < 0 ? (i % j) + 0 + (j < 0 ? -j : j) : (i % j) + 0;
+}
+
+/**
+ * input の undo をクリアするバッドノウハウ
+ * @param {*} dom
+ */
+function clearUndo(dom) {
+  dom.setAttribute("type", "hidden");
+  dom.setAttribute("type", "text");
 }
