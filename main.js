@@ -320,13 +320,15 @@ const executeMAME = async (event, ...args) => {
     mameArgs.push(rfProfiles[rfConfig.currentProfile].option);
   }
 
+  // 子プロセス生成
   const subprocess = child_process.spawn(rfProfiles[rfConfig.currentProfile].exePath, mameArgs, {
     cwd: rfProfiles[rfConfig.currentProfile].workDir,
-    detached: true,
+    detached: true, // 親プロセスと接続しない
   });
 
   sendDebug(rfProfiles[rfConfig.currentProfile].exePath + " " + mameArgs.join(" "));
-  subprocess.unref();
+  subprocess.unref(); // 親プロセスが子プロセスの終了を待機しない
+
   subprocess.stdout.setEncoding("utf8");
   subprocess.stdout.on("data", (data) => {
     console.log(data);
