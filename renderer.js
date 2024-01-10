@@ -373,6 +373,7 @@ async function onLoad() {
           if (search.historyIndex < config.searchHistory.length - 1) {
             search.historyIndex++;
             search.value = config.searchHistory[search.historyIndex];
+            clearUndo(search);
             search.select();
             config.searchWord = search.value;
             updateListView();
@@ -382,6 +383,7 @@ async function onLoad() {
           if (search.historyIndex > 0) {
             search.historyIndex--;
             search.value = config.searchHistory[search.historyIndex];
+            clearUndo(search);
             search.select();
             config.searchWord = search.value;
             updateListView();
@@ -452,6 +454,7 @@ async function onLoad() {
         if (searchSoft.historyIndex < config.searchHistorySoft.length - 1) {
           searchSoft.historyIndex++;
           searchSoft.value = config.searchHistorySoft[searchSoft.historyIndex];
+          clearUndo(searchSoft);
           searchSoft.select();
           config.searchWordSoft = searchSoft.value;
           updateListViewSoftlist();
@@ -461,6 +464,7 @@ async function onLoad() {
         if (searchSoft.historyIndex > 0) {
           searchSoft.historyIndex--;
           searchSoft.value = config.searchHistorySoft[searchSoft.historyIndex];
+          clearUndo(searchSoft);
           searchSoft.select();
           config.searchWordSoft = searchSoft.value;
           updateListViewSoftlist();
