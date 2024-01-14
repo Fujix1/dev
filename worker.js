@@ -1,21 +1,11 @@
 const { parentPort } = require("worker_threads");
 const path = require("node:path");
 const fs = require("node:fs");
+const Parser = require("node-xml-stream");
 
-console.log("Hello from worker");
+console.log("WORKER: start parsing list.xml.");
 
-for (let i = 0; i < 2_000_000_000; i++) {}
+const GameStatus = { gsGood: 0, gsImperfect: 1, gsPreliminary: 2, gsUnknown: 3 };
 
-parentPort.postMessage("message from worker");
-for (let i = 0; i < 2_000_000_000; i++) {}
-
-parentPort.postMessage("message from worker");
-for (let i = 0; i < 2_000_000_000; i++) {}
-
-parentPort.postMessage("message from worker");
-for (let i = 0; i < 2_000_000_000; i++) {}
-
-parentPort.postMessage("message from worker");
-for (let i = 0; i < 2_000_000_000; i++) {}
-
-parentPort.postMessage("message from worker");
+const parser = new Parser();
+let version = "";

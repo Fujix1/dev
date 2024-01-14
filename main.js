@@ -1017,6 +1017,18 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
     return { result: false, error: "list.xml file is too small." };
   }
 
+  const worker = new Worker("./worker.js", {
+    workerData: {
+      filePath: PATH_LISTXML,
+    },
+  });
+  worker.on("message", (msg) => {
+    console.log(msg);
+  });
+  worker.on("error", (err) => {
+    console.error(err.message);
+  });
+
   const parser = new Parser();
   let version = "";
 
@@ -1468,14 +1480,6 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
   // 読み込みが完了した
   parser.on("finish", async () => {
     console.log("XML parse completed.");
-
-    const worker = new Worker("./worker.js", { workerData: "" });
-    worker.on("message", (msg) => {
-      console.log(msg);
-    });
-    worker.on("error", (err) => {
-      console.error(err.message);
-    });
 
     // マスタ ID の検索
     console.log("Finding Master IDs");
