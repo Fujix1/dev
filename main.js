@@ -4,6 +4,8 @@
 const child_process = require("node:child_process");
 const path = require("node:path");
 const fs = require("node:fs");
+const { Worker } = require("node:worker_threads");
+
 const { app, BrowserWindow, dialog, ipcMain, shell, Menu, roleList, MenuItem } = require("electron");
 const Store = require("electron-store");
 const store = new Store();
@@ -1466,6 +1468,14 @@ ipcMain.handle("parse-listxml", async (event, arg) => {
   // 読み込みが完了した
   parser.on("finish", async () => {
     console.log("XML parse completed.");
+
+    const worker = new Worker("./worker.js", { workerData: "" });
+    worker.on("message", (msg) => {
+      console.log(msg);
+    });
+    worker.on("error", (err) => {
+      console.error(err.message);
+    });
 
     // マスタ ID の検索
     console.log("Finding Master IDs");
